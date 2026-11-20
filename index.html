@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="ru"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#111A17"><meta name="application-name" content="Талаб аль-Хакк"><meta name="apple-mobile-web-app-title" content="Талаб аль-Хакк"><meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="description" content="Талаб аль-Хакк — исламский образовательный проект для изучения Корана, дуа, азкаров и исламских знаний с уважением к различным традициям и стремлением к достоверности">
+<meta property="og:title" content="Талаб аль-Хакк"><meta property="og:site_name" content="Талаб аль-Хакк"><meta property="og:type" content="website"><meta property="og:locale" content="ru_RU">
+<meta property="og:description" content="Талаб аль-Хакк — исламский образовательный проект для изучения Корана, дуа, азкаров и исламских знаний с уважением к различным традициям и стремлением к достоверности">
+<link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><title>Талаб аль-Хакк — Поиск истины</title><link rel="stylesheet" href="style.css"></head>
+<body><div id="app">
+<header class="top"><a class="brand" href="./" aria-label="Талаб аль-Хакк — главная"><img class="brandlogo" src="icon.svg" width="48" height="48" alt=""><span><b>Талаб аль-Хакк</b><small>Talab al-Haqq · Поиск истины</small></span></a><div class="header-actions"><button class="iconbtn" id="reviewBtn" data-tab="review" aria-label="Источники и проверка" title="Источники и проверка">ⓘ</button><button class="iconbtn" id="themeBtn" aria-label="Сменить тему">☾</button></div></header>
+<p id="offlineStatus" class="offline-status" role="status" aria-live="polite"></p><div id="updateBanner" class="update-banner" hidden><span>Доступно обновление</span><button class="action" id="reloadUpdate">Обновить</button><button class="iconbtn" id="dismissUpdate" aria-label="Отложить обновление">×</button></div>
+<main id="screen" tabindex="-1"><p class="lead">Загружаем материалы…</p></main>
+<nav id="nav" class="bottom" aria-label="Основная навигация"><button data-tab="home" class="active"><i aria-hidden="true">⌂</i><span>Главная</span></button><button data-tab="dua"><i aria-hidden="true">☪</i><span>Дуа</span></button><button data-tab="names"><i aria-hidden="true">✧</i><span>Имена</span></button><button data-tab="library"><i aria-hidden="true">▤</i><span>Знания</span></button><button data-tab="favorites"><i aria-hidden="true">♡</i><span>Избранное</span></button></nav>
+<div id="modal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Материал"><div class="shade" data-close="1"></div><div class="sheet" tabindex="-1"><div class="handle"></div><button class="close" data-close="1" aria-label="Закрыть">✕</button><div id="detail"></div></div></div>
+<div id="storageMessage" class="storage-message" role="alert" hidden>Не удалось сохранить изменения: проверьте свободное место и доступ к хранилищу браузера.</div></div><script src="app.js" defer></script></body></html>
