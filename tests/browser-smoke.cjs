@@ -48,7 +48,7 @@ const assert = require('node:assert/strict');
   assert.equal(fourVerses,4,'Al-Ikhlas must have four separately labelled verses');
   const source=require('node:fs');
   const catalog=JSON.parse(source.readFileSync('data/content.json','utf8'));
-  const surah=catalog.catalog.entries.find(x=>x.id==='q_surah_112');
+  const surah=[...catalog.catalog.entries,...catalog.catalog_additions.entries].find(x=>x.id==='q_surah_112');
   assert.deepEqual(await page.locator('#detail .verse-arabic').allTextContents(),surah.segments.map(s=>s.arabicText),'Arabic verse texts must be unchanged');
   await page.locator('#modal .close').click();
   await page.locator('[data-back="dua"]').click();
