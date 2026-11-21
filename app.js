@@ -70,16 +70,16 @@ function knowledge() {
   ];
   const classify = x => {
     const t = (x.titleRu || '').toLowerCase();
-    if (/пророк|юсуф|муса|ибрахим|нух|адам|иса\b|мухаммад/.test(t)) return 'prophets';
+    if (/пророк|юсуф|муса|ибрахим|нух|адам|иса\b/.test(t)) return 'prophets';
     if (/сподвиж|сахаб|ахль|семь[яи] пророка|фатим|али ибн|хасан|хусейн/.test(t)) return 'people';
     if (/битв|сражен|хиджр|ухуд|бадр|карбал|событи|истори|договор|поход/.test(t)) return 'events';
     if (/намаз|омовен|вера|ислам|иман|молитв|пост|закят|хадж|поклонен/.test(t)) return 'basics';
     return 'other';
   };
   if (!knowledgeGroup) return `${section('Исламские знания')}<p class="lead">Выберите направление. История, практика и биографии больше не смешиваются в одном списке.</p>${groups.map(g=>groupButton(g.title,g.desc,'data-knowledge-group',g.id)).join('')}${footer()}`;
-  if (knowledgeGroup === 'caliphs') return caliphPage();
+  if (knowledgeGroup === 'caliphs') return `${backButton('library')}${caliphPage()}`;
   const g = groups.find(g=>g.id===knowledgeGroup);
-  const arr = [...library.map(x=>({...x,_kind:'lib'})),...history.map(x=>({...x,_kind:'history'}))].filter(x=>classify(x)===knowledgeGroup && textSearch(x));
+  const arr = [...library.map(x=>({...x,_kind:'lib'})),...history.map(x=>({...x,_kind:'history'}))].filter(x=>(x._kind === 'history' ? 'events' : classify(x))===knowledgeGroup && textSearch(x));
   return `${backButton('library')}${section(g?.title || 'Исламские знания')}${search()}<p class="lead">Материалов: ${arr.length}</p>${arr.map(x=>item(x,x._kind)).join('') || empty()}${footer()}`;
 }
 function caliphPage() {
