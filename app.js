@@ -17,6 +17,10 @@ function save(key, value) {
 let db = {}, caliphs = null, tab = 'home', filter = 'all', query = '', entries = [], library = [], history = [], active = null;
 let favs = get('favs', []), counts = get('counts', {}), theme = get('theme', 'dark'), reading = get('reading', {});
 let modalStack = [], lastFocus = null;
+let knowledgeGroup = null, duaGroup = null;
+const groupButton = (label, description, attr, value) => `<button class="item" ${attr}="${clean(value)}"><span class="itembody"><strong>${clean(label)}</strong><small>${clean(description)}</small></span><span class="arrow" aria-hidden="true">›</span></button>`;
+const backButton = (target) => `<button class="action" data-back="${target}">← Назад к разделам</button>`;
+
 $('#reviewBtn').innerHTML = uiIcon('info');
 const navIcons = {home:'home',dua:'dua',names:'names',library:'library',favorites:'heart'};
 document.querySelectorAll('.bottom button').forEach(b => b.querySelector('i').innerHTML = uiIcon(navIcons[b.dataset.tab]));
@@ -27,7 +31,7 @@ function initData(d, c) {
   entries = [...new Map([...d.catalog.entries, ...d.catalog_additions.entries].map(x => [x.id, x])).values()];
   library = d.library.items; history = d.history.events; render();
 }
-function setTab(t) { tab = t; query = ''; filter = 'all'; render(); window.scrollTo(0, 0); }
+function setTab(t) { tab = t; query = ''; filter = 'all'; knowledgeGroup = null; duaGroup = null; render(); window.scrollTo(0, 0); }
 function textSearch(x) {
   const words = [x.titleRu,x.transliterationRu,x.translationRu,x.meaningRu,x.summaryRu,x.arabicText,x.arabicName,...(x.tagsRu || []),...(x.aliasesRu || []),...(x.searchTerms || []),...(x.sections || []).map(s => s.textRu)];
   return words.join(' ').toLocaleLowerCase('ru').includes(query.toLocaleLowerCase('ru'));
@@ -46,16 +50,37 @@ function home() {
   return `<section class="hero"><span class="eyebrow" lang="ar" dir="rtl">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</span><h1>Пусть каждый день начинается с доброго</h1><p>Дуа, утренние и вечерние азкары, имена Аллаха и исламские знания — в одном месте.</p><button data-tab="dua">Открыть молитвы →</button></section>${last ? section('Продолжить чтение') + item(last.data,last.kind) : ''}${section('Разделы')}<div class="grid"><button class="tile" data-tab="dua" data-filter="morning"><span class="emoji" aria-hidden="true">${uiIcon('sun')}</span><strong>Утренние азкары</strong><small>Начать день с поминания</small></button><button class="tile" data-tab="dua" data-filter="evening"><span class="emoji" aria-hidden="true">${uiIcon('moon')}</span><strong>Вечерние азкары</strong><small>Мольбы перед ночью</small></button><button class="tile" data-tab="dua"><span class="emoji" aria-hidden="true">${uiIcon('dua')}</span><strong>Дуа по ситуациям</strong><small>Обращения к Аллаху</small></button><button class="tile" data-tab="names"><span class="emoji" aria-hidden="true">${uiIcon('names')}</span><strong>99 имён Аллаха</strong><small>Значения и размышления</small></button><button class="tile" data-tab="library"><span class="emoji" aria-hidden="true">${uiIcon('library')}</span><strong>Пророки и история</strong><small>Материалы для изучения</small></button><button class="tile" data-tab="caliphs"><span class="emoji" aria-hidden="true">${uiIcon('library')}</span><strong>История халифов</strong><small>Люди, события и источники</small></button></div>${section('Часто ищут','dua')}${entries.slice(0,3).map(x => item(x,'dua')).join('')}${footer()}`;
 }
 function dua() {
-  let cats = [{id:'all',title:'Все'},{id:'morning',title:'Утром'},{id:'evening',title:'Вечером'},...db.catalog.categories,...db.catalog_additions.categories];
+  let cats = [{id:'morning',title:'Утренние азкары'},{id:'evening',title:'Вечерние азкары'},...db.catalog.categories,...db.catalog_additions.categories];
   cats = [...new Map(cats.map(c => [c.id,c])).values()];
-  const a = entries.filter(x => (filter === 'all' || (x.categoryIds || []).includes(filter)) && textSearch(x));
-  return `${section('Дуа и азкары')}<p class="lead">Арабский текст, транскрипция и перевод смысла.</p>${search()}<div class="chips">${cats.map(c => `<button class="chip ${filter === c.id ? 'selected' : ''}" data-filter="${clean(c.id)}">${clean(c.title || c.titleRu)}</button>`).join('')}</div><p class="lead">Найдено: ${a.length}</p>${a.map(x => item(x,'dua')).join('') || empty()}${footer()}`;
+  if (!duaGroup) return `${section('Дуа и азкары')}<p class="lead">Выберите тему. Материалы появятся только внутри выбранного раздела.</p>${search()}${query ? entries.filter(textSearch).map(x=>item(x,'dua')).join('') || empty() : cats.map(c => groupButton(c.title || c.titleRu,'Открыть дуа и поминания','data-dua-group',c.id)).join('')}${footer()}`;
+  const category = cats.find(c=>c.id===duaGroup);
+  const a = entries.filter(x => (x.categoryIds || []).includes(duaGroup) && textSearch(x));
+  return `${backButton('dua')}${section(category?.title || category?.titleRu || 'Дуа')}${search()}<p class="lead">Материалов: ${a.length}</p>${a.map(x => item(x,'dua')).join('') || empty()}${footer()}`;
 }
 function empty() { return '<p class="empty">Подходящих материалов нет. Попробуйте другой запрос или откройте каталог тем.</p>'; }
 function names() { return `${section('99 имён Аллаха')}<p class="lead">Написание, значение и примеры личной мольбы.</p>${search()}${db.names.names.filter(textSearch).map(x => item(x,'name')).join('') || empty()}${footer()}`; }
 function knowledge() {
-  const arr = [...library.filter(textSearch).map(x => ({...x,_kind:'lib'})),...history.filter(textSearch).map(x => ({...x,_kind:'history'}))];
-  return `${section('Исламские знания')}<button class="item" data-tab="caliphs"><span class="itembody"><strong>История халифов</strong><small>Преемство, биографии и разные исторические понимания</small></span><span class="arrow" aria-hidden="true">›</span></button>${search()}<p class="lead">Материалов: ${arr.length}</p>${arr.map(x => item(x,x._kind)).join('') || empty()}${footer()}`;
+  const groups = [
+    {id:'basics',title:'Основы ислама',desc:'Вера, поклонение и повседневная практика'},
+    {id:'prophets',title:'Истории пророков',desc:'Жизнь пророков и уроки их историй'},
+    {id:'people',title:'Семья Пророка и сподвижники',desc:'Люди ранней исламской истории'},
+    {id:'events',title:'Исторические события',desc:'Хронология и важные события'},
+    {id:'caliphs',title:'История халифов',desc:'Преемство, биографии и источники'},
+    {id:'other',title:'Другие исламские знания',desc:'Остальные материалы библиотеки'}
+  ];
+  const classify = x => {
+    const t = (x.titleRu || '').toLowerCase();
+    if (/пророк|юсуф|муса|ибрахим|нух|адам|иса\b|мухаммад/.test(t)) return 'prophets';
+    if (/сподвиж|сахаб|ахль|семь[яи] пророка|фатим|али ибн|хасан|хусейн/.test(t)) return 'people';
+    if (/битв|сражен|хиджр|ухуд|бадр|карбал|событи|истори|договор|поход/.test(t)) return 'events';
+    if (/намаз|омовен|вера|ислам|иман|молитв|пост|закят|хадж|поклонен/.test(t)) return 'basics';
+    return 'other';
+  };
+  if (!knowledgeGroup) return `${section('Исламские знания')}<p class="lead">Выберите направление. История, практика и биографии больше не смешиваются в одном списке.</p>${groups.map(g=>groupButton(g.title,g.desc,'data-knowledge-group',g.id)).join('')}${footer()}`;
+  if (knowledgeGroup === 'caliphs') return caliphPage();
+  const g = groups.find(g=>g.id===knowledgeGroup);
+  const arr = [...library.map(x=>({...x,_kind:'lib'})),...history.map(x=>({...x,_kind:'history'}))].filter(x=>classify(x)===knowledgeGroup && textSearch(x));
+  return `${backButton('library')}${section(g?.title || 'Исламские знания')}${search()}<p class="lead">Материалов: ${arr.length}</p>${arr.map(x=>item(x,x._kind)).join('') || empty()}${footer()}`;
 }
 function caliphPage() {
   if (!caliphs) return `${section('История халифов')}<p class="lead">Материалы ещё не загружены. Подготовьте полную версию сайта.</p>${footer()}`;
@@ -163,9 +188,12 @@ function close() {
 function refreshDetail() { if(!active) return; const y = $('.sheet').scrollTop; const expanded = $('#materialSource')?.open; $('#detail').innerHTML = details(active); if(expanded) $('#materialSource').open = true; $('.sheet').scrollTop = y; }
 document.addEventListener('click',async e => {
   const b = e.target.closest('button,[data-close]'); if(!b) return;
-  if(b.dataset.tab) { while(active) close(); setTab(b.dataset.tab); if(b.dataset.filter) { filter = b.dataset.filter; render(); } return; }
+  if(b.dataset.tab) { while(active) close(); setTab(b.dataset.tab); if(b.dataset.filter) { duaGroup=b.dataset.filter; render(); } return; }
   if(b.dataset.close) { close(); return; }
   if(b.id === 'themeBtn') { const next = theme === 'light' ? 'dark' : 'light'; if(save('theme',next)) { theme=next; render(); } return; }
+  if(b.dataset.back) { if(b.dataset.back==='dua') duaGroup=null; else knowledgeGroup=null; query=''; render(); return; }
+  if(b.dataset.duaGroup) { duaGroup=b.dataset.duaGroup; query=''; render(); window.scrollTo(0,0); return; }
+  if(b.dataset.knowledgeGroup) { knowledgeGroup=b.dataset.knowledgeGroup; query=''; render(); window.scrollTo(0,0); return; }
   if(b.dataset.filter) { filter = b.dataset.filter; render(); return; }
   if(b.dataset.open || b.dataset.about) { show(b.dataset.open || b.dataset.about,!!b.dataset.about); return; }
   if(b.dataset.fav) { const k = b.dataset.fav, next = favs.includes(k) ? favs.filter(v=>v!==k) : [...favs,k]; if(save('favs',next)) { favs=next; refreshDetail(); if(tab==='favorites') render(); } return; }
