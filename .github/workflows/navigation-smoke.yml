@@ -26,6 +26,7 @@ jobs:
           node tests/five-pillars-smoke.cjs
           node tests/wudu-salah-smoke.cjs
           node tests/family-rights-smoke.cjs
+          node tests/family-curriculum-smoke.cjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -38,4 +39,5 @@ jobs:
             wudu-guide-*.png
             salah-guide-*.png
             family-rights-*.png
+            family-family-*.png
           if-no-files-found: ignore
