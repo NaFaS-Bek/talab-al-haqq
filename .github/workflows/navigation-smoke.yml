@@ -1,7 +1,7 @@
 name: Navigation smoke checks
 on:
   push:
-    branches: [feature/organized-navigation]
+    branches: [main, feature/organized-navigation]
   pull_request:
     branches: [main]
 jobs:
