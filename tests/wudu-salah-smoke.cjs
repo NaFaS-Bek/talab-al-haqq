@@ -22,7 +22,7 @@ const assert = require('node:assert/strict');
       assert.equal(await page.locator('#jafari [data-steps="jafari"] .step').count(),5,'Jafari ablution example has five steps');
       assert.match(await page.locator('#sunni').innerText(),/Вымойте стопы/);
       assert.match(await page.locator('#jafari').innerText(),/Протрите верхнюю поверхность стоп/);
-      assert(await page.locator('#basis a[href="https://quran.com/5:6"]').count()===1);
+      assert(await page.locator('section[aria-labelledby="basis"] a[href="https://quran.com/5:6"]').count()===1);
       assert(await page.locator('#sunni a[href="https://sunnah.com/bukhari:164"]').count()===1);
       assert(await page.locator('#jafari a[href*="sistani.org"]').count()===1);
       const feetFAQ=page.locator('#faq details').first();
