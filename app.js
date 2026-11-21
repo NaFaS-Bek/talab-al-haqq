@@ -47,7 +47,7 @@ function section(t, more) { return `<div class="sectionhead"><h2>${clean(t)}</h2
 function footer() { return `<footer class="footer"><button class="action" data-tab="review">Источники и проверка</button></footer>`; }
 function home() {
   const last = reading.last && findRecord(reading.last);
-  return `<section class="hero"><span class="eyebrow" lang="ar" dir="rtl">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</span><h1>Пусть каждый день начинается с доброго</h1><p>Дуа, утренние и вечерние азкары, имена Аллаха и исламские знания — в одном месте.</p><button data-tab="dua">Открыть молитвы →</button></section>${last ? section('Продолжить чтение') + item(last.data,last.kind) : ''}${section('Разделы')}<div class="grid"><button class="tile" data-tab="dua" data-filter="morning"><span class="emoji" aria-hidden="true">${uiIcon('sun')}</span><strong>Утренние азкары</strong><small>Начать день с поминания</small></button><button class="tile" data-tab="dua" data-filter="evening"><span class="emoji" aria-hidden="true">${uiIcon('moon')}</span><strong>Вечерние азкары</strong><small>Мольбы перед ночью</small></button><button class="tile" data-tab="dua"><span class="emoji" aria-hidden="true">${uiIcon('dua')}</span><strong>Дуа по ситуациям</strong><small>Обращения к Аллаху</small></button><button class="tile" data-tab="names"><span class="emoji" aria-hidden="true">${uiIcon('names')}</span><strong>99 имён Аллаха</strong><small>Значения и размышления</small></button><button class="tile" data-tab="library"><span class="emoji" aria-hidden="true">${uiIcon('library')}</span><strong>Исламские знания</strong><small>Вера, пророки, люди и события</small></button><button class="tile" data-tab="caliphs"><span class="emoji" aria-hidden="true">${uiIcon('library')}</span><strong>История халифов</strong><small>Биографии и источники</small></button></div>${section('С чего начать')}<div class="quicklinks">${groupButton('Основы ислама','Вера, поклонение и повседневная практика','data-home-knowledge','basics')}${groupButton('Истории пророков','Биографии и уроки историй','data-home-knowledge','prophets')}${groupButton('Исторические события','Хронология исламской истории','data-home-knowledge','events')}</div>${section('Часто ищут','dua')}${entries.slice(0,3).map(x => item(x,'dua')).join('')}${footer()}`;
+  return `<section class="hero"><span class="eyebrow" lang="ar" dir="rtl">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</span><h1>Пусть каждый день начинается с доброго</h1><p>Дуа, утренние и вечерние азкары, имена Аллаха и исламские знания — в одном месте.</p><button data-tab="dua">Открыть молитвы →</button></section>${last ? section('Продолжить чтение') + item(last.data,last.kind) : ''}${section('Разделы')}<div class="grid"><button class="tile" data-tab="dua" data-filter="morning"><span class="emoji" aria-hidden="true">${uiIcon('sun')}</span><strong>Утренние азкары</strong><small>Начать день с поминания</small></button><button class="tile" data-tab="dua" data-filter="evening"><span class="emoji" aria-hidden="true">${uiIcon('moon')}</span><strong>Вечерние азкары</strong><small>Мольбы перед ночью</small></button><button class="tile" data-tab="dua"><span class="emoji" aria-hidden="true">${uiIcon('dua')}</span><strong>Дуа по ситуациям</strong><small>Обращения к Аллаху</small></button><button class="tile" data-tab="names"><span class="emoji" aria-hidden="true">${uiIcon('names')}</span><strong>99 имён Аллаха</strong><small>Значения и размышления</small></button><button class="tile" data-tab="library"><span class="emoji" aria-hidden="true">${uiIcon('library')}</span><strong>Исламские знания</strong><small>Вера, пророки, люди и события</small></button><button class="tile" data-tab="caliphs"><span class="emoji" aria-hidden="true">${uiIcon('library')}</span><strong>История халифов</strong><small>Биографии и источники</small></button></div>${section('С чего начать')}<div class="quicklinks">${groupButton('Основы ислама','Вера, поклонение и повседневная практика','data-home-knowledge','basics')}${groupButton('Истории пророков','Биографии и уроки историй','data-home-knowledge','prophet')}${groupButton('Исторические события','Хронология исламской истории','data-home-knowledge','events')}</div>${section('Часто ищут','dua')}${entries.slice(0,3).map(x => item(x,'dua')).join('')}${footer()}`;
 }
 function dua() {
   let cats = [{id:'morning',title:'Утренние азкары'},{id:'evening',title:'Вечерние азкары'},...db.catalog.categories,...db.catalog_additions.categories];
@@ -61,25 +61,19 @@ function empty() { return '<p class="empty">Подходящих материа�
 function names() { return `${section('99 имён Аллаха')}<p class="lead">Написание, значение и примеры личной мольбы.</p>${search()}${db.names.names.filter(textSearch).map(x => item(x,'name')).join('') || empty()}${footer()}`; }
 function knowledge() {
   const groups = [
-    {id:'basics',title:'Основы ислама',desc:'Вера, поклонение и повседневная практика'},
-    {id:'prophets',title:'Истории пророков',desc:'Жизнь пророков и уроки их историй'},
-    {id:'people',title:'Семья Пророка и сподвижники',desc:'Люди ранней исламской истории'},
+    {id:'basics',title:'Основы ислама',desc:'Вера, намерение и нравственность'},
+    {id:'prayer',title:'Намаз и омовение',desc:'Порядок поклонения и различия школ'},
+    {id:'surah',title:'Короткие суры',desc:'Тексты и пояснения'},
+    {id:'prophet',title:'Истории пророков',desc:'Жизнь пророков и уроки их историй'},
+    {id:'family',title:'Семья и отношения',desc:'Права, обязанности и уважение'},
     {id:'events',title:'Исторические события',desc:'Хронология и важные события'},
-    {id:'caliphs',title:'История халифов',desc:'Преемство, биографии и источники'},
-    {id:'other',title:'Другие исламские знания',desc:'Остальные материалы библиотеки'}
+    {id:'caliphs',title:'История халифов',desc:'Биографии и источники'}
   ];
-  const classify = x => {
-    const t = (x.titleRu || '').toLowerCase();
-    if (/пророк|юсуф|муса|ибрахим|нух|адам|иса\b/.test(t)) return 'prophets';
-    if (/сподвиж|сахаб|ахль|семь[яи] пророка|фатим|али ибн|хасан|хусейн/.test(t)) return 'people';
-    if (/битв|сражен|хиджр|ухуд|бадр|карбал|событи|истори|договор|поход/.test(t)) return 'events';
-    if (/намаз|омовен|вера|ислам|иман|молитв|пост|закят|хадж|поклонен/.test(t)) return 'basics';
-    return 'other';
-  };
-  if (!knowledgeGroup) return `${section('Исламские знания')}<p class="lead">Выберите направление. История, практика и биографии больше не смешиваются в одном списке.</p>${search()}${query ? [...library.map(x=>({...x,_kind:'lib'})),...history.map(x=>({...x,_kind:'history'}))].filter(textSearch).map(x=>item(x,x._kind)).join('') || empty() : groups.map(g=>groupButton(g.title,g.desc,'data-knowledge-group',g.id)).join('')}${footer()}`;
+  const records = [...library.map(x=>({...x,_kind:'lib'})),...history.map(x=>({...x,_kind:'history'}))];
+  if (!knowledgeGroup) return `${section('Исламские знания')}<p class="lead">Выберите направление. Материалы распределены по разделам каталога.</p>${search()}${query ? records.filter(textSearch).map(x=>item(x,x._kind)).join('') || empty() : groups.map(g=>groupButton(g.title,g.desc,'data-knowledge-group',g.id)).join('')}${footer()}`;
   if (knowledgeGroup === 'caliphs') return `${backButton('library')}${caliphPage()}`;
   const g = groups.find(g=>g.id===knowledgeGroup);
-  const arr = [...library.map(x=>({...x,_kind:'lib'})),...history.map(x=>({...x,_kind:'history'}))].filter(x=>(x._kind === 'history' ? 'events' : classify(x))===knowledgeGroup && textSearch(x));
+  const arr = records.filter(x=>(x._kind === 'history' ? 'events' : x.kind)===knowledgeGroup && textSearch(x));
   return `${backButton('library')}${section(g?.title || 'Исламские знания')}${search()}<p class="lead">Материалов: ${arr.length}</p>${arr.map(x=>item(x,x._kind)).join('') || empty()}${footer()}`;
 }
 function caliphPage() {
