@@ -84,3 +84,8 @@ main{max-width:960px}
 .verse-card .verse-arabic{margin:12px 0;background:transparent;border:0;padding:4px 0 8px;font-size:clamp(2rem,5vw,2.9rem);line-height:2.3;text-align:right;overflow-wrap:normal;word-break:normal}
 .verse-translation{margin:10px 0 0;font-size:1rem;line-height:1.95;color:var(--fg);white-space:pre-wrap}
 @media(max-width:480px){.verse-reader{gap:12px}.verse-card{padding:14px}.verse-card .verse-arabic{padding:0;line-height:2.15}}
+
+/* Homepage family learning shortcut shares the visual language of section tiles. */
+.tile-link{display:block;color:var(--fg);text-decoration:none}
+.tile-link:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.tile-link:visited{color:var(--fg)}
