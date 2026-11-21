@@ -138,9 +138,9 @@ function verseReading(x) {
   if (!['full_surah','verse_range','full_verses'].includes(x.excerptKind) || !Array.isArray(x.segments) || x.segments.length < 2) return '';
   const sourceNumber = x.sourceRefs?.find(r => r.collection === 'Коран')?.number || '';
   const surahNumber = x.surahNumber || Number(sourceNumber.split(':')[0]);
-  if (!surahNumber || !x.segments.every(s => /_a\\d+$/.test(s.id || '') && s.arabicText && s.translationRu)) return '';
+  if (!surahNumber || !x.segments.every(s => /_a\d+$/.test(s.id || '') && s.arabicText && s.translationRu)) return '';
   const rows = x.segments.map(s => {
-    const verseNumber = Number(s.id.match(/_a(\\d+)$/)[1]);
+    const verseNumber = Number(s.id.match(/_a(\d+)$/)[1]);
     return `<section class="verse-card" aria-label="Аят ${surahNumber}:${verseNumber}"><div class="verse-heading">Аят ${surahNumber}:${verseNumber}</div><div class="arabic verse-arabic" lang="ar" dir="rtl">${clean(s.arabicText)}</div><p class="verse-translation">${clean(s.translationRu)}</p></section>`;
   }).join('');
   return `<div class="verse-reader" aria-label="Чтение по аятам"><p class="verse-intro">Текст разделён по аятам для удобного чтения. Перевод передаёт смысл.</p>${rows}</div>`;
