@@ -10,6 +10,26 @@ const assert = require('node:assert/strict');
       page.on('pageerror', error => errors.push(error.message));
       await page.goto('http://127.0.0.1:8765/arabic-reading-signs.html', {waitUntil:'load'});
       assert.equal(await page.locator('#alphabetGrid .letter-card').count(), 28, '28 letters required');
+
+      // Independent reference sequence: validate all 28 glyphs under all three short vowels,
+      // not only a handful of example cards.
+      const alphabet = ['ا','ب','ت','ث','ج','ح','خ','د','ذ','ر','ز','س','ش','ص','ض','ط','ظ','ع','غ','ف','ق','ك','ل','م','ن','ه','و','ي'];
+      assert.equal(new Set(alphabet).size, 28, 'Reference alphabet must contain unique letters');
+      const assertAllForms = async (vowel) => {
+        const sign = {a: 'َ', i: 'ِ', u: 'ُ'}[vowel];
+        const expected = alphabet.map((letter, index) =>
+          (index === 0 ? (vowel === 'i' ? 'إ' : 'أ') : letter) + sign
+        );
+        const actual = await page.locator('#alphabetGrid .letter-card .letter').allTextContents();
+        assert.deepEqual(actual, expected, 'Incorrect alphabet forms or order for vowel ' + vowel);
+        const readings = await page.locator('#alphabetGrid .letter-card .reading').allTextContents();
+        assert.equal(readings.length, 28, 'Every letter needs a reading hint for vowel ' + vowel);
+        for (let i = 0; i < readings.length; i++) {
+          assert(readings[i].trim() && !/undefined|null/.test(readings[i]), 'Missing reading for letter ' + (i + 1));
+        }
+        assert.equal(await page.locator('#vowelControls button[aria-pressed="true"]').getAttribute('data-vowel'), vowel);
+      };
+      await assertAllForms('a');
       assert.equal(await page.locator('.vowel-info').count(), 3, 'All vowel explanations belong in the same learning panel');
       assert.equal(await page.locator('.learning-panel #alphabetGrid').count(), 1);
       assert.equal(await page.locator('.learning-panel #vowelControls').count(), 1);
@@ -31,6 +51,7 @@ const assert = require('node:assert/strict');
       assert.equal(await lam.locator('.reading').textContent(), 'ла');
       assert.equal(await page.locator('#alphabetGrid .letter-card').nth(1).locator('.letter').textContent(), 'بَ');
       await page.locator('[data-vowel="i"]').click();
+      await assertAllForms('i');
       assert.equal(await page.locator('#alphabetGrid .letter-card').nth(1).locator('.letter').textContent(), 'بِ');
       assert.equal(await page.locator('[data-vowel="i"]').getAttribute('aria-pressed'), 'true');
       assert.equal(await lam.locator('.reading').textContent(), 'ли');
@@ -38,6 +59,7 @@ const assert = require('node:assert/strict');
       assert.equal(await ghayn.locator('.reading').textContent(), 'ɣи');
       assert.equal(await hamza.locator('.reading').textContent(), 'ʔи');
       await page.locator('[data-vowel="u"]').click();
+      await assertAllForms('u');
       assert.equal(await page.locator('#alphabetGrid .letter-card').nth(1).locator('.letter').textContent(), 'بُ');
       assert.equal(await lam.locator('.reading').textContent(), 'лу');
       assert.equal(await waw.locator('.reading').textContent(), 'wu');
@@ -54,5 +76,5 @@ const assert = require('node:assert/strict');
       await page.close();
     }
   } finally { await browser.close(); }
-  console.log('PASS Arabic lesson 28-letter grid, vowel selector, quiz, mobile/desktop layout');
+  console.log('PASS Arabic lesson: all 84 letter-vowel forms, 28 hints per vowel, quiz, navigation, mobile/desktop layout');
 })().catch(error=>{console.error(error);process.exit(1)});
