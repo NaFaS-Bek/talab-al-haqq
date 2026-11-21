@@ -37,7 +37,7 @@ const assert = require('node:assert/strict');
   assert(mobileMetrics.sheetWidth <= mobileMetrics.viewport + 1,'Reader must fit mobile viewport');
   assert(mobileMetrics.detailWidth <= mobileMetrics.sheetWidth,'Reading content must fit sheet');
   if(mobileMetrics.bodyLineHeight) assert(mobileMetrics.bodyLineHeight >= 28,'Long-form text needs readable line height');
-  await page.locator('[data-close="1"]').last().click();
+  await page.locator('#modal .close[data-close="1"]').click();
   assert.deepEqual(errors,[],'Unexpected browser errors');
   await page.screenshot({path:'navigation-mobile.png',fullPage:true});
   await page.setViewportSize({width:1280,height:900});
