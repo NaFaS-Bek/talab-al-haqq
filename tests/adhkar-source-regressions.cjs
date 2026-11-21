@@ -47,8 +47,10 @@ hasWords(protection, 'بِسْمِ اللَّهِ الَّذِي');
 hasWords(protection, 'وَهُوَ السَّمِيعُ الْعَلِيمُ');
 assert.ok(protection.repetitionRule,
   'Source states three repetitions; a repetition rule is required');
-assert.ok(JSON.stringify(protection.repetitionRule).includes('3'),
-  'Repetition rule should contain three; manually verify its scope');
+assert.ok(Array.isArray(protection.repetitionRule.stages),
+  'Repetition rule must define explicit stages');
+assert.ok(protection.repetitionRule.stages.some(stage => stage.count === 3),
+  'At least one explicit repetition stage must prescribe exactly three repetitions');
 
 // Jami at-Tirmidhi 3391: the morning and evening endings are NOT interchangeable.
 // https://sunnah.com/tirmidhi:3391
@@ -58,9 +60,12 @@ sourceIs(morning, 'tirmidhi:3391');
 sourceIs(evening, 'tirmidhi:3391');
 hasWords(morning, 'وَإِلَيْكَ الْمَصِيرُ');
 hasWords(evening, 'وَإِلَيْكَ النُّشُورُ');
-assert.ok(!morning.arabicText.includes('النُّشُورُ'),
+const normalizeArabic = str => str.normalize('NFC')
+  .replace(/[\u064B-\u065F\u0670\u06D6-\u06ED\u0640]/g, '')
+  .replace(/\s+/g, ' ').trim();
+assert.ok(!normalizeArabic(morning.arabicText).includes(normalizeArabic('النُّشُورُ')),
   'Morning text accidentally contains the evening ending');
-assert.ok(!evening.arabicText.includes('الْمَصِيرُ'),
+assert.ok(!normalizeArabic(evening.arabicText).includes(normalizeArabic('الْمَصِيرُ')),
   'Evening text accidentally contains the morning ending');
 
 // Sahih al-Bukhari 6306: Sayyid al-Istighfar. Source mentions daytime/nighttime
