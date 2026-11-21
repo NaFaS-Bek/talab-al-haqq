@@ -41,7 +41,7 @@ const assert = require('node:assert/strict');
       assert(hamzaRule.includes('ٱ') && hamzaRule.includes('соединении'), 'Hamzat al-wasl must explain joining');
       const sukunRule = await page.locator('#others').locator('..').innerText();
       assert(sukunRule.includes('сукун не означает тишину'), 'Sukun is not silence');
-      const maddCard = page.locator('#length .card').nth(1);
+      const maddCard = page.locator('#length').locator('..').locator('.card').nth(1);
       assert.equal(await maddCard.locator('.arabic').textContent(), 'جَآءَ', 'Madd sign must be visible in Quranic example');
       assert.match(await maddCard.innerText(), /4 или 5 счётов/, 'Muttasil counts and Hafs context required');
 
