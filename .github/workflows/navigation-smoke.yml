@@ -22,9 +22,12 @@ jobs:
           python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/talab-http.log 2>&1 &
           sleep 2
           node tests/browser-smoke.cjs
+          node tests/arabic-lesson-smoke.cjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: navigation-screenshots
-          path: navigation-*.png
+          path: |
+            navigation-*.png
+            arabic-lesson-*.png
           if-no-files-found: ignore
