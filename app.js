@@ -17,7 +17,7 @@ function save(key, value) {
 let db = {}, caliphs = null, tab = 'home', filter = 'all', query = '', entries = [], library = [], history = [], active = null;
 let favs = get('favs', []), counts = get('counts', {}), theme = get('theme', 'dark'), reading = get('reading', {});
 let modalStack = [], lastFocus = null;
-let knowledgeGroup = null, duaGroup = null;
+let knowledgeGroup = null, educationTopic = null, duaGroup = null;
 const groupButton = (label, description, attr, value, count = null) => `<button class="item category-item" ${attr}="${clean(value)}"><span class="itembody"><strong>${clean(label)}</strong><small>${clean(description)}</small></span>${count === null ? '' : `<span class="category-count" aria-label="Материалов: ${count}">${count}</span>`}<span class="arrow" aria-hidden="true">›</span></button>`;
 const backButton = (target) => `<button class="action" data-back="${target}">← Назад к разделам</button>`;
 
@@ -31,7 +31,7 @@ function initData(d, c) {
   entries = [...new Map([...d.catalog.entries, ...d.catalog_additions.entries].map(x => [x.id, x])).values()];
   library = d.library.items; history = d.history.events; render();
 }
-function setTab(t) { tab = t; query = ''; filter = 'all'; knowledgeGroup = null; duaGroup = null; render(); window.scrollTo(0, 0); }
+function setTab(t) { tab = t; query = ''; filter = 'all'; knowledgeGroup = null; educationTopic = null; duaGroup = null; render(); window.scrollTo(0, 0); }
 function textSearch(x) {
   const words = [x.titleRu,x.transliterationRu,x.translationRu,x.meaningRu,x.summaryRu,x.arabicText,x.arabicName,...(x.tagsRu || []),...(x.aliasesRu || []),...(x.searchTerms || []),...(x.sections || []).map(s => s.textRu)];
   return words.join(' ').toLocaleLowerCase('ru').includes(query.toLocaleLowerCase('ru'));
@@ -61,19 +61,31 @@ function empty() { return '<p class="empty">Подходящих материа�
 function names() { return `${section('99 имён Аллаха')}<p class="lead">Написание, значение и примеры личной мольбы.</p>${search()}${db.names.names.filter(textSearch).map(x => item(x,'name')).join('') || empty()}${footer()}`; }
 function knowledge() {
   const groups = [
-    {id:'basics',title:'Основы ислама',desc:'Вера, намерение и нравственность'},
-    {id:'prayer',title:'Намаз и омовение',desc:'Порядок поклонения и различия школ'},
-    {id:'surah',title:'Короткие суры',desc:'Тексты и пояснения'},
+    {id:'education',title:'Обучение исламу',desc:'Намаз, тахарат, арабский алфавит, чтение и основы'},
     {id:'prophet',title:'Истории пророков',desc:'Жизнь пророков и уроки их историй'},
     {id:'family',title:'Семья и отношения',desc:'Права, обязанности и уважение'},
     {id:'events',title:'Исторические события',desc:'Хронология и важные события'},
     {id:'caliphs',title:'История халифов',desc:'Биографии и источники'}
   ];
+  const studyTopics = [
+    {id:'prayer',title:'Намаз и омовение (тахарат)',desc:'Как совершать поклонение и очищение'},
+    {id:'alphabet',title:'Арабский алфавит и огласовки',desc:'28 букв, фатха, касра, дамма, тренировка'},
+    {id:'basics',title:'Основы ислама',desc:'Вера, намерение и нравственность'},
+    {id:'surah',title:'Короткие суры',desc:'Материалы для изучения и чтения'}
+  ];
   const records = [...library.map(x=>({...x,_kind:'lib'})),...history.map(x=>({...x,_kind:'history'}))];
-  if (!knowledgeGroup) return `${section('Исламские знания')}<p class="lead">Выберите направление. Материалы распределены по разделам каталога.</p>${search()}${query ? records.filter(textSearch).map(x=>item(x,x._kind)).join('') || empty() : groups.map(g=>groupButton(g.title,g.desc,'data-knowledge-group',g.id,g.id==='caliphs' ? (caliphs?.profiles?.length ?? 0) : records.filter(x=>(x._kind==='history'?'events':x.kind)===g.id).length)).join('')}${footer()}`;
+  if (!knowledgeGroup) return `${section('Исламские знания')}<p class="lead">Выберите направление. Все учебные материалы собраны в разделе «Обучение исламу».</p>${search()}${query ? records.filter(textSearch).map(x=>item(x,x._kind)).join('') || empty() : groups.map(g=>groupButton(g.title,g.desc,'data-knowledge-group',g.id,g.id==='caliphs' ? (caliphs?.profiles?.length ?? 0) : g.id==='education' ? null : records.filter(x=>(x._kind==='history'?'events':x.kind)===g.id).length)).join('')}${footer()}`;
   if (knowledgeGroup === 'caliphs') return `${backButton('library')}${caliphPage()}`;
+  if (knowledgeGroup === 'education') {
+    const header = `${backButton('library')}${section('Обучение исламу')}<p class="lead">Выберите урок. Намаз, омовение, арабское письмо и чтение находятся в одном учебном разделе.</p>`;
+    if (!educationTopic) return header + studyTopics.map(t=>groupButton(t.title,t.desc,'data-education-topic',t.id,t.id==='alphabet'?null:library.filter(x=>x.kind===t.id).length)).join('') + footer();
+    if (educationTopic === 'alphabet') return header + `<button class="action" data-education-back="1">← К урокам</button><a class="item category-item" href="arabic-reading-signs.html"><span class="itembody"><strong>Открыть урок: алфавит и огласовки</strong><small>Буквы и огласовки в одном контейнере, интерактивные задания</small></span><span class="arrow" aria-hidden="true">›</span></a>` + footer();
+    const chosen = studyTopics.find(t=>t.id===educationTopic);
+    const found = library.filter(x=>x.kind===educationTopic && textSearch(x));
+    return header + `<button class="action" data-education-back="1">← К урокам</button>${section(chosen?.title || 'Учебные материалы')}${search()}<p class="lead">Материалов: ${found.length}</p>${found.map(x=>item(x,'lib')).join('') || empty()}${footer()}`;
+  }
   const g = groups.find(g=>g.id===knowledgeGroup);
-  const arr = records.filter(x=>(x._kind === 'history' ? 'events' : x.kind)===knowledgeGroup && textSearch(x));
+  const arr = records.filter(x=>(x._kind==='history'?'events':x.kind)===knowledgeGroup && textSearch(x));
   return `${backButton('library')}${section(g?.title || 'Исламские знания')}${search()}<p class="lead">Материалов: ${arr.length}</p>${arr.map(x=>item(x,x._kind)).join('') || empty()}${footer()}`;
 }
 function caliphPage() {
@@ -208,10 +220,12 @@ document.addEventListener('click',async e => {
   if(b.dataset.tab) { while(active) close(); setTab(b.dataset.tab); if(b.dataset.filter) { duaGroup=b.dataset.filter; render(); } return; }
   if(b.dataset.close) { close(); return; }
   if(b.id === 'themeBtn') { const next = theme === 'light' ? 'dark' : 'light'; if(save('theme',next)) { theme=next; render(); } return; }
-  if(b.dataset.back) { if(b.dataset.back==='dua') duaGroup=null; else knowledgeGroup=null; query=''; render(); return; }
-  if(b.dataset.homeKnowledge) { setTab('library'); knowledgeGroup=b.dataset.homeKnowledge; render(); return; }
+  if(b.dataset.back) { if(b.dataset.back==='dua') duaGroup=null; else {knowledgeGroup=null;educationTopic=null;} query=''; render(); return; }
+  if(b.dataset.educationBack) { educationTopic=null; query=''; render(); return; }
+  if(b.dataset.educationTopic) { educationTopic=b.dataset.educationTopic; query=''; render(); window.scrollTo(0,0); return; }
+  if(b.dataset.homeKnowledge) { setTab('library'); knowledgeGroup=['prayer','basics','surah'].includes(b.dataset.homeKnowledge)?'education':b.dataset.homeKnowledge; educationTopic=['prayer','basics','surah'].includes(b.dataset.homeKnowledge)?b.dataset.homeKnowledge:null; render(); return; }
   if(b.dataset.duaGroup) { duaGroup=b.dataset.duaGroup; query=''; render(); window.scrollTo(0,0); return; }
-  if(b.dataset.knowledgeGroup) { knowledgeGroup=b.dataset.knowledgeGroup; query=''; render(); window.scrollTo(0,0); return; }
+  if(b.dataset.knowledgeGroup) { knowledgeGroup=b.dataset.knowledgeGroup; educationTopic=null; query=''; render(); window.scrollTo(0,0); return; }
   if(b.dataset.filter) { filter = b.dataset.filter; render(); return; }
   if(b.dataset.open || b.dataset.about) { show(b.dataset.open || b.dataset.about,!!b.dataset.about); return; }
   if(b.dataset.fav) { const k = b.dataset.fav, next = favs.includes(k) ? favs.filter(v=>v!==k) : [...favs,k]; if(save('favs',next)) { favs=next; refreshDetail(); if(tab==='favorites') render(); } return; }
