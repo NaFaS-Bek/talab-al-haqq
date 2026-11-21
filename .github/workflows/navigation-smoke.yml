@@ -24,6 +24,7 @@ jobs:
           node tests/browser-smoke.cjs
           node tests/arabic-lesson-smoke.cjs
           node tests/five-pillars-smoke.cjs
+          node tests/wudu-salah-smoke.cjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -33,4 +34,6 @@ jobs:
             arabic-lesson-*.png
             five-pillars-*.png
             pillar-*.png
+            wudu-guide-*.png
+            salah-guide-*.png
           if-no-files-found: ignore
