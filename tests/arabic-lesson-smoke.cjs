@@ -35,6 +35,14 @@ const assert = require('node:assert/strict');
       assert.equal(await page.locator('.learning-panel #vowelControls').count(), 1);
       assert.equal(await page.locator('.learning-panel #alphabetAnswers').count(), 1);
       assert.equal(await page.locator('.learning-panel #pronunciationPairs').count(), 1, 'Difficult sounds must stay in the same lesson');
+      // Content regression: distinguish connected tanween from waqf, including the taa marbuta exception.
+      assert.equal(await page.locator('#waqfExamples li').count(), 3, 'Three waqf examples required');
+      const waqfText = await page.locator('#waqfExamples').innerText();
+      for (const required of ['كِتَابٌ', 'كِتَابًا', 'رَحْمَةً', 'мадд ивад', 'هْ']) {
+        assert(waqfText.includes(required), 'Missing waqf example: ' + required);
+      }
+      assert.match(await page.locator('#stops').locator('..').innerText(), /конца аята/, 'End-of-ayah stop exception required');
+
       const difficultPairs = await page.locator('#pronunciationPairs li').allTextContents();
       assert.equal(difficultPairs.length, 8, 'Eight pronunciation contrasts are required');
       for (const pair of ['ث / س', 'ذ / ز / ظ', 'ح / ه', 'ع / ء', 'ق / ك', 'و / ف', 'غ', 'ص / س']) {
