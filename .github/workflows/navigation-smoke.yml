@@ -15,6 +15,7 @@ jobs:
         with:
           node-version: '22'
       - run: node tests/navigation-smoke.cjs
+      - run: node tests/content-audit.cjs
       - run: npm install --no-save playwright
       - run: npx playwright install --with-deps chromium
       - run: |
