@@ -12,7 +12,7 @@ const assert = require('node:assert/strict');
   assert(await page.locator('[data-open="lib:prophet_adam"]').count()===1,'Adam should appear in prophets');
   await page.locator('[data-back="library"]').click();
   await page.locator('[data-knowledge-group="prayer"]').click();
-  assert(await page.locator('[data-open="lib:"]').count()>0,'Prayer category should contain materials');
+  assert(await page.locator('[data-open^="lib:"]').count()>0,'Prayer category should contain materials');
   await page.locator('[data-back="library"]').click();
   await page.locator('#search').fill('Адам');
   assert(await page.locator('[data-open="lib:prophet_adam"]').count()===1,'Library search should find Adam');
