@@ -18,7 +18,7 @@ let db = {}, caliphs = null, tab = 'home', filter = 'all', query = '', entries =
 let favs = get('favs', []), counts = get('counts', {}), theme = get('theme', 'dark'), reading = get('reading', {});
 let modalStack = [], lastFocus = null;
 let knowledgeGroup = null, duaGroup = null;
-const groupButton = (label, description, attr, value) => `<button class="item" ${attr}="${clean(value)}"><span class="itembody"><strong>${clean(label)}</strong><small>${clean(description)}</small></span><span class="arrow" aria-hidden="true">›</span></button>`;
+const groupButton = (label, description, attr, value, count = null) => `<button class="item category-item" ${attr}="${clean(value)}"><span class="itembody"><strong>${clean(label)}</strong><small>${clean(description)}</small></span>${count === null ? '' : `<span class="category-count" aria-label="Материалов: ${count}">${count}</span>`}<span class="arrow" aria-hidden="true">›</span></button>`;
 const backButton = (target) => `<button class="action" data-back="${target}">← Назад к разделам</button>`;
 
 $('#reviewBtn').innerHTML = uiIcon('info');
@@ -52,10 +52,10 @@ function home() {
 function dua() {
   let cats = [{id:'morning',title:'Утренние азкары'},{id:'evening',title:'Вечерние азкары'},...db.catalog.categories,...db.catalog_additions.categories];
   cats = [...new Map(cats.map(c => [c.id,c])).values()];
-  if (!duaGroup) return `${section('Дуа и азкары')}<p class="lead">Выберите тему. Материалы появятся только внутри выбранного раздела.</p>${search()}${query ? entries.filter(textSearch).map(x=>item(x,'dua')).join('') || empty() : cats.map(c => groupButton(c.title || c.titleRu,'Открыть дуа и поминания','data-dua-group',c.id)).join('')}${footer()}`;
+  if (!duaGroup) return `${section('Дуа и азкары')}<p class="lead">Выберите тему. Материалы появятся только внутри выбранного раздела.</p>${search()}${query ? entries.filter(textSearch).map(x=>item(x,'dua')).join('') || empty() : cats.map(c => groupButton(c.titleRu || c.title,'Открыть дуа и поминания','data-dua-group',c.id,entries.filter(x=>(x.categoryIds || []).includes(c.id)).length)).join('')}${footer()}`;
   const category = cats.find(c=>c.id===duaGroup);
   const a = entries.filter(x => (x.categoryIds || []).includes(duaGroup) && textSearch(x));
-  return `${backButton('dua')}${section(category?.title || category?.titleRu || 'Дуа')}${search()}<p class="lead">Материалов: ${a.length}</p>${a.map(x => item(x,'dua')).join('') || empty()}${footer()}`;
+  return `${backButton('dua')}${section(category?.titleRu || category?.title || 'Дуа')}${search()}<p class="lead">Материалов: ${a.length}</p>${a.map(x => item(x,'dua')).join('') || empty()}${footer()}`;
 }
 function empty() { return '<p class="empty">Подходящих материалов нет. Попробуйте другой запрос или откройте каталог тем.</p>'; }
 function names() { return `${section('99 имён Аллаха')}<p class="lead">Написание, значение и примеры личной мольбы.</p>${search()}${db.names.names.filter(textSearch).map(x => item(x,'name')).join('') || empty()}${footer()}`; }
@@ -70,7 +70,7 @@ function knowledge() {
     {id:'caliphs',title:'История халифов',desc:'Биографии и источники'}
   ];
   const records = [...library.map(x=>({...x,_kind:'lib'})),...history.map(x=>({...x,_kind:'history'}))];
-  if (!knowledgeGroup) return `${section('Исламские знания')}<p class="lead">Выберите направление. Материалы распределены по разделам каталога.</p>${search()}${query ? records.filter(textSearch).map(x=>item(x,x._kind)).join('') || empty() : groups.map(g=>groupButton(g.title,g.desc,'data-knowledge-group',g.id)).join('')}${footer()}`;
+  if (!knowledgeGroup) return `${section('Исламские знания')}<p class="lead">Выберите направление. Материалы распределены по разделам каталога.</p>${search()}${query ? records.filter(textSearch).map(x=>item(x,x._kind)).join('') || empty() : groups.map(g=>groupButton(g.title,g.desc,'data-knowledge-group',g.id,g.id==='caliphs' ? (caliphs?.profiles?.length ?? 0) : records.filter(x=>(x._kind==='history'?'events':x.kind)===g.id).length)).join('')}${footer()}`;
   if (knowledgeGroup === 'caliphs') return `${backButton('library')}${caliphPage()}`;
   const g = groups.find(g=>g.id===knowledgeGroup);
   const arr = records.filter(x=>(x._kind === 'history' ? 'events' : x.kind)===knowledgeGroup && textSearch(x));
