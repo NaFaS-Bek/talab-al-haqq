@@ -84,7 +84,9 @@ function knowledge() {
     if (educationTopic === 'alphabet') return header + `<button class="action" data-education-back="1">← К урокам</button><a class="item category-item" href="arabic-reading-signs.html"><span class="itembody"><strong>Открыть урок: алфавит и огласовки</strong><small>Буквы и огласовки в одном контейнере, интерактивные задания</small></span><span class="arrow" aria-hidden="true">›</span></a>` + footer();
     const chosen = studyTopics.find(t=>t.id===educationTopic);
     const found = library.filter(x=>x.kind===educationTopic && textSearch(x));
-    return header + `<button class="action" data-education-back="1">← К урокам</button>${section(chosen?.title || 'Учебные материалы')}${search()}<p class="lead">Материалов: ${found.length}</p>${found.map(x=>item(x,'lib')).join('') || empty()}${footer()}`;
+    const practiceLinks = educationTopic === 'prayer' ? `<section class="review-card" aria-label="Пошаговые уроки намаза"><h3>Начните с практических уроков</h3><p>Омовение и молитва разобраны отдельно, с источниками и пояснениями различий школ.</p><a class="item category-item" href="wudu-steps.html"><span class="itembody"><strong>1. Омовение (тахарат): по шагам</strong><small>Суннитский и джафаритский примеры без смешения правил</small></span><span class="arrow" aria-hidden="true">›</span></a><a class="item category-item" href="salah-steps.html"><span class="itembody"><strong>2. Намаз: два ракаата по шагам</strong><small>Начало молитвы, руку‘, суджуд, ташаххуд, салям</small></span><span class="arrow" aria-hidden="true">›</span></a></section>` : '';
+
+    return header + `<button class="action" data-education-back="1">← К урокам</button>${section(chosen?.title || 'Учебные материалы')}${practiceLinks}${search()}<p class="lead">Материалов: ${found.length}</p>${found.map(x=>item(x,'lib')).join('') || empty()}${footer()}`;
   }
   const g = groups.find(g=>g.id===knowledgeGroup);
   const arr = records.filter(x=>(x._kind==='history'?'events':x.kind)===knowledgeGroup && textSearch(x));
