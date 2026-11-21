@@ -23,6 +23,12 @@ for(const e of entries){
   for(const field of ['arabicText','transliterationRu','translationRu']) if(!s[field]) failures.push(label+': segment '+s.id+' missing '+field);
  }
 }
+const praise=entries.find(e=>e.id==='h_muslim_2692');
+assert.equal(praise.transliterationRu,'Субханаллахи ва би-хамдихи.');
+assert.equal(praise.segments[0].transliterationRu,praise.transliterationRu);
+assert.match(praise.transliterationNoteRu,/остановке/);
+const bedtime=entries.find(e=>e.id==='h_muslim_2727a');
+assert.deepEqual(bedtime.repetitionRule.stages.map(s=>[s.id,s.count]),[['takbir',34],['tasbih',33],['tahmid',33]]);
 const counts=entries.reduce((acc,e)=>(acc[e.reviewStatus]=(acc[e.reviewStatus]||0)+1,acc),{});
 console.log(JSON.stringify({entries:entries.length,statuses:counts,structuralFailures:failures,expertReviewWarnings:warnings.length},null,2));
 assert.deepEqual(failures,[],'Content metadata integrity checks failed');
