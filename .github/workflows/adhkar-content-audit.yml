@@ -1,0 +1,41 @@
+name: Adhkar content audit
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'data/content.json'
+      - 'tests/content-audit.cjs'
+      - 'tests/adhkar-source-regressions.cjs'
+      - 'tests/transliteration-inventory.cjs'
+      - '.github/workflows/adhkar-content-audit.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  content-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Structural content audit
+        run: node tests/content-audit.cjs
+      - name: Source regression checks
+        run: node tests/adhkar-source-regressions.cjs
+      - name: Export transliteration review inventory
+        run: node tests/transliteration-inventory.cjs > transliteration-inventory.json
+      - name: Validate inventory report
+        run: |
+          node -e "const r=require('./transliteration-inventory.json');if(r.totalEntries!==43)throw Error('Expected 43 cards, found '+r.totalEntries); console.log('Inventory contains',r.totalEntries,'cards;',r.totalFlagged,'flagged for human review')"
+      - name: Upload review inventory
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: transliteration-inventory
+          path: transliteration-inventory.json
+          if-no-files-found: warn
