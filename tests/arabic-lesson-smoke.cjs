@@ -16,10 +16,16 @@ const assert = require('node:assert/strict');
       assert.equal(await page.locator('.learning-panel #alphabetAnswers').count(), 1);
       assert.equal(await page.locator('.learning-panel #pronunciationPairs').count(), 1, 'Difficult sounds must stay in the same lesson');
       const difficultPairs = await page.locator('#pronunciationPairs li').allTextContents();
-      assert.equal(difficultPairs.length, 6, 'Six pronunciation contrasts are required');
-      for (const pair of ['ث / س', 'ذ / ز / ظ', 'ح / ه', 'ع / ء', 'ق / ك', 'ص / س']) {
+      assert.equal(difficultPairs.length, 8, 'Eight pronunciation contrasts are required');
+      for (const pair of ['ث / س', 'ذ / ز / ظ', 'ح / ه', 'ع / ء', 'ق / ك', 'و / ف', 'غ', 'ص / س']) {
         assert(difficultPairs.some(line => line.includes(pair)), 'Missing pronunciation contrast: ' + pair);
       }
+      const waw = page.locator('#alphabetGrid .letter-card').nth(26);
+      const ghayn = page.locator('#alphabetGrid .letter-card').nth(18);
+      const hamza = page.locator('#alphabetGrid .letter-card').nth(0);
+      assert.equal(await waw.locator('.reading').textContent(), 'wa', 'Waw must not be pronounced as Russian v');
+      assert.equal(await ghayn.locator('.reading').textContent(), 'ɣа', 'Ghayn must not be plain Russian g');
+      assert.equal(await hamza.locator('.reading').textContent(), 'ʔа', 'Initial hamza includes glottal stop');
       const lam = page.locator('#alphabetGrid .letter-card').nth(22);
       assert.equal(await lam.locator('.letter').textContent(), 'لَ');
       assert.equal(await lam.locator('.reading').textContent(), 'ла');
@@ -28,9 +34,15 @@ const assert = require('node:assert/strict');
       assert.equal(await page.locator('#alphabetGrid .letter-card').nth(1).locator('.letter').textContent(), 'بِ');
       assert.equal(await page.locator('[data-vowel="i"]').getAttribute('aria-pressed'), 'true');
       assert.equal(await lam.locator('.reading').textContent(), 'ли');
+      assert.equal(await waw.locator('.reading').textContent(), 'wi');
+      assert.equal(await ghayn.locator('.reading').textContent(), 'ɣи');
+      assert.equal(await hamza.locator('.reading').textContent(), 'ʔи');
       await page.locator('[data-vowel="u"]').click();
       assert.equal(await page.locator('#alphabetGrid .letter-card').nth(1).locator('.letter').textContent(), 'بُ');
       assert.equal(await lam.locator('.reading').textContent(), 'лу');
+      assert.equal(await waw.locator('.reading').textContent(), 'wu');
+      assert.equal(await ghayn.locator('.reading').textContent(), 'ɣу');
+      assert.equal(await hamza.locator('.reading').textContent(), 'ʔу');
       await page.locator('#alphabetAnswers button').nth(1).click();
       assert.match(await page.locator('#alphabetFeedback').textContent(), /Верно/);
       await page.locator('#nextAlphabetQuestion').click();
