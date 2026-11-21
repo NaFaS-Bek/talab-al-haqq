@@ -36,6 +36,15 @@ const assert = require('node:assert/strict');
       assert.equal(await page.locator('.learning-panel #alphabetAnswers').count(), 1);
       assert.equal(await page.locator('.learning-panel #pronunciationPairs').count(), 1, 'Difficult sounds must stay in the same lesson');
       // Content regression: distinguish connected tanween from waqf, including the taa marbuta exception.
+      assert.equal(await page.locator('#hamzaLesson').count(), 1, 'Hamzat al-wasl explanation must be included');
+      const hamzaRule = await page.locator('#hamzaLesson').innerText();
+      assert(hamzaRule.includes('ٱ') && hamzaRule.includes('соединении'), 'Hamzat al-wasl must explain joining');
+      const sukunRule = await page.locator('#others').locator('..').innerText();
+      assert(sukunRule.includes('сукун не означает тишину'), 'Sukun is not silence');
+      const maddCard = page.locator('#length .card').nth(1);
+      assert.equal(await maddCard.locator('.arabic').textContent(), 'جَآءَ', 'Madd sign must be visible in Quranic example');
+      assert.match(await maddCard.innerText(), /4 или 5 счётов/, 'Muttasil counts and Hafs context required');
+
       assert.equal(await page.locator('#waqfExamples li').count(), 3, 'Three waqf examples required');
       const waqfText = await page.locator('#waqfExamples').innerText();
       for (const required of ['كِتَابٌ', 'كِتَابًا', 'رَحْمَةً', 'мадд ивад', 'هْ']) {
