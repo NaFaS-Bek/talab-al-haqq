@@ -76,7 +76,7 @@ function knowledge() {
     if (/намаз|омовен|вера|ислам|иман|молитв|пост|закят|хадж|поклонен/.test(t)) return 'basics';
     return 'other';
   };
-  if (!knowledgeGroup) return `${section('Исламские знания')}<p class="lead">Выберите направление. История, практика и биографии больше не смешиваются в одном списке.</p>${groups.map(g=>groupButton(g.title,g.desc,'data-knowledge-group',g.id)).join('')}${footer()}`;
+  if (!knowledgeGroup) return `${section('Исламские знания')}<p class="lead">Выберите направление. История, практика и биографии больше не смешиваются в одном списке.</p>${search()}${query ? [...library.map(x=>({...x,_kind:'lib'})),...history.map(x=>({...x,_kind:'history'}))].filter(textSearch).map(x=>item(x,x._kind)).join('') || empty() : groups.map(g=>groupButton(g.title,g.desc,'data-knowledge-group',g.id)).join('')}${footer()}`;
   if (knowledgeGroup === 'caliphs') return `${backButton('library')}${caliphPage()}`;
   const g = groups.find(g=>g.id===knowledgeGroup);
   const arr = [...library.map(x=>({...x,_kind:'lib'})),...history.map(x=>({...x,_kind:'history'}))].filter(x=>(x._kind === 'history' ? 'events' : classify(x))===knowledgeGroup && textSearch(x));
@@ -200,7 +200,7 @@ document.addEventListener('click',async e => {
   if(b.dataset.count && active) { const k=active.key; const next={...counts,[k]:b.dataset.count==='reset'?0:Math.max(0,(counts[k]||0)+(b.dataset.count==='plus'?1:-1))}; if(save('counts',next)) {counts=next;$('#countValue').textContent=counts[k];} return; }
   if(b.dataset.copy && active) { const x=active.data;const text=[title(x,active.kind),x.arabicText||x.arabic,x.transliterationRu,x.translationRu||x.meaningRu,x.summaryRu,...(x.sections||[]).map(s=>[s.titleRu,s.textRu].filter(Boolean).join('\n'))].filter(Boolean).join('\n\n');try{await navigator.clipboard.writeText(text);b.textContent='✓ Скопировано';}catch{b.textContent='Копирование недоступно';} }
 });
-document.addEventListener('input',e => { if(e.target.id==='search') { query=e.target.value;render();const el=$('#search');el.focus({preventScroll:true}); } });
+document.addEventListener('input',e => { if(e.target.id==='search') { const start=e.target.selectionStart, end=e.target.selectionEnd; query=e.target.value; render(); const el=$('#search'); el.focus({preventScroll:true}); if(start!==null && end!==null) el.setSelectionRange(start,end); } });
 document.addEventListener('keydown',e => {
   if(!active) return;
   if(e.key==='Escape') {close();return;}
