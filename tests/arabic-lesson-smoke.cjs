@@ -14,12 +14,23 @@ const assert = require('node:assert/strict');
       assert.equal(await page.locator('.learning-panel #alphabetGrid').count(), 1);
       assert.equal(await page.locator('.learning-panel #vowelControls').count(), 1);
       assert.equal(await page.locator('.learning-panel #alphabetAnswers').count(), 1);
+      assert.equal(await page.locator('.learning-panel #pronunciationPairs').count(), 1, 'Difficult sounds must stay in the same lesson');
+      const difficultPairs = await page.locator('#pronunciationPairs li').allTextContents();
+      assert.equal(difficultPairs.length, 6, 'Six pronunciation contrasts are required');
+      for (const pair of ['ث / س', 'ذ / ز / ظ', 'ح / ه', 'ع / ء', 'ق / ك', 'ص / س']) {
+        assert(difficultPairs.some(line => line.includes(pair)), 'Missing pronunciation contrast: ' + pair);
+      }
+      const lam = page.locator('#alphabetGrid .letter-card').nth(22);
+      assert.equal(await lam.locator('.letter').textContent(), 'لَ');
+      assert.equal(await lam.locator('.reading').textContent(), 'ла');
       assert.equal(await page.locator('#alphabetGrid .letter-card').nth(1).locator('.letter').textContent(), 'بَ');
       await page.locator('[data-vowel="i"]').click();
       assert.equal(await page.locator('#alphabetGrid .letter-card').nth(1).locator('.letter').textContent(), 'بِ');
       assert.equal(await page.locator('[data-vowel="i"]').getAttribute('aria-pressed'), 'true');
+      assert.equal(await lam.locator('.reading').textContent(), 'ли');
       await page.locator('[data-vowel="u"]').click();
       assert.equal(await page.locator('#alphabetGrid .letter-card').nth(1).locator('.letter').textContent(), 'بُ');
+      assert.equal(await lam.locator('.reading').textContent(), 'лу');
       await page.locator('#alphabetAnswers button').nth(1).click();
       assert.match(await page.locator('#alphabetFeedback').textContent(), /Верно/);
       await page.locator('#nextAlphabetQuestion').click();
