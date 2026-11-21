@@ -52,10 +52,10 @@ function home() {
 function dua() {
   let cats = [{id:'morning',title:'Утренние азкары'},{id:'evening',title:'Вечерние азкары'},...db.catalog.categories,...db.catalog_additions.categories];
   cats = [...new Map(cats.map(c => [c.id,c])).values()];
-  if (!duaGroup) return `${section('Дуа и азкары')}<p class="lead">Выберите тему. Материалы появятся только внутри выбранного раздела.</p>${search()}${query ? entries.filter(textSearch).map(x=>item(x,'dua')).join('') || empty() : cats.map(c => groupButton(c.titleRu || c.title,'Открыть дуа и поминания','data-dua-group',c.id,entries.filter(x=>(x.categoryIds || []).includes(c.id)).length)).join('')}${footer()}`;
+  if (!duaGroup) return `${section('Дуа и азкары')}<p class="lead">Выберите тему. Материалы появятся только внутри выбранного раздела.</p>${search()}${query ? entries.filter(textSearch).map(x=>item(x,'dua')).join('') || empty() : cats.map(c => groupButton(c.id === 'surahs' ? 'Суры для чтения' : (c.titleRu || c.title),'Открыть материалы раздела','data-dua-group',c.id,entries.filter(x=>(x.categoryIds || []).includes(c.id)).length)).join('')}${footer()}`;
   const category = cats.find(c=>c.id===duaGroup);
   const a = entries.filter(x => (x.categoryIds || []).includes(duaGroup) && textSearch(x));
-  return `${backButton('dua')}${section(category?.titleRu || category?.title || 'Дуа')}${search()}<p class="lead">Материалов: ${a.length}</p>${a.map(x => item(x,'dua')).join('') || empty()}${footer()}`;
+  return `${backButton('dua')}${section(duaGroup === 'surahs' ? 'Суры для чтения' : (category?.titleRu || category?.title || 'Дуа'))}${search()}<p class="lead">Материалов: ${a.length}</p>${a.map(x => item(x,'dua')).join('') || empty()}${footer()}`;
 }
 function empty() { return '<p class="empty">Подходящих материалов нет. Попробуйте другой запрос или откройте каталог тем.</p>'; }
 function names() { return `${section('99 имён Аллаха')}<p class="lead">Написание, значение и примеры личной мольбы.</p>${search()}${db.names.names.filter(textSearch).map(x => item(x,'name')).join('') || empty()}${footer()}`; }
@@ -125,17 +125,40 @@ function sourceInfo(x) {
   return `<details class="source-info" id="materialSource"><summary>Об источнике</summary><h3 class="subheading">Проверка материала</h3><p class="bodycopy">${clean(statusName(x.reviewStatus || x.status))}</p>${x.sourceCheckStatus ? para('Сверка источников',statusName(x.sourceCheckStatus)) : ''}${Object.keys(checks).length ? para('Отдельные проверки',Object.entries(checks).map(([k,v]) => `${({arabic:'Арабский текст',transliteration:'Транскрипция',translation:'Перевод'})[k] || k}: ${statusName(v)}`).join('\n')) : ''}${para('Экспертная проверка',x.expertReview ? JSON.stringify(x.expertReview,null,2) : 'Не отмечена как выполненная')}${x.translationAttribution ? para('Атрибуция перевода',brandMetadata(x.translationAttribution)) : ''}${x.transliterationScheme ? para('Транскрипция',brandMetadata(x.transliterationScheme)) : ''}${x.supplication ? para('Источник личной мольбы',x.supplication.source) : ''}${(x.reviewRecords || []).map(r => sourceCard(r)).join('')}${refs.map(sourceCard).join('') || '<p class="attribution">Полная библиографическая справка в этой записи отсутствует.</p>'}<p class="attribution">Редакционная сверка источника сама по себе не подтверждает экспертную проверку содержания.</p><button class="action" data-tab="review" data-close="1">Источники и проверка</button></details>`;
 }
 function related(ids,kind) { const a = (ids || []).map(id => findRecord(`${kind}:${id}`)).filter(Boolean); return a.length ? `<div class="related">${section('Связанные материалы')}${a.map(r => item(r.data,r.kind)).join('')}</div>` : ''; }
+// A reader label comes from verified record metadata, not the surrounding navigation category.
+const narrativeQuranEntries = new Set(['q_17_24','q_2_250','q_27_19','q_7_23','q_2_127_128','q_21_83','q_7_89','q_20_25_28','q_21_87','q_21_89','q_5_114']);
+function materialType(x) {
+  if (x.excerptKind === 'full_surah') return 'Сура для чтения';
+  if (x.excerptKind === 'dhikr_instruction') return 'Наставление из хадиса';
+  if (x.originKind === 'quran') return 'Кораническое обращение';
+  return 'Дуа и азкары';
+}
+// Display only the source's explicitly stored verse segments. Never auto-cut a sacred quote.
+function verseReading(x) {
+  if (!['full_surah','verse_range','full_verses'].includes(x.excerptKind) || !Array.isArray(x.segments) || x.segments.length < 2) return '';
+  const sourceNumber = x.sourceRefs?.find(r => r.collection === 'Коран')?.number || '';
+  const surahNumber = x.surahNumber || Number(sourceNumber.split(':')[0]);
+  if (!surahNumber || !x.segments.every(s => /_a\\d+$/.test(s.id || '') && s.arabicText && s.translationRu)) return '';
+  const rows = x.segments.map(s => {
+    const verseNumber = Number(s.id.match(/_a(\\d+)$/)[1]);
+    return `<section class="verse-card" aria-label="Аят ${surahNumber}:${verseNumber}"><div class="verse-heading">Аят ${surahNumber}:${verseNumber}</div><div class="arabic verse-arabic" lang="ar" dir="rtl">${clean(s.arabicText)}</div><p class="verse-translation">${clean(s.translationRu)}</p></section>`;
+  }).join('');
+  return `<div class="verse-reader" aria-label="Чтение по аятам"><p class="verse-intro">Текст разделён по аятам для удобного чтения. Перевод передаёт смысл.</p>${rows}</div>`;
+}
 function details(r) {
   const x = r.data, kind = r.kind, key = `${kind}:${x.id}`;
-  let html = `<h2 class="detailtitle">${clean(title(x,kind))}</h2><div class="meta">${clean(kindTitle[kind])}</div>`;
+  let html = `<h2 class="detailtitle">${clean(title(x,kind))}</h2><div class="meta material-type">${clean(kind === 'dua' ? materialType(x) : kindTitle[kind])}</div>`;
   if (kind === 'dua') {
-    html += arabic(x.arabicText);
+    if (narrativeQuranEntries.has(x.id)) html += `<p class="reading-note">Этот аят или отрывок включает повествование, которое не является словами самой мольбы. Полный текст сохранён без сокращений.</p>`;
+    if (x.excerptKind === 'dhikr_instruction') html += `<p class="reading-note">Это наставление из хадиса для изучения, а не установленная формула для дословного повторения.</p>`;
+    const verses = verseReading(x);
+    html += verses || arabic(x.arabicText);
     if(x.transliterationRu) html += `<details class="source-inline" open><summary>Транскрипция</summary>${para('',x.transliterationRu)}</details>`;
-    html += para('Перевод смысла',x.translationRu);
+    if (!verses) html += para('Перевод смысла',x.translationRu);
     if (x.translationAttribution) html += `<p class="attribution">${clean(brandMetadata(x.translationAttribution).split(' · ')[0])}</p>`;
     html += para('Контекст',x.contextRu) + para('Пояснение',x.explanationRu);
     const stages = x.repetitionRule?.stages; const goal = stages?.length === 1 ? stages[0].count : null;
-    html += `<div class="counter"><button data-count="minus" aria-label="Уменьшить">−</button><strong id="countValue">${counts[key] || 0}</strong><button data-count="plus" aria-label="Увеличить">+</button></div><p class="lead" style="text-align:center">Счётчик повторений${goal ? ' · ' + goal + ' по источнику' : ''}</p><button class="action" data-count="reset">Сбросить счётчик</button>`;
+    if (x.excerptKind !== 'dhikr_instruction') html += `<div class="counter"><button data-count="minus" aria-label="Уменьшить">−</button><strong id="countValue">${counts[key] || 0}</strong><button data-count="plus" aria-label="Увеличить">+</button></div><p class="lead" style="text-align:center">${goal ? `Счётчик повторений · ${goal} по указанному источнику` : 'Учебный счётчик: число повторений здесь не предписано'}</p><button class="action" data-count="reset">Сбросить счётчик</button>`;
     if(stages?.length > 1) html += para('Порядок повторений',stages.map(s => `${s.labelRu}: ${s.count} раз`).join('\n'));
   }
   if (kind === 'name') {
