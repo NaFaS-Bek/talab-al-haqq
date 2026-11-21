@@ -68,6 +68,7 @@ function knowledge() {
     {id:'caliphs',title:'История халифов',desc:'Биографии и источники'}
   ];
   const studyTopics = [
+    {id:'pillars',title:'Пять столпов ислама',desc:'Первый шаг: шахада, намаз, закят, пост и хадж'},
     {id:'prayer',title:'Намаз и омовение (тахарат)',desc:'Как совершать поклонение и очищение'},
     {id:'alphabet',title:'Арабский алфавит и огласовки',desc:'28 букв, фатха, касра, дамма, тренировка'},
     {id:'basics',title:'Основы ислама',desc:'Вера, намерение и нравственность'},
@@ -77,8 +78,9 @@ function knowledge() {
   if (!knowledgeGroup) return `${section('Исламские знания')}<p class="lead">Выберите направление. Все учебные материалы собраны в разделе «Обучение исламу».</p>${search()}${query ? records.filter(textSearch).map(x=>item(x,x._kind)).join('') || empty() : groups.map(g=>groupButton(g.title,g.desc,'data-knowledge-group',g.id,g.id==='caliphs' ? (caliphs?.profiles?.length ?? 0) : g.id==='education' ? null : records.filter(x=>(x._kind==='history'?'events':x.kind)===g.id).length)).join('')}${footer()}`;
   if (knowledgeGroup === 'caliphs') return `${backButton('library')}${caliphPage()}`;
   if (knowledgeGroup === 'education') {
-    const header = `${backButton('library')}${section('Обучение исламу')}<p class="lead">Выберите урок. Намаз, омовение, арабское письмо и чтение находятся в одном учебном разделе.</p>`;
-    if (!educationTopic) return header + studyTopics.map(t=>groupButton(t.title,t.desc,'data-education-topic',t.id,t.id==='alphabet'?null:library.filter(x=>x.kind===t.id).length)).join('') + footer();
+    const header = `${backButton('library')}${section('Обучение исламу')}<p class="lead">Начните с пяти столпов ислама, затем изучайте намаз, омовение, арабское письмо и чтение.</p>`;
+    if (!educationTopic) return header + studyTopics.map(t=>groupButton(t.title,t.desc,'data-education-topic',t.id,['alphabet','pillars'].includes(t.id)?null:library.filter(x=>x.kind===t.id).length)).join('') + footer();
+    if (educationTopic === 'pillars') return header + `<button class="action" data-education-back="1">← К урокам</button><a class="item category-item" href="five-pillars.html"><span class="itembody"><strong>Открыть урок: пять столпов ислама</strong><small>Простое введение, источники и проверка знаний</small></span><span class="arrow" aria-hidden="true">›</span></a>` + footer();
     if (educationTopic === 'alphabet') return header + `<button class="action" data-education-back="1">← К урокам</button><a class="item category-item" href="arabic-reading-signs.html"><span class="itembody"><strong>Открыть урок: алфавит и огласовки</strong><small>Буквы и огласовки в одном контейнере, интерактивные задания</small></span><span class="arrow" aria-hidden="true">›</span></a>` + footer();
     const chosen = studyTopics.find(t=>t.id===educationTopic);
     const found = library.filter(x=>x.kind===educationTopic && textSearch(x));
