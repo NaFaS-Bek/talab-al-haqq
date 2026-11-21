@@ -54,7 +54,7 @@ const assert = require('node:assert/strict');
         assert(await page.locator('#example').isVisible(),'Missing real-world example for '+id);
         assert(await page.locator('#limits').isVisible(),'Missing limitations for '+id);
         assert(await page.locator('section[aria-labelledby="references"] a[href^="https://"]').count()>=2,'Sources required for '+id);
-        assert.equal(await page.locator('.quicklinks a').count(),5,'Cross-links must list all five lessons');
+        assert.equal(await page.locator('nav[aria-label="Уроки по пяти столпам"] a').count(),5,'Pillar cross-links must list exactly five lessons');
         const selfCheck=page.locator('section[aria-labelledby="selfcheck"] details');
         await selfCheck.locator('summary').click();
         assert(await selfCheck.evaluate(el=>el.open),'Self-check answer must expand for '+id);
