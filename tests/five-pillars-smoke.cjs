@@ -27,6 +27,7 @@ const assert = require('node:assert/strict');
         await card.locator('summary').click();
         assert(await card.locator('details').evaluate(el=>el.open),'Explanation should open for '+id);
         assert(await card.locator('a[href^="https://"]').count()>0,'Missing source for '+id);
+        assert.equal(await card.locator('a[href="pillar-'+id+'.html"]').count(),1,'Missing full lesson link for '+id);
       }
       assert(await page.locator('a[href="https://sunnah.com/bukhari/2/1"]').count()>0,'Hadith reference needed');
       assert(await page.locator('a[href="https://sunnah.com/muslim:16"]').count()>0,'Muslim reference needed');
@@ -45,8 +46,25 @@ const assert = require('node:assert/strict');
       const dims=await page.evaluate(()=>({root:document.documentElement.scrollWidth,screen:innerWidth}));
       assert(dims.root<=dims.screen+1,'Horizontal overflow at '+viewport.width+'px '+JSON.stringify(dims));
       await page.screenshot({path:'five-pillars-'+viewport.width+'.png',fullPage:true});
+      for(const [id,label] of pillars){
+        await page.goto('http://127.0.0.1:8765/pillar-'+id+'.html',{waitUntil:'load'});
+        assert.match(await page.locator('h1').textContent(),new RegExp(label),'Wrong lesson title for '+id);
+        assert(await page.locator('link[rel="stylesheet"][href="pillars-common.css"]').count()===1,'Missing common lesson styles');
+        assert(await page.locator('#procedure .steps li').count()>=4,'Missing step-by-step content for '+id);
+        assert(await page.locator('#example').isVisible(),'Missing real-world example for '+id);
+        assert(await page.locator('#limits').isVisible(),'Missing limitations for '+id);
+        assert(await page.locator('#references a[href^="https://"]').count()>=2,'Sources required for '+id);
+        assert.equal(await page.locator('.quicklinks a').count(),5,'Cross-links must list all five lessons');
+        const selfCheck=page.locator('#selfcheck details');
+        await selfCheck.locator('summary').click();
+        assert(await selfCheck.evaluate(el=>el.open),'Self-check answer must expand for '+id);
+        const lessonDims=await page.evaluate(()=>({root:document.documentElement.scrollWidth,screen:innerWidth}));
+        assert(lessonDims.root<=lessonDims.screen+1,'Lesson horizontal overflow '+id+' at '+viewport.width);
+        await page.screenshot({path:'pillar-'+id+'-'+viewport.width+'.png',fullPage:true});
+      }
+      assert.deepEqual(errors,[],'Browser JS errors on overview or detailed lessons');
       await page.close();
     }
   } finally {await browser.close();}
-  console.log('PASS five pillars: source links, five cards, quiz answers/reset, responsive layout');
+  console.log('PASS five pillars: overview, five complete lessons, sources, self-checks, mobile/desktop layout');
 })().catch(error=>{console.error(error);process.exit(1)});
