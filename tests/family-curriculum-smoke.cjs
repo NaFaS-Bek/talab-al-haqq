@@ -28,7 +28,7 @@ try{
       await page.waitForURL('**/'+lesson.file);
       assert.match(await page.locator('h1').textContent(),lesson.title,'Lesson title '+lesson.file);
       assert(await page.locator('section.card').count()>=4,'Must have explanation and practical sections');
-      assert(await page.locator('#source-policy').count()===1,'Must state review status and source type');
+      assert.equal(await page.locator('#source-policy').count(),0,'Editorial status must be centralized, not underneath a lesson');
       assert(await page.locator('details summary').count()>=2,'Must have self checks');
       for(const href of lesson.required){
         assert(await page.locator('a[href="'+href+'"]').count()>0,'Missing primary source '+href);
@@ -39,6 +39,11 @@ try{
       await page.goBack({waitUntil:'networkidle'});
       assert.match(await page.locator('h1').textContent(),/Муж и жена/,'Back returns to overview');
     }
+    await page.goto('http://127.0.0.1:8765/',{waitUntil:'networkidle'});
+    await page.locator('#reviewBtn').click();
+    assert.equal(await page.locator('#family-review-status').count(),1,'Family status must be visible in Sources and Review');
+    const reviewText=await page.locator('#family-review-status').innerText();
+    assert.match(reviewText,/Независимая содержательная проверка.+не проводилась/,'Review state must be honest');
     assert.deepEqual(errors,[],'No browser JS errors');
     await page.close();
   }
