@@ -24,7 +24,6 @@ const assert = require('node:assert/strict');
   assert.equal(await page.locator('#alphabetGrid .letter-card').count(),28,'Arabic lesson must show all 28 letters');
   await page.goBack();
   await page.locator('[data-back="library"]').click();
-  await page.locator('[data-back="library"]').click();
   await page.locator('#search').fill('Адам');
   assert(await page.locator('[data-open="lib:prophet_adam"]').count()===1,'Library search should find Adam');
   await page.locator('.bottom [data-tab="dua"]').click();
