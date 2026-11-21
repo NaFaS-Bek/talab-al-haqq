@@ -31,3 +31,45 @@ body.light .hero button,body.light .primary{color:#fff}
 @media(min-width:700px){.quicklinks{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:480px){.category-item{min-height:70px}.category-count{min-width:30px;padding:4px 7px}}
 @media(prefers-reduced-motion:reduce){.category-item{scroll-behavior:auto}}
+
+
+/* Reader comfort: calmer typography, clearer focus and more usable long-form content. */
+:root{--reading-width:72ch}
+html{scroll-padding-top:24px}
+body{line-height:1.65;text-rendering:optimizeLegibility}
+main{max-width:960px}
+.sectionhead h2,.detailtitle{letter-spacing:-.018em;text-wrap:balance}
+.lead{max-width:var(--reading-width);line-height:1.85}
+.tile,.item,.action,.iconbtn,.chip{transition:background-color .16s ease,border-color .16s ease,box-shadow .16s ease,transform .16s ease}
+@media(hover:hover) and (pointer:fine){
+.tile:hover,.item:hover{background:var(--panel2);border-color:var(--gold);transform:translateY(-1px)}
+.action:hover,.iconbtn:hover,.chip:hover{border-color:var(--gold);background:var(--panel2)}
+}
+.tile:active,.item:active{transform:translateY(0)}
+.search:focus-within{border-color:var(--gold);box-shadow:0 0 0 3px color-mix(in srgb,var(--gold) 18%,transparent)}
+.search input:focus-visible{outline:0}
+.sheet{scrollbar-gutter:stable;scroll-padding-top:72px}
+#detail{max-width:var(--reading-width);margin:0 auto}
+.detailtitle{font-size:clamp(1.5rem,3.4vw,2rem);line-height:1.4}
+.bodycopy{font-size:clamp(1rem,1.8vw,1.125rem);line-height:2.05;overflow-wrap:break-word;hyphens:auto}
+.arabic{font-size:clamp(2rem,5vw,2.9rem);line-height:2.25;padding:clamp(20px,4vw,32px);overflow-wrap:normal;word-break:normal}
+.subheading{font-size:1.125rem;font-weight:700;line-height:1.5}
+.meta,.attribution,.source-record{line-height:1.8}
+.source-info>summary,.source-inline summary{line-height:1.5}
+.source-info>summary:hover,.source-inline summary:hover{color:var(--fg)}
+.bottom button.active{font-weight:700}
+.bottom button.active .ui-icon{stroke-width:2.2}
+@media(min-width:700px){
+.sheet{margin:auto 0;max-height:min(92dvh,920px);border-radius:24px}
+.modal{align-items:center;padding:24px}
+}
+@media(max-width:480px){
+.sheet{padding-inline:16px}
+.arabic{padding:20px 14px}
+.bodycopy{line-height:1.95}
+.item{padding:16px 14px}
+}
+@media(prefers-reduced-motion:reduce){
+.tile,.item,.action,.iconbtn,.chip{transition:none}
+.tile:hover,.item:hover{transform:none}
+}
