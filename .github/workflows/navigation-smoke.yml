@@ -32,4 +32,5 @@ jobs:
             navigation-*.png
             arabic-lesson-*.png
             five-pillars-*.png
+            pillar-*.png
           if-no-files-found: ignore
