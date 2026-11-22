@@ -70,6 +70,8 @@ on:
       - 'tests/adhkar-daily-travel-phonetics-pass19.cjs'
       - 'tests/adhkar-hadith-context-pass20.cjs'
       - 'tests/adhkar-source-context-pass21.cjs'
+      - 'tests/adhkar-quran-context-phonetics-pass22.cjs'
+      - 'docs/adhkar-quran-context-phonetics-pass22-2026-11-23.md'
       - 'docs/adhkar-source-context-pass21-2026-11-23.md'
       - 'docs/adhkar-hadith-context-pass20-2026-11-23.md'
       - 'docs/adhkar-deep-review-batch-8-2026-11-22.md'
@@ -166,6 +168,8 @@ jobs:
         run: node tests/adhkar-hadith-context-pass20.cjs
       - name: Pain, anxiety, anger, calamity, guidance and bedtime hadith context (pass 21)
         run: node tests/adhkar-source-context-pass21.cjs
+      - name: Six Quranic dua cards narrative boundaries and pending phonetics (pass 22)
+        run: node tests/adhkar-quran-context-phonetics-pass22.cjs
       - name: Three Muslim and Bukhari supplications, source excerpts and wasl/waqf review inventory
         run: node tests/adhkar-wasl-waqf-pass18.cjs
       - name: Four hadith phonetics end-form and source guards
