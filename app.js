@@ -253,7 +253,7 @@ const sourceLinkedQuranReadingNotes = Object.freeze({
     russianWord:'Каля',
     referenceUrl:'https://corpus.quran.com/wordmorphology.jsp?location=%2820%3A25%3A1%29',
     note:'Первое слово قَالَ — qāla («он сказал», единственное число): первый гласный ā долгий, последний a — краткий. Хотя русское «Каля» похоже на запись قَالَا (qālā, «они оба сказали») в другом аяте, это разные формы. Первое слово здесь — повествование о Мусе, а сама мольба начинается со следующего «Рабби».',
-  },,
+  },
   q_21_83: {
     sourceNumber:'21:83',
     sourceUrl:'https://quran.com/21/83',
