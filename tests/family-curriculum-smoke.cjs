@@ -7,6 +7,7 @@ const lessons=[
   {file:'family-children.html',title:/Воспитание детей/,required:['https://quran.com/31/13','https://sunnah.com/bukhari:5997']},
   {file:'family-child-rights.html',title:/Права ребёнка в исламе/,required:['https://quran.com/2/233','https://sunnah.com/bukhari:5467','https://sunnah.com/bukhari:2587']},
   {file:'family-parent-duties.html',title:/Обязанности родителей перед детьми/,required:['https://quran.com/66/6','https://sunnah.com/bukhari:7138','https://quran.com/4/10']},
+  {file:'family-custody.html',title:/Опека после развода/,required:['https://quran.com/2/233','https://sunnah.com/abudawud:2276','https://www.sistani.org/english/book/48/2372/']},
   {file:'family-prophetic-example.html',title:/Семейная жизнь/,required:['https://quran.com/30/21','https://sunnah.com/bukhari:6039']}
 ];
 (async()=>{
@@ -30,6 +31,31 @@ try{
       await page.waitForURL('**/'+lesson.file);
       assert.match(await page.locator('h1').textContent(),lesson.title,'Lesson title '+lesson.file);
       assert(await page.locator('section.card').count()>=4,'Must have explanation and practical sections');
+      if (lesson.file === 'family-custody.html') {
+        assert.equal(await page.locator('section.card').count(),8,
+          'Custody lesson must have eight sections');
+        assert.equal(await page.locator('.quick-nav a[href^="#custody-"]').count(),8,
+          'Every custody section must be linked');
+        assert.equal(await page.locator('#custody-8 details').count(),5,
+          'Custody lesson must have five self-check questions');
+        const links=[
+          'https://quran.com/2/233','https://quran.com/65/6','https://quran.com/65/7',
+          'https://sunnah.com/abudawud:2276','https://sunnah.com/abudawud:2277',
+          'https://dorar.net/en/feqhia/461',
+          'https://www.sistani.org/english/book/48/2372/',
+          'https://www.unicef.org/uruguay/crianza/etapa-escolar/cuando-los-padres-con-hijos-se-separan-algunas-recomendaciones'
+        ];
+        for(const href of links)assert(await page.locator('a[href="'+href+'"]').count()>0,
+          'Custody source absent '+href);
+        const lessonText=await page.locator('main').innerText();
+        for(const phrase of [
+          'не обязательно один и тот же вопрос',
+          'не устанавливает универсальную возрастную границу передачи опеки',
+          'не единые действующие законы всех мусульманских стран',
+          'позиция конкретного джафаритского правоведа',
+          'при реальных угрозах и насилии нельзя требовать опасных встреч'
+        ]) assert(lessonText.includes(phrase),'Custody context warning absent '+phrase);
+      }
       if (lesson.file === 'family-parent-duties.html') {
         assert.equal(await page.locator('section.card').count(),7,
           'Parental duties must include seven focused sections');
