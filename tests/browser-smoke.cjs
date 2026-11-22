@@ -133,6 +133,34 @@ const assert = require('node:assert/strict');
   await page.locator('[data-open="dua:q_21_87"]').click();
   assert(await page.locator('#detail .reading-note').isVisible(),'Narrative context must be marked');
   await page.locator('#modal .close').click();
+  // Three Quranic verb forms are morphologically distinct, despite similar
+  // approximate Cyrillic renderings. Source-guarded notes must be visible.
+  await page.locator('[data-back="dua"]').click();
+  for (const scenario of [
+    {search:'Признание ошибки', id:'q_7_23', form:'qālā', number:'двойственное число', location:'7%3A23%3A1'},
+    {search:'Терпение и стойкость', id:'q_2_250', form:'qālū', number:'множественное число', location:'2%3A250%3A5'},
+    {search:'Мольба Мусы', id:'q_20_25_28', form:'qāla', number:'единственное число', location:'20%3A25%3A1'},
+  ]) {
+    await page.locator('#search').fill(scenario.search);
+    await page.locator('[data-open="dua:' + scenario.id + '"]').click();
+    const note = page.locator('#detail [data-pronunciation-note]');
+    assert.equal(await note.count(),1,scenario.id + ': source-linked reading note must appear');
+    const noteText = await note.textContent();
+    assert(noteText.includes(scenario.form) && noteText.includes(scenario.number),
+      scenario.id + ': correct vocalization and grammatical number must be visible');
+    const link = page.locator('#detail [data-pronunciation-source] a');
+    assert.equal(await link.count(),1,scenario.id + ': grammar citation must be linked');
+    assert((await link.getAttribute('href')).includes(scenario.location),
+      scenario.id + ': Quranic Arabic Corpus morphology link must target exact word');
+    assert.equal(await link.getAttribute('rel'),'noopener noreferrer');
+    await page.locator('#modal .close').click();
+  }
+  await page.locator('#search').fill('Мольба Юнуса');
+  await page.locator('[data-open="dua:q_21_87"]').click();
+  assert.equal(await page.locator('#detail [data-pronunciation-source]').count(),0,
+    'Unrelated Quranic dua must not inherit word morphology link');
+  await page.locator('#modal .close').click();
+
   assert.deepEqual(errors,[],'Unexpected browser errors');
   await page.screenshot({path:'navigation-mobile.png',fullPage:true});
   await page.setViewportSize({width:1280,height:900});

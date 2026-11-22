@@ -225,8 +225,52 @@ const sourceLinkedPronunciationSupplements = Object.freeze({
     note:'В конце вечерней формулы — «…ва иляйка-н-нушур». При остановке конечное краткое «у» слова «النُّشُورُ» не произносится; при продолжении оно звучит: «…н-нушуру». «Н-н» передаёт удвоенную букву ن в слове «النُّشُورُ». Утреннее окончание в этой передаче другое — «аль-масыр».',
   },
 });
+// Three Quranic narrative verb forms that look deceptively alike in Russian.
+// Notes are NOT an audio or tajwid certification. Every supplement is guarded
+// by verse source, exact Arabic word, corresponding Russian substring and segment.
+// The verified morphology sources are from the Quranic Arabic Corpus.
+const sourceLinkedQuranGrammarNotes = Object.freeze({
+  q_7_23: {
+    sourceNumber:'7:23',
+    sourceUrl:'https://quran.com/7/23',
+    arabicWord:'قَالَا',
+    russianWord:'Каля',
+    grammarUrl:'https://corpus.quran.com/wordmorphology.jsp?location=%287%3A23%3A1%29',
+    note:'В начале аята قَالَا — qālā («они оба сказали», двойственное число). Здесь два долгих ā, которые приблизительная запись «Каля» не показывает. Это слова повествования перед самой мольбой. Для произношения опирайтесь на арабский текст и проверенное чтение, а не только на кириллицу.',
+  },
+  q_2_250: {
+    sourceNumber:'2:250',
+    sourceUrl:'https://quran.com/2/250',
+    arabicWord:'قَالُوا۟',
+    russianWord:'калю',
+    grammarUrl:'https://corpus.quran.com/wordmorphology.jsp?location=%282%3A250%3A5%29',
+    note:'В слове قَالُوا — qālū («они сказали», множественное число). Здесь долгие ā и ū: русское «калю» не передаёт их долготу и может вводить в заблуждение. Это повествовательное введение перед словами мольбы. Сверяйте чтение с арабской строкой и записью квалифицированного чтеца.',
+  },
+  q_20_25_28: {
+    sourceNumber:'20:25–28',
+    sourceUrl:'https://quran.com/20/25',
+    arabicWord:'قَالَ',
+    russianWord:'Каля',
+    grammarUrl:'https://corpus.quran.com/wordmorphology.jsp?location=%2820%3A25%3A1%29',
+    note:'Первое слово قَالَ — qāla («он сказал», единственное число): первый гласный ā долгий, последний a — краткий. Хотя русское «Каля» похоже на запись قَالَا (qālā, «они оба сказали») в другом аяте, это разные формы. Первое слово здесь — повествование о Мусе, а сама мольба начинается со следующего «Рабби».',
+  },
+});
+function linkedQuranGrammarNote(x) {
+  const note = sourceLinkedQuranGrammarNotes[x.id];
+  if (!note || x.originKind !== 'quran' || x.contentKind !== 'dua') return null;
+  if (!x.sourceRefs?.some(ref =>
+      ref.collection === 'Коран' && ref.number === note.sourceNumber && ref.url === note.sourceUrl)) return null;
+  if (!x.arabicText?.includes(note.arabicWord) ||
+      !x.transliterationRu?.includes(note.russianWord)) return null;
+  if (!x.segments?.some(s =>
+      s.arabicText?.includes(note.arabicWord) &&
+      s.transliterationRu?.includes(note.russianWord))) return null;
+  return note;
+}
 function pronunciationExplanation(x) {
   if (x.transliterationNoteRu) return x.transliterationNoteRu;
+  const quranNote = linkedQuranGrammarNote(x);
+  if (quranNote) return quranNote.note;
   const supplement = sourceLinkedPronunciationSupplements[x.id];
   if (!supplement || x.originKind !== 'hadith') return '';
   if (!x.sourceRefs?.some(ref => ref.url === supplement.sourceUrl)) return '';
@@ -244,7 +288,7 @@ function details(r) {
     html += readingTimingNote(x);
     const verses = verseReading(x);
     html += verses || arabic(x.arabicText);
-    if(x.transliterationRu) { const note = pronunciationExplanation(x); html += `<details class="source-inline" open><summary>Транскрипция</summary>${para('',x.transliterationRu)}${note ? `<p class="bodycopy" data-pronunciation-note><strong>Как читать:</strong> ${clean(note)}</p>` : ''}</details>`; }
+    if(x.transliterationRu) { const note = pronunciationExplanation(x); const quranGrammar = x.transliterationNoteRu ? null : linkedQuranGrammarNote(x); html += `<details class="source-inline" open><summary>Транскрипция</summary>${para('',x.transliterationRu)}${note ? `<p class="bodycopy" data-pronunciation-note><strong>Как читать:</strong> ${clean(note)}</p>` : ''}${quranGrammar ? `<p class="attribution" data-pronunciation-source><a href="${clean(quranGrammar.grammarUrl)}" target="_blank" rel="noopener noreferrer">Разбор слова: Quranic Arabic Corpus</a></p>` : ''}</details>`; }
     if (!verses) html += para('Перевод смысла',x.translationRu);
     if (x.translationAttribution) html += `<p class="attribution">${clean(brandMetadata(x.translationAttribution).split(' · ')[0])}</p>`;
     html += para('Контекст',x.contextRu) + para('Пояснение',x.explanationRu);
