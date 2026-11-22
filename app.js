@@ -552,8 +552,32 @@ Promise.all([fetch('data/content.json').then(r=>{if(!r.ok)throw Error('Не уд
 
 /* Same-origin static offline release; the storage keys above remain unchanged. */
 if('serviceWorker' in navigator && location.protocol!=='file:') {
-  const controlledAtLoad=!!navigator.serviceWorker.controller; let reloadRequested=false;
-  const status=$('#offlineStatus');
+  // The repository is the editable source, not always a packaged offline release.
+  // Its sw.js intentionally contains RELEASE = null until a verified build replaces it.
+  // Never install that worker: its installRelease() rejects by design.
+  void (async () => {
+    const status=$('#offlineStatus');
+    let swSource=null;
+    try {
+      const response=await fetch('./sw.js',{cache:'no-store'});
+      if(!response.ok) throw Error('Service worker script unavailable');
+      swSource=await response.text();
+    } catch {
+      if(!navigator.serviceWorker.controller) {
+        status.textContent='Офлайн-режим пока не проверен: не удалось получить файл сборки.';
+        return;
+      }
+      // An existing complete offline worker can continue during a network outage.
+    }
+    if(swSource && /^const RELEASE\s*=\s*null;\s*$/m.test(swSource)) {
+      status.textContent='Онлайн-версия: офлайн-режим доступен только в подготовленной PWA-сборке.';
+      return;
+    }
+    if(swSource && !/^const RELEASE\s*=\s*\{/m.test(swSource)) {
+      status.textContent='Офлайн-режим не подтверждён: манифест сборки отсутствует.';
+      return;
+    }
+    const controlledAtLoad=!!navigator.serviceWorker.controller; let reloadRequested=false;
   navigator.serviceWorker.addEventListener('message',e=>{const m=e.data||{};if(m.type==='NFS_PWA_PROGRESS')status.textContent=`Сохраняем для офлайн: ${m.completed} из ${m.total}`;if(m.type==='NFS_PWA_INSTALL_ERROR')status.textContent='Офлайн-загрузка не завершена. Освободите место и обновите страницу при подключении к интернету.';});
   navigator.serviceWorker.addEventListener('controllerchange',()=>{if(reloadRequested||!controlledAtLoad){persistReading();location.reload();}});
   navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'}).then(async registration=>{
@@ -565,4 +589,5 @@ if('serviceWorker' in navigator && location.protocol!=='file:') {
     const worker=navigator.serviceWorker.controller||registration.active;
     if(worker){const channel=new MessageChannel();channel.port1.onmessage=e=>{status.textContent=e.data.state==='ready'?'Доступно офлайн':'Офлайн-копия не готова. Обновите страницу при подключении к интернету.';channel.port1.close();};worker.postMessage({type:'NFS_PWA_STATUS'},[channel.port2]);}
   }).catch(()=>{status.textContent='Офлайн-копия пока недоступна. Откройте сайт по HTTPS и обновите страницу.';});
+  })().catch(()=>{status.textContent='Не удалось проверить состояние офлайн-режима.';});
 }
