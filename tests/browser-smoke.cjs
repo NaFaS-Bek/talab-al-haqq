@@ -181,10 +181,42 @@ const assert = require('node:assert/strict');
     assert.match(await link.textContent(),/Обозначения звуков: Quranic Arabic Corpus/);
     await page.locator('#modal .close').click();
   }
-  await page.locator('#search').fill('Мольба Закарии');
-  await page.locator('[data-open="dua:q_21_89"]').click();
+  // Arabic shadda, long vowels and verse-end pauses: four new protected notes.
+  for (const scenario of [
+    {search:'Лут: о спасении семьи', id:'q_26_169', fragment:'جّ удвоена шаддой', pause:true},
+    {search:'Мольба Закарии о потомстве', id:'q_21_89', fragment:'краткое конечное «а»', pause:true},
+    {search:'Ибрахим: молитва и прощение', id:'q_14_40_41', fragment:'رّ и يّ', pause:false},
+    {search:'Ибрахим и Исмаил: о принятии дела', id:'q_2_127_128', fragment:'над نّ стоит шадда', pause:false},
+  ]) {
+    await page.locator('#search').fill(scenario.search);
+    const card = page.locator('[data-open="dua:' + scenario.id + '"]');
+    assert.equal(await card.count(),1,scenario.id + ': search should locate exactly one reviewed entry');
+    await card.click();
+    const note = page.locator('#detail [data-pronunciation-note]');
+    assert.equal(await note.count(),1,scenario.id + ': reading note missing');
+    assert((await note.textContent()).includes(scenario.fragment),
+      scenario.id + ': documented Arabic reading point missing');
+    const source = page.locator('#detail [data-pronunciation-source] a');
+    assert.equal(await source.count(),1,scenario.id + ': corpus source link missing');
+    assert.equal(await source.getAttribute('href'),
+      'https://corpus.quran.com/documentation/phonetic.jsp',
+      scenario.id + ': wrong long-vowel/shadda source');
+    const pause = page.locator('#detail [data-pause-source] a');
+    assert.equal(await pause.count(),scenario.pause ? 1 : 0,
+      scenario.id + ': unexpected pause-rule link');
+    if (scenario.pause) {
+      assert.equal(await pause.getAttribute('href'),
+        'https://abouttajweed.com/tajweed-basics/common-tajweed-errors');
+      assert.equal(await pause.getAttribute('rel'),'noopener noreferrer');
+    }
+    await page.locator('#modal .close').click();
+  }
+  await page.locator('#search').fill('Шуайб: о справедливом решении');
+  await page.locator('[data-open="dua:q_7_89"]').click();
   assert.equal(await page.locator('#detail [data-pronunciation-source]').count(),0,
-    'Unrelated Quranic dua must not inherit phonetic note');
+    'Unrelated Quranic dua must not inherit a phonetic note');
+  assert.equal(await page.locator('#detail [data-pause-source]').count(),0,
+    'Unrelated Quranic dua must not inherit a pause-rule note');
   await page.locator('#modal .close').click();
 
   assert.deepEqual(errors,[],'Unexpected browser errors');
