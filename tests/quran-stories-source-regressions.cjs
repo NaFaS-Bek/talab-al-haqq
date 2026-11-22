@@ -12,10 +12,11 @@ const expectStories=[
  {id:'story-ibrahim',topic:'family',quran:['2/125','2/127','2/128','2/129'],hadith:[]},
  {id:'story-maryam',topic:'family',quran:['3/35','3/36','3/37'],hadith:[]},
  {id:'story-luqman',topic:'wisdom',quran:['31/12','31/13','31/14','31/15','31/16','31/17','31/18','31/19'],hadith:[]},
- {id:'story-abubakr',topic:'companions',quran:['9/40'],hadith:['bukhari:3653']}
+ {id:'story-abubakr',topic:'companions',quran:['9/40'],hadith:['bukhari:3653']},
+ {id:'story-abdullah',topic:'companions',quran:[],hadith:['bukhari:6780']}
 ];
 const blocks=[...page.matchAll(/<article\s+class="story"\s+id="([^"]+)"\s+data-story="([^"]+)"[\s\S]*?<\/article>/g)];
-assert.equal(blocks.length,6,'Exactly six pilot stories expected');
+assert.equal(blocks.length,7,'Exactly seven source-grounded stories expected');
 assert.equal((page.match(/<h1\b/g)||[]).length,1,'Exactly one document h1');
 assert.match(page,/<html lang="ru">/);
 assert.match(page,/<main\b/);
@@ -46,6 +47,8 @@ for(let i=0;i<expectStories.length;i++){
  assert(!/href="https:\/\/(?!quran\.com\/|sunnah\.com\/)/.test(body),spec.id+': new source domain requires review');
  if(spec.hadith.length===0){
   assert(body.includes('Источники: только Коран.'),spec.id+': Quran-only attribution missing');
+ }else if(spec.quran.length===0){
+  assert(body.includes('Источники: хадис из «Сахих аль-Бухари».'),spec.id+': hadith-only attribution missing');
  }else{
   assert(body.includes('Источники двух разных типов — не смешивать.'),
    spec.id+': separate Quran and hadith attribution missing');
@@ -61,7 +64,11 @@ assert(abuBakr.includes('В самом аяте спутник не назван
  'Quran 9:40 does not name companion; identity from hadith');
 assert(abuBakr.includes('за дословную часть коранического аята'),
  'Hadith words may not be attributed directly to Quran 9:40');
-assert.equal((app.match(/href="stories\.html"/g)||[]).length,2,
+const abdullah=blocks.find(x=>x[1]==='story-abdullah')[0];
+assert(abdullah.includes('хадис не оправдывает употребление алкоголя')&&abdullah.includes('не позволяет сводить всю личность'),
+ 'Hadith 6780 must not become an excuse for drinking or a sweeping verdict on the sinner');
+assert(!abdullah.includes('Аллах никогда не простит'),'Do not attribute unverifiable final judgment');
+assert.equal((app.match(/href="stories\\.html"/g)||[]).length,2,
  'Homepage and prophet knowledge section must both link stories');
 assert(index.includes('<a href="stories.html">'),'No-JS fallback link must remain');
 const releaseMatch=sw.match(/^const RELEASE = (\{[^\r\n]+\});/m);
@@ -71,5 +78,5 @@ assert.equal(Object.keys(release.resources).length,37,'37 offline assets expecte
 for(const p of ['stories.html','app.js','index.html']){
  assert(/^[0-9a-f]{64}$/.test(release.resources[p]||''),'Missing SHA-256 for '+p);
 }
-console.log('PASS: six source-grounded stories, Quran/hadith distinction, source URLs, filters, navigation and 37-asset PWA');
+console.log('PASS: seven source-grounded stories, Quran/hadith distinction, source URLs, filters, navigation and 37-asset PWA');
 console.log('NOT CERTIFIED: independent exegetical, isnad, Arabic, translation or theological review');
