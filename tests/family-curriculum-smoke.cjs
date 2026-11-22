@@ -6,6 +6,7 @@ const lessons=[
   {file:'family-mahr.html',title:/Махр/,required:['https://quran.com/4/4','https://sunnah.com/bukhari:5150']},
   {file:'family-children.html',title:/Воспитание детей/,required:['https://quran.com/31/13','https://sunnah.com/bukhari:5997']},
   {file:'family-child-rights.html',title:/Права ребёнка в исламе/,required:['https://quran.com/2/233','https://sunnah.com/bukhari:5467','https://sunnah.com/bukhari:2587']},
+  {file:'family-parent-duties.html',title:/Обязанности родителей перед детьми/,required:['https://quran.com/66/6','https://sunnah.com/bukhari:7138','https://quran.com/4/10']},
   {file:'family-prophetic-example.html',title:/Семейная жизнь/,required:['https://quran.com/30/21','https://sunnah.com/bukhari:6039']}
 ];
 (async()=>{
@@ -29,6 +30,34 @@ try{
       await page.waitForURL('**/'+lesson.file);
       assert.match(await page.locator('h1').textContent(),lesson.title,'Lesson title '+lesson.file);
       assert(await page.locator('section.card').count()>=4,'Must have explanation and practical sections');
+      if (lesson.file === 'family-parent-duties.html') {
+        assert.equal(await page.locator('section.card').count(),7,
+          'Parental duties must include seven focused sections');
+        assert.equal(await page.locator('.quick-nav a[href^="#duty-"]').count(),7,
+          'Parental duties quick navigation must cover all sections');
+        assert.equal(await page.locator('#duty-7 details').count(),5,
+          'Parental duties self check must have five questions');
+        for (const href of [
+          'https://quran.com/66/6',
+          'https://quran.com/65/7',
+          'https://quran.com/4/10',
+          'https://sunnah.com/bukhari:2587',
+          'https://www.fiqhpedia.org/articles/article:kwfe:v11:a084?lang=en',
+          'https://seekersguidance.org/answers/hanafi-fiqh/estate-division-and-the-sunna-of-equal-treatment-of-children-in-gift-giving/',
+          'https://al-islam.org/children-quran-and-sunnah-muhammadi-reyshahri/chapter-4-ethics-upbringing',
+        ]) {
+          assert(await page.locator('a[href="'+href+'"]').count()>0,
+            'Parental duties lesson missing evidence link '+href);
+        }
+        const body=await page.locator('main').innerText();
+        for (const phrase of [
+          'в контексте суры о разводе и связанных обязательствах',
+          'Это разногласие именно о прижизненных дарах',
+          'не удостоверенный консенсус всех шиитских',
+          'Вторичные правовые материалы, не Коран и не хадисы',
+          'не утверждение, что нормы наследования можно менять',
+        ]) assert(body.includes(phrase),'Parental duties context caveat missing: '+phrase);
+      }
       if (lesson.file === 'family-child-rights.html') {
         assert.equal(await page.locator('section.card').count(),8,
           'Child rights must contain eight focused sections');
