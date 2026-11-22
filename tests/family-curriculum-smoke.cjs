@@ -10,6 +10,7 @@ const lessons=[
   {file:'family-custody.html',title:/Опека после развода/,required:['https://quran.com/2/233','https://sunnah.com/abudawud:2276','https://www.sistani.org/english/book/48/2372/']},
   {file:'family-child-safety.html',title:/Безопасность ребёнка/,required:['https://quran.com/4/135','https://sunnah.com/bukhari:2444','https://www.who.int/news-room/fact-sheets/detail/violence-against-children']},
   {file:'family-teen-dialogue.html',title:/Подростки/,required:['https://quran.com/31/13-19','https://quran.com/49/12','https://sunnah.com/bukhari:5376','https://www.unicef.org/parenting/child-care/11-tips-communicating-your-teen']},
+  {file:'family-filial-duties.html',title:/Почтение к родителям/,required:['https://quran.com/17/23','https://quran.com/31/15','https://sunnah.com/bukhari:5971','https://sunnah.com/bukhari:7257']},
   {file:'family-prophetic-example.html',title:/Семейная жизнь/,required:['https://quran.com/30/21','https://sunnah.com/bukhari:6039']}
 ];
 (async()=>{
@@ -33,6 +34,30 @@ try{
       await page.waitForURL('**/'+lesson.file);
       assert.match(await page.locator('h1').textContent(),lesson.title,'Lesson title '+lesson.file);
       assert(await page.locator('section.card').count()>=4,'Must have explanation and practical sections');
+      if (lesson.file === 'family-filial-duties.html') {
+        assert.equal(await page.locator('section.card').count(),9,
+          'Parent respect: nine learning sections');
+        assert.equal(await page.locator('.quick-nav a[href^="#filial-"]').count(),9,
+          'Parent respect: nine quick navigation anchors');
+        assert.equal(await page.locator('#filial-9 details').count(),5,
+          'Parent respect: five review questions');
+        for(const href of [
+          'https://quran.com/17/24','https://quran.com/31/14',
+          'https://sunnah.com/bukhari:2620',
+          'https://al-islam.org/contemporary-legal-rulings-shii-law-sayyid-ali-hussaini-sistani/b-muamalat',
+          'https://seekersguidance.org/answers/general-counsel/obeying-ones-parents-and-maintaining-ties-of-kinship/',
+          'https://www.who.int/news-room/fact-sheets/detail/abuse-of-older-people'
+        ])assert(await page.locator('a[href="'+href+'"]').count()>0,
+          'Parent respect missing evidence: '+href);
+        const body=await page.locator('main').innerText();
+        for(const phrase of [
+          'не прямая речь Лукмана',
+          'Контекст хадиса — распоряжение военного командира',
+          'не удостоверенный консенсус всех суннитских школ',
+          'не единое правило всех шиитов, суннитов или исмаилитов',
+          'не является требованием терпеть насилие или оставаться в опасном доме'
+        ])assert(body.includes(phrase),'Parent respect limitation missing: '+phrase);
+      }
       if (lesson.file === 'family-teen-dialogue.html') {
         assert.equal(await page.locator('section.card').count(),9,
           'Teen dialogue must have nine topic sections');
