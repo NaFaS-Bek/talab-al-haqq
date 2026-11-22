@@ -210,7 +210,7 @@ function details(r) {
     html += readingTimingNote(x);
     const verses = verseReading(x);
     html += verses || arabic(x.arabicText);
-    if(x.transliterationRu) html += `<details class="source-inline" open><summary>Транскрипция</summary>${para('',x.transliterationRu)}</details>`;
+    if(x.transliterationRu) html += `<details class="source-inline" open><summary>Транскрипция</summary>${para('',x.transliterationRu)}${x.transliterationNoteRu ? `<p class="bodycopy" data-pronunciation-note><strong>Как читать:</strong> ${clean(x.transliterationNoteRu)}</p>` : ''}</details>`;
     if (!verses) html += para('Перевод смысла',x.translationRu);
     if (x.translationAttribution) html += `<p class="attribution">${clean(brandMetadata(x.translationAttribution).split(' · ')[0])}</p>`;
     html += para('Контекст',x.contextRu) + para('Пояснение',x.explanationRu);
