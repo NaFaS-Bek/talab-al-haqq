@@ -16,6 +16,8 @@ on:
       - 'tests/adhkar-quran-unicode-batch1.cjs'
       - 'tests/adhkar-quran-unicode-remaining-duas.cjs'
       - 'tests/adhkar-quran-pause-source-comparison.cjs'
+      - 'tests/verify-official-tanzil.py'
+      - 'docs/quran-source-export-and-rendering-policy-2026-11-22.md'
       - 'docs/adhkar-quran-pause-source-comparison-pass5-2026-11-22.md'
       - 'tests/adhkar-tanzil-exact-54.cjs'
       - 'tests/adhkar-quran-transliteration-review-anchors.cjs'
@@ -67,6 +69,19 @@ jobs:
         run: node tests/adhkar-quran-unicode-batch1.cjs
       - name: Remaining 11 Quranic duas Unicode and stop-sign profile comparison
         run: node tests/adhkar-quran-unicode-remaining-duas.cjs
+      - name: Validate official source audit script syntax
+        run: python3 -m py_compile tests/verify-official-tanzil.py
+      - name: Try official Tanzil source fetch and SHA-256 comparison
+        id: official_tanzil
+        continue-on-error: true
+        run: python3 tests/verify-official-tanzil.py
+      - name: Upload official source provenance result (NOT a certificate)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: official-tanzil-provenance-attempt
+          path: official-tanzil-provenance-attempt.json
+          if-no-files-found: warn
       - name: Quran waqf mark positions against pinned Tanzil mirror
         run: node tests/adhkar-quran-pause-source-comparison.cjs
       - name: Independent Tanzil exact Unicode comparison for 54 Quran verses
