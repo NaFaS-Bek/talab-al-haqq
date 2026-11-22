@@ -82,6 +82,28 @@ const fs=require('node:fs');
    assert.equal(await page.locator('[data-open="'+key+'"]').count(),1,
      'Favorite must survive reload');
    await page.close();
+   // Corrupted but valid JSON values must not crash localStorage readers.
+   const malformed=await browser.newPage({viewport:{width:390,height:844}});
+   const malformedErrors=[];
+   malformed.on('pageerror',e=>malformedErrors.push(e.message));
+   await malformed.addInitScript(()=>{
+     localStorage.setItem('nfs_favs',JSON.stringify({notAnArray:true}));
+     localStorage.setItem('nfs_counts',JSON.stringify(['invalid']));
+     localStorage.setItem('nfs_theme',JSON.stringify({notATheme:true}));
+     localStorage.setItem('nfs_reading',JSON.stringify('bad'));
+   });
+   await malformed.goto('http://127.0.0.1:8765/',{waitUntil:'networkidle'});
+   await malformed.locator('#screen .hero h1').waitFor({state:'visible'});
+   await malformed.locator('.bottom [data-tab="favorites"]').click();
+   assert.equal(await malformed.locator('[data-open]').count(),0,
+     'Malformed favorites should be treated as an empty selection');
+   await malformed.locator('.bottom [data-tab="dua"]').click();
+   await malformed.locator('[data-dua-group="morning"]').click();
+   await malformed.locator('[data-open^="dua:"]').first().click();
+   assert(await malformed.locator('#detail [data-fav]').count()>0,
+     'Details must remain usable after corrupted saved data');
+   assert.deepEqual(malformedErrors,[],'Malformed localStorage caused a JavaScript error');
+   await malformed.close();
    console.log('PASS site-wide browser smoke:',results.length,'page/viewport combinations across',pages.length,'HTML pages, offline preview disclosure, theme and favorite persistence');
    console.log('NOT CERTIFIED: production hosting, real devices, offline-ready release, accessibility conformance or security penetration test');
  }finally{
