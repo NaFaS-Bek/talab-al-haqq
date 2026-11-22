@@ -11,6 +11,7 @@ on:
       - 'docs/family-difficult-passages-source-review-pass11-2026-11-22.md'
       - 'family-nikah.html'
       - 'family-mahr.html'
+      - 'tests/family-mahr-source-context-pass17.cjs'
       - 'family-prophetic-example.html'
       - 'tests/family-primary-source-context-pass10.cjs'
       - 'docs/family-primary-source-review-pass10-2026-11-22.md'
@@ -94,6 +95,8 @@ jobs:
           node-version: '22'
       - name: Structural content audit
         run: node tests/content-audit.cjs
+      - name: Mahr before consummation Quran 2:236 and 2:237 context guards
+        run: node tests/family-mahr-source-context-pass17.cjs
       - name: Child upbringing source and attribution guards
         run: node tests/family-children-source-regressions.cjs
       - name: Child rights source and interpretation safeguards
