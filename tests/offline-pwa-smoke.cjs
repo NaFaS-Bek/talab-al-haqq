@@ -30,9 +30,8 @@ function makeUpdate(){
   fs.appendFileSync(indexPath,'\n'+marker+'\n');
   release.resources['index.html']=sha256(fs.readFileSync(indexPath));
   // Source manifest paths are sorted; JSON serialization preserves insertion order.
-  const sorted=Object.fromEntries(Object.entries(release.resources).sort(([a],[b])=>a.localeCompare(b,'en')));
-  release.resources=sorted;
-  release.version=sha256(JSON.stringify(sorted));
+  // Preserve the Python manifest's canonical lexicographic key order.
+  release.version=sha256(JSON.stringify(release.resources));
   const next=old.replace(/^const RELEASE = \{[^\r\n]+\};\r?$/m,
     'const RELEASE = '+JSON.stringify(release)+';');
   assert.notEqual(next,old,'SW update should change source');
@@ -59,9 +58,9 @@ async function workerStatus(page){
   page.on('pageerror',e=>jsErrors.push(e.message));
   await page.goto(base,{waitUntil:'domcontentloaded'});
   await page.locator('#screen .hero h1').waitFor({state:'visible',timeout:30000});
-  await page.waitForFunction(()=>Boolean(navigator.serviceWorker?.controller),{timeout:120000});
+  await page.waitForFunction(()=>Boolean(navigator.serviceWorker?.controller),null,{timeout:120000});
   await page.waitForFunction(()=>document.querySelector('#offlineStatus')?.textContent==='Доступно офлайн',
-    {timeout:120000});
+    null,{timeout:120000});
   const initial=await workerStatus(page);
   assert.equal(initial.state,'ready','All cached assets must be verified before offline ready');
   assert(initial.total>=30,'Incomplete offline resource inventory');
@@ -125,7 +124,7 @@ async function workerStatus(page){
     await registration.update();
   });
   await page.waitForFunction(()=>Boolean(document.querySelector('#updateBanner')&&!document.querySelector('#updateBanner').hidden),
-    {timeout:120000});
+    null,{timeout:120000});
   await page.locator('#reloadUpdate').click();
   await page.waitForFunction(async expected=>{
     if(!navigator.serviceWorker.controller)return false;
@@ -156,7 +155,7 @@ async function workerStatus(page){
   await corrupt.goto(broken,{waitUntil:'domcontentloaded'});
   await corrupt.locator('#screen .hero h1').waitFor({state:'visible',timeout:30000});
   await corrupt.waitForFunction(()=>document.querySelector('#offlineStatus')?.textContent.includes('Офлайн-загрузка не завершена'),
-    {timeout:90000});
+    null,{timeout:90000});
   assert.equal(await corrupt.evaluate(()=>!!navigator.serviceWorker.controller),false,
     'Corrupted offline release must not claim control');
   const cacheReady=await corrupt.evaluate(async()=>{
