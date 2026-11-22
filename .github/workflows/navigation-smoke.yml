@@ -14,6 +14,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - run: node --check tests/live-site-audit.cjs
       - run: node tests/site-wide-integrity.cjs
       - run: node tests/navigation-smoke.cjs
       - run: node tests/content-audit.cjs
@@ -24,6 +25,7 @@ jobs:
           sleep 2
           node tests/browser-smoke.cjs
           node tests/site-wide-browser-smoke.cjs
+          node tests/site-performance-baseline.cjs
           node tests/arabic-lesson-smoke.cjs
           node tests/five-pillars-smoke.cjs
           node tests/wudu-salah-smoke.cjs
@@ -35,6 +37,7 @@ jobs:
           name: navigation-screenshots
           path: |
             navigation-*.png
+            performance-local-baseline.json
             arabic-lesson-*.png
             five-pillars-*.png
             pillar-*.png

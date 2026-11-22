@@ -1,0 +1,31 @@
+name: Check published site (manual)
+on:
+  workflow_dispatch:
+    inputs:
+      site_url:
+        description: 'Exact public HTTPS URL of Talab al-Haqq, ending with /'
+        required: true
+        type: string
+permissions:
+  contents: read
+jobs:
+  live-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify public pages, live content and headers against main
+        run: node tests/live-site-audit.cjs
+        env:
+          TALAB_SITE_URL: ${{ inputs.site_url }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: live-site-audit-report
+          path: live-site-report.json
+          if-no-files-found: warn
