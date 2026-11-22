@@ -160,6 +160,40 @@ const assert = require('node:assert/strict');
     'Bukhari 5743 must not invent reading-time restrictions');
   await page.locator('#modal .close').click();
 
+  // Pass 19: six already published daily-life and travel cards.
+  // All public changes are guarded by the exact hadith source and endings.
+  for(const spec of [
+    {id:'h_bukhari_6324_sleep',find:'بِاسْمِكَ اللَّهُمَّ أَمُوتُ',none:true},
+    {id:'h_bukhari_6324_waking',find:'الْحَمْدُ لِلَّهِ الَّذِي أَحْيَانَا',none:true},
+    {id:'h_tirmidhi_1858_before',find:'بِسْمِ اللَّهِ',none:true},
+    {id:'h_tirmidhi_1858_forgot',find:'فِي أَوَّلِهِ وَآخِرِهِ',
+      note:/وَآخِرِهِ.*при продолжении.*ахирихи.*остановка/s},
+    {id:'h_tirmidhi_3458',find:'الْحَمْدُ لِلَّهِ الَّذِي أَطْعَمَنِي',
+      note:/قُوَّةٍ.*та-марбут.*при соединении.*кувватин.*при остановке/is},
+    {id:'h_muslim_1342',find:'سُبْحَانَ الَّذِي سَخَّرَ لَنَا',
+      excerpt:/такбир трижды.*при возвращении.*нет в этой карточке/s}
+  ]){
+    await page.locator('#search').fill(spec.find);
+    const candidate=page.locator('[data-open="dua:'+spec.id+'"]');
+    assert.equal(await candidate.count(),1,'Daily/travel card missing from search '+spec.id);
+    await candidate.click();
+    const reading=page.locator('#detail [data-pronunciation-note]');
+    const context=page.locator('#detail [data-supplication-excerpt-context]');
+    if(spec.note){
+      assert.equal(await reading.count(),1,spec.id+': verified pause note missing');
+      assert.match(await reading.textContent(),spec.note,spec.id+': source-bound pause note changed');
+      assert.equal(await context.count(),0,spec.id+': unrelated journey context');
+    }else if(spec.excerpt){
+      assert.equal(await context.count(),1,'Travel sequence boundaries missing');
+      assert.match(await context.textContent(),spec.excerpt,'Trip takbir/return context changed');
+      assert.equal(await reading.count(),0,'Do not invent travel-specific phonetic review');
+    }else{
+      assert.equal(await reading.count(),0,'No auto-generated phonetics note for '+spec.id);
+      assert.equal(await context.count(),0,'No travel context for '+spec.id);
+    }
+    await page.locator('#modal .close').click();
+  }
+
   await page.locator('#search').fill('');
   await page.locator('[data-dua-group="daily"]').click();
   await page.locator('[data-open="dua:h_muslim_2018a"]').click();

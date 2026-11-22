@@ -219,6 +219,19 @@ function readingTimingNote(x) {
 // catalog itself; display these supplements only while source + exact endings
 // match the reviewed snapshots (see docs/adhkar-pronunciation-notes-2026-11-22.md).
 const sourceLinkedPronunciationSupplements = Object.freeze({
+  // Daily life formulae, matched to published source and exact endings.
+  h_tirmidhi_1858_forgot: {
+    sourceUrl:'https://sunnah.com/tirmidhi:1858',
+    arabicEnding:'فِي أَوَّلِهِ وَآخِرِهِ',
+    transliterationEnding:'фи аввалихи ва ахирих.',
+    note:'Слова «وَآخِرِهِ» имеют конечную краткую огласовку «и» при продолжении речи (приблизительно «…ва ахирихи»). В основной русской подсказке «…ва ахирих» показана остановка в конце фразы. Это одна и та же формула, а не две разные молитвы. Русская запись служит вспомогательной подсказкой.',
+  },
+  h_tirmidhi_3458: {
+    sourceUrl:'https://sunnah.com/tirmidhi:3458',
+    arabicEnding:'وَلاَ قُوَّةٍ',
+    transliterationEnding:'ва ля кувватин.',
+    note:'Последнее слово «قُوَّةٍ» заканчивается та-марбутой (ة) с танвином касры. При соединении оно приблизительно звучит «кувватин», как в основной транскрипции; при остановке танвин не произносится, а ة читается как هْ — мягкое «х/һ». Поэтому при паузе нельзя читать конечное «-тин» как обязательное. Кириллица не заменяет произношения у преподавателя.',
+  },
   // Arabic endings rechecked against the cited narrations. These are limited
   // educational pause notes, not an expert audio/phonetics certificate.
   h_muslim_2708a: {
@@ -400,6 +413,26 @@ function linkedQuranReadingNote(x) {
        !x.transliterationRu.endsWith(note.endRussian))) return null;
   return note;
 }
+// A single hadith excerpt that omits other steps of the narrated journey.
+// Keep the explanation separate from Arabic words to be recited.
+const sourceLinkedExcerptContexts = Object.freeze({
+  h_muslim_1342: {
+    sourceUrl:'https://sunnah.com/muslim:1342',
+    arabicStart:'سُبْحَانَ الَّذِي سَخَّرَ لَنَا',
+    arabicEnd:'فِي الْمَالِ وَالأَهْلِ',
+    transliterationEnding:'фи-ль-мали ва-ль-ахль.',
+    note:'Это слова мольбы при отправлении в путь, а не полный порядок из хадиса. В передаче Муслима 1342 перед мольбой Пророк ﷺ произносил такбир трижды; при возвращении упоминаются дополнительные слова, которых нет в этой карточке. Не принимайте этот фрагмент за полный текст всех действий при поездке.',
+  },
+});
+function excerptContextExplanation(x) {
+  const note=sourceLinkedExcerptContexts[x.id];
+  if(!note || x.originKind!=='hadith' || x.excerptKind!=='supplication_excerpt') return '';
+  if(!x.sourceRefs?.some(ref=>ref.url===note.sourceUrl)) return '';
+  if(!x.arabicText?.startsWith(note.arabicStart) ||
+     !x.arabicText?.endsWith(note.arabicEnd) ||
+     !x.transliterationRu?.endsWith(note.transliterationEnding)) return '';
+  return note.note;
+}
 function pronunciationExplanation(x) {
   if (x.transliterationNoteRu) return x.transliterationNoteRu;
   const quranNote = linkedQuranReadingNote(x);
@@ -496,6 +529,8 @@ function details(r) {
     if (narrativeQuranEntries.has(x.id)) html += `<p class="reading-note">Этот аят или отрывок включает повествование, которое не является словами самой мольбы. Полный текст сохранён без сокращений.</p>`;
     if (x.excerptKind === 'dhikr_instruction') html += `<p class="reading-note">Это наставление из хадиса для изучения, а не установленная формула для дословного повторения.</p>`;
     html += readingTimingNote(x);
+    const excerptContext=excerptContextExplanation(x);
+    if(excerptContext) html += `<p class="reading-note" data-supplication-excerpt-context="1"><strong>Границы цитаты:</strong> ${clean(excerptContext)}</p>`;
     const verses = verseReading(x);
     html += verses || arabic(x.arabicText);
     html += quranPauseComparison(x);
