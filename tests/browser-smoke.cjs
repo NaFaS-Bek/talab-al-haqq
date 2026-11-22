@@ -76,7 +76,7 @@ const assert = require('node:assert/strict');
   assert.match(await page.locator('#screen .sectionhead h2').first().textContent(),/Суры для чтения/);
   await page.locator('[data-open="dua:q_surah_112"]').click();
   assert.match(await page.locator('#detail .material-type').textContent(),/Сура для чтения/);
-  assert.match(await page.locator('#detail [data-reading-timing]').textContent(),/утром и вечером.*3 раз/,'Three last surahs: cited 5082 reading schedule must be visible');
+  assert.match(await page.locator('#detail [data-reading-timing]').textContent(),/утром и вечером.*3 раза/,'Three last surahs: cited 5082 reading schedule must be visible');
   const fourVerses=await page.locator('#detail .verse-card').count();
   assert.equal(fourVerses,4,'Al-Ikhlas must have four separately labelled verses');
   const source=require('node:fs');
@@ -94,7 +94,7 @@ const assert = require('node:assert/strict');
   // Use the direct record search only if the search index contains the hadith number.
   if (await page.locator('[data-open="dua:h_abudawud_5088"]').count() === 0) await page.locator('#search').fill('С именем Аллаха');
   await page.locator('[data-open="dua:h_abudawud_5088"]').click();
-  assert.match(await page.locator('#detail [data-reading-timing]').textContent(),/утром и вечером.*3 раз/,'Abu Dawud 5088 time and recitation count must be visible');
+  assert.match(await page.locator('#detail [data-reading-timing]').textContent(),/утром и вечером.*3 раза/,'Abu Dawud 5088 time and recitation count must be visible');
   await page.locator('#modal .close').click();
   await page.locator('#search').fill('');
   await page.locator('[data-dua-group="daily"]').click();
