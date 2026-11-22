@@ -7,12 +7,20 @@ on:
       - '.github/workflows/live-site-audit.yml'
       - 'tests/live-site-audit.cjs'
       - 'tests/live-site-browser-smoke.cjs'
+      - 'tests/live-site-offline-smoke.cjs'
+      - 'sw.js'
+      - 'app.js'
+      - 'tool/prepare_website.py'
   pull_request:
     branches: [main]
     paths:
       - '.github/workflows/live-site-audit.yml'
       - 'tests/live-site-audit.cjs'
       - 'tests/live-site-browser-smoke.cjs'
+      - 'tests/live-site-offline-smoke.cjs'
+      - 'sw.js'
+      - 'app.js'
+      - 'tool/prepare_website.py'
       - '_headers'
   workflow_dispatch:
     inputs:
@@ -37,6 +45,7 @@ jobs:
         run: |
           node --check tests/live-site-audit.cjs
           node --check tests/live-site-browser-smoke.cjs
+          node --check tests/live-site-offline-smoke.cjs
       - name: Verify live pages, assets, and security headers
         # On a main push Cloudflare may deploy asynchronously; retry for up
         # to ~2 minutes. On PR use one non-blocking baseline of live main.
@@ -59,6 +68,11 @@ jobs:
       - name: Exercise real published site at mobile and desktop widths
         continue-on-error: ${{ github.event_name == 'pull_request' }}
         run: node tests/live-site-browser-smoke.cjs
+        env:
+          TALAB_SITE_URL: ${{ github.event_name == 'workflow_dispatch' && inputs.site_url || 'https://talab-al-haqq.rnafasbek.workers.dev/' }}
+      - name: Confirm verified public offline PWA and read all lessons disconnected
+        if: github.event_name != 'pull_request'
+        run: node tests/live-site-offline-smoke.cjs
         env:
           TALAB_SITE_URL: ${{ github.event_name == 'workflow_dispatch' && inputs.site_url || 'https://talab-al-haqq.rnafasbek.workers.dev/' }}
       - uses: actions/upload-artifact@v4
