@@ -15,7 +15,20 @@ function save(key, value) {
   catch { $('#storageMessage').hidden = false; return false; }
 }
 let db = {}, caliphs = null, tab = 'home', filter = 'all', query = '', entries = [], library = [], history = [], active = null;
-let favs = get('favs', []), counts = get('counts', {}), theme = get('theme', 'dark'), reading = get('reading', {});
+// A successful JSON parse does not imply a valid persisted shape. Keep saved
+// values in storage for user recovery, but never let malformed data crash the UI.
+const storedFavs=get('favs',[]);
+let favs=Array.isArray(storedFavs)?[...new Set(storedFavs.filter(x=>typeof x==='string'))]:[];
+const storedCounts=get('counts',{});
+let counts=storedCounts&&typeof storedCounts==='object'&&!Array.isArray(storedCounts)
+  ? Object.fromEntries(Object.entries(storedCounts).filter(([,n])=>typeof n==='number'&&Number.isFinite(n)&&n>=0)):{};
+const storedTheme=get('theme','dark');
+let theme=['light','dark'].includes(storedTheme)?storedTheme:'dark';
+const storedReading=get('reading',{});
+let reading=storedReading&&typeof storedReading==='object'&&!Array.isArray(storedReading)
+  ? Object.fromEntries(Object.entries(storedReading).filter(([key,value])=>
+      key==='last'?typeof value==='string':typeof value==='number'&&Number.isFinite(value)&&value>=0)):{};
+
 let modalStack = [], lastFocus = null;
 let reviewReturnState = null;
 let knowledgeGroup = null, educationTopic = null, duaGroup = null;
