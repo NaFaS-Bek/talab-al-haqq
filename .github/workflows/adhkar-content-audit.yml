@@ -6,6 +6,9 @@ on:
       - 'app.js'
       - 'family-children.html'
       - 'family-rights.html'
+      - 'family-difficult-passages.html'
+      - 'tests/family-difficult-passages-source-regressions.cjs'
+      - 'docs/family-difficult-passages-source-review-pass11-2026-11-22.md'
       - 'family-nikah.html'
       - 'family-mahr.html'
       - 'family-prophetic-example.html'
@@ -97,6 +100,8 @@ jobs:
         run: node tests/family-child-rights-source-regressions.cjs
       - name: Parental duties source and multi-school fiqh safeguards
         run: node tests/family-parent-duties-source-regressions.cjs
+      - name: Sensitive family passages tafsir hadith and safety attribution
+        run: node tests/family-difficult-passages-source-regressions.cjs
       - name: Deep family primary source context safeguards (pass 10)
         run: node tests/family-primary-source-context-pass10.cjs
       - name: Cross-lesson family curriculum consistency and review status
