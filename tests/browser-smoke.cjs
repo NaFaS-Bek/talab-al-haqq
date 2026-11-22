@@ -155,10 +155,36 @@ const assert = require('node:assert/strict');
     assert.equal(await link.getAttribute('rel'),'noopener noreferrer');
     await page.locator('#modal .close').click();
   }
-  await page.locator('#search').fill('Мольба Юнуса');
-  await page.locator('[data-open="dua:q_21_87"]').click();
+  // Arabic consonants ض ظ ع غ ح ق have distinct standard phonetic symbols
+  // that ordinary Cyrillic approximations do not fully preserve.
+  for (const scenario of [
+    {search:'Айюб: обращение в страдании', id:'q_21_83', symbol:'ض (ḍād)'},
+    {search:'Мольба Юнуса во мраке', id:'q_21_87', symbol:'ظ (ẓā)'},
+    {search:'Благодарность за дарованное благо', id:'q_27_19', symbol:'ع (ʿayn)'},
+    {search:'Нух: мольба о прощении', id:'q_71_28', symbol:'غ (ghayn)'},
+    {search:'Юсуф: о благом завершении', id:'q_12_101', symbol:'ح (ḥā)'},
+    {search:'Мольба Исы о даровании пропитания', id:'q_5_114', symbol:'ق (qāf)'},
+  ]) {
+    await page.locator('#search').fill(scenario.search);
+    await page.locator('[data-open="dua:' + scenario.id + '"]').click();
+    const explanation = page.locator('#detail [data-pronunciation-note]');
+    assert.equal(await explanation.count(),1,
+      scenario.id + ': exact source-linked phonetic note missing');
+    assert((await explanation.textContent()).includes(scenario.symbol),
+      scenario.id + ': note does not describe the intended Arabic consonant');
+    const link = page.locator('#detail [data-pronunciation-source] a');
+    assert.equal(await link.count(),1,
+      scenario.id + ': source link missing');
+    assert.equal(await link.getAttribute('href'),
+      'https://corpus.quran.com/documentation/phonetic.jsp',
+      scenario.id + ': wrong phonetic scheme source');
+    assert.match(await link.textContent(),/Обозначения звуков: Quranic Arabic Corpus/);
+    await page.locator('#modal .close').click();
+  }
+  await page.locator('#search').fill('Мольба Закарии');
+  await page.locator('[data-open="dua:q_21_89"]').click();
   assert.equal(await page.locator('#detail [data-pronunciation-source]').count(),0,
-    'Unrelated Quranic dua must not inherit word morphology link');
+    'Unrelated Quranic dua must not inherit phonetic note');
   await page.locator('#modal .close').click();
 
   assert.deepEqual(errors,[],'Unexpected browser errors');

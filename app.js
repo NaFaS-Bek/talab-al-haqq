@@ -229,13 +229,13 @@ const sourceLinkedPronunciationSupplements = Object.freeze({
 // Notes are NOT an audio or tajwid certification. Every supplement is guarded
 // by verse source, exact Arabic word, corresponding Russian substring and segment.
 // The verified morphology sources are from the Quranic Arabic Corpus.
-const sourceLinkedQuranGrammarNotes = Object.freeze({
+const sourceLinkedQuranReadingNotes = Object.freeze({
   q_7_23: {
     sourceNumber:'7:23',
     sourceUrl:'https://quran.com/7/23',
     arabicWord:'قَالَا',
     russianWord:'Каля',
-    grammarUrl:'https://corpus.quran.com/wordmorphology.jsp?location=%287%3A23%3A1%29',
+    referenceUrl:'https://corpus.quran.com/wordmorphology.jsp?location=%287%3A23%3A1%29',
     note:'В начале аята قَالَا — qālā («они оба сказали», двойственное число). Здесь два долгих ā, которые приблизительная запись «Каля» не показывает. Это слова повествования перед самой мольбой. Для произношения опирайтесь на арабский текст и проверенное чтение, а не только на кириллицу.',
   },
   q_2_250: {
@@ -243,7 +243,7 @@ const sourceLinkedQuranGrammarNotes = Object.freeze({
     sourceUrl:'https://quran.com/2/250',
     arabicWord:'قَالُوا۟',
     russianWord:'калю',
-    grammarUrl:'https://corpus.quran.com/wordmorphology.jsp?location=%282%3A250%3A5%29',
+    referenceUrl:'https://corpus.quran.com/wordmorphology.jsp?location=%282%3A250%3A5%29',
     note:'В слове قَالُوا — qālū («они сказали», множественное число). Здесь долгие ā и ū: русское «калю» не передаёт их долготу и может вводить в заблуждение. Это повествовательное введение перед словами мольбы. Сверяйте чтение с арабской строкой и записью квалифицированного чтеца.',
   },
   q_20_25_28: {
@@ -251,12 +251,66 @@ const sourceLinkedQuranGrammarNotes = Object.freeze({
     sourceUrl:'https://quran.com/20/25',
     arabicWord:'قَالَ',
     russianWord:'Каля',
-    grammarUrl:'https://corpus.quran.com/wordmorphology.jsp?location=%2820%3A25%3A1%29',
+    referenceUrl:'https://corpus.quran.com/wordmorphology.jsp?location=%2820%3A25%3A1%29',
     note:'Первое слово قَالَ — qāla («он сказал», единственное число): первый гласный ā долгий, последний a — краткий. Хотя русское «Каля» похоже на запись قَالَا (qālā, «они оба сказали») в другом аяте, это разные формы. Первое слово здесь — повествование о Мусе, а сама мольба начинается со следующего «Рабби».',
   },
+  q_21_83: {
+    sourceNumber:'21:83',
+    sourceUrl:'https://quran.com/21/83',
+    arabicWord:'ٱلضُّرُّ',
+    russianWord:'д-дурру',
+    referenceUrl:'https://corpus.quran.com/documentation/phonetic.jsp',
+    referenceLabel:'Обозначения звуков: Quranic Arabic Corpus',
+    note:'В слове ٱلضُّرُّ есть буква ض (ḍād); в схеме Quranic Arabic Corpus её обозначают ḍ, отдельно от обычной د (d). Русское «д» не передаёт это различие. Здесь также отмечено удвоение رّ. Это объяснение написания, а не проверка произношения на слух.',
+  },
+  q_21_87: {
+    sourceNumber:'21:87',
+    sourceUrl:'https://quran.com/21/87',
+    arabicWord:'ٱلظُّلُمَٰتِ',
+    russianWord:'з-зулюмати',
+    referenceUrl:'https://corpus.quran.com/documentation/phonetic.jsp',
+    referenceLabel:'Обозначения звуков: Quranic Arabic Corpus',
+    note:'В слове ٱلظُّلُمَٰتِ буква ظ (ẓā) обозначается ẓ, а не обычной z; «з» в русской подсказке лишь приблизительно. В этом же слове есть долгий гласный ā. Не определяйте точный звук по одной кириллице.',
+  },
+  q_27_19: {
+    sourceNumber:'27:19',
+    sourceUrl:'https://quran.com/27/19',
+    arabicWord:'أَوْزِعْنِىٓ',
+    russianWord:'аузи‘ни',
+    referenceUrl:'https://corpus.quran.com/documentation/phonetic.jsp',
+    referenceLabel:'Обозначения звуков: Quranic Arabic Corpus',
+    note:'В أَوْزِعْنِىٓ есть буква ع (ʿayn), которую корпус обозначает знаком ʿ. Знак «‘» в русской подсказке — условное напоминание о звуке, а не знак ударения. Для точного произношения нужен пример чтения, поскольку кириллица не передаёт ʿayn полностью.',
+  },
+  q_71_28: {
+    sourceNumber:'71:28',
+    sourceUrl:'https://quran.com/71/28',
+    arabicWord:'ٱغْفِرْ',
+    russianWord:'гфир',
+    referenceUrl:'https://corpus.quran.com/documentation/phonetic.jsp',
+    referenceLabel:'Обозначения звуков: Quranic Arabic Corpus',
+    note:'В ٱغْفِرْ буква غ (ghayn) в схеме транскрипции передаётся gh. Русская «г» в «гфир» не воспроизводит этот звук точно. Не путайте غ (gh) с ع (ʿ): это разные буквы; произношение лучше изучать с преподавателем.',
+  },
+  q_12_101: {
+    sourceNumber:'12:101',
+    sourceUrl:'https://quran.com/12/101',
+    arabicWord:'ٱلْأَحَادِيثِ',
+    russianWord:'ахадис',
+    referenceUrl:'https://corpus.quran.com/documentation/phonetic.jsp',
+    referenceLabel:'Обозначения звуков: Quranic Arabic Corpus',
+    note:'В ٱلْأَحَادِيثِ встречаются ح (ḥā) и ث (thā): в схеме корпуса это ḥ и th. Русское «ахадис» не различает их так же, как арабская запись, и не обозначает долгие гласные. Используйте кириллицу только как вспомогательную подсказку.',
+  },
+  q_5_114: {
+    sourceNumber:'5:114',
+    sourceUrl:'https://quran.com/5/114',
+    arabicWord:'ٱرْزُقْنَا',
+    russianWord:'варзукна',
+    referenceUrl:'https://corpus.quran.com/documentation/phonetic.jsp',
+    referenceLabel:'Обозначения звуков: Quranic Arabic Corpus',
+    note:'В ٱرْزُقْنَا буква ق (qāf) в схеме корпуса обозначается q, отдельно от ك (kāf, k). Поэтому русское «к» в «варзукна» — упрощение, а не точное описание места образования звука. Арабская строка здесь остаётся основным ориентиром.',
+  }
 });
-function linkedQuranGrammarNote(x) {
-  const note = sourceLinkedQuranGrammarNotes[x.id];
+function linkedQuranReadingNote(x) {
+  const note = sourceLinkedQuranReadingNotes[x.id];
   if (!note || x.originKind !== 'quran' || x.contentKind !== 'dua') return null;
   if (!x.sourceRefs?.some(ref =>
       ref.collection === 'Коран' && ref.number === note.sourceNumber && ref.url === note.sourceUrl)) return null;
@@ -269,7 +323,7 @@ function linkedQuranGrammarNote(x) {
 }
 function pronunciationExplanation(x) {
   if (x.transliterationNoteRu) return x.transliterationNoteRu;
-  const quranNote = linkedQuranGrammarNote(x);
+  const quranNote = linkedQuranReadingNote(x);
   if (quranNote) return quranNote.note;
   const supplement = sourceLinkedPronunciationSupplements[x.id];
   if (!supplement || x.originKind !== 'hadith') return '';
@@ -288,7 +342,7 @@ function details(r) {
     html += readingTimingNote(x);
     const verses = verseReading(x);
     html += verses || arabic(x.arabicText);
-    if(x.transliterationRu) { const note = pronunciationExplanation(x); const quranGrammar = x.transliterationNoteRu ? null : linkedQuranGrammarNote(x); html += `<details class="source-inline" open><summary>Транскрипция</summary>${para('',x.transliterationRu)}${note ? `<p class="bodycopy" data-pronunciation-note><strong>Как читать:</strong> ${clean(note)}</p>` : ''}${quranGrammar ? `<p class="attribution" data-pronunciation-source><a href="${clean(quranGrammar.grammarUrl)}" target="_blank" rel="noopener noreferrer">Разбор слова: Quranic Arabic Corpus</a></p>` : ''}</details>`; }
+    if(x.transliterationRu) { const note = pronunciationExplanation(x); const quranReading = x.transliterationNoteRu ? null : linkedQuranReadingNote(x); html += `<details class="source-inline" open><summary>Транскрипция</summary>${para('',x.transliterationRu)}${note ? `<p class="bodycopy" data-pronunciation-note><strong>Как читать:</strong> ${clean(note)}</p>` : ''}${quranReading ? `<p class="attribution" data-pronunciation-source><a href="${clean(quranReading.referenceUrl)}" target="_blank" rel="noopener noreferrer">${clean(quranReading.referenceLabel || 'Разбор слова: Quranic Arabic Corpus')}</a></p>` : ''}</details>`; }
     if (!verses) html += para('Перевод смысла',x.translationRu);
     if (x.translationAttribution) html += `<p class="attribution">${clean(brandMetadata(x.translationAttribution).split(' · ')[0])}</p>`;
     html += para('Контекст',x.contextRu) + para('Пояснение',x.explanationRu);
