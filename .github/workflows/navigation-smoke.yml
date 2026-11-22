@@ -24,6 +24,7 @@ jobs:
           sleep 2
           node tests/browser-smoke.cjs
           node tests/site-wide-browser-smoke.cjs
+          node tests/site-performance-baseline.cjs
           node tests/arabic-lesson-smoke.cjs
           node tests/five-pillars-smoke.cjs
           node tests/wudu-salah-smoke.cjs
@@ -35,6 +36,7 @@ jobs:
           name: navigation-screenshots
           path: |
             navigation-*.png
+            performance-local-baseline.json
             arabic-lesson-*.png
             five-pillars-*.png
             pillar-*.png
