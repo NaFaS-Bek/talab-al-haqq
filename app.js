@@ -580,7 +580,17 @@ if('serviceWorker' in navigator && location.protocol!=='file:') {
         status.textContent='Офлайн-режим пока не проверен: не удалось получить файл сборки.';
         return;
       }
-      // An existing complete offline worker can continue during a network outage.
+      // Offline navigation can be fully functional while sw.js cannot be
+      // revalidated from the network. Ask the controlling worker itself.
+      const channel=new MessageChannel();
+      channel.port1.onmessage=e=>{
+        status.textContent=e.data.state==='ready'
+          ? 'Доступно офлайн'
+          : 'Офлайн-копия не готова. Подключитесь к интернету для восстановления.';
+        channel.port1.close();
+      };
+      navigator.serviceWorker.controller.postMessage({type:'NFS_PWA_STATUS'},[channel.port2]);
+      return;
     }
     if(swSource && /^const RELEASE\s*=\s*null;\s*$/m.test(swSource)) {
       status.textContent='Онлайн-версия: офлайн-режим доступен только в подготовленной PWA-сборке.';
