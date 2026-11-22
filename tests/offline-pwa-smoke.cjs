@@ -122,7 +122,12 @@ async function workerStatus(page){
   await context.setOffline(false);
   await page.waitForFunction(()=>Boolean(document.querySelector('#updateBanner')&&!document.querySelector('#updateBanner').hidden),
     null,{timeout:120000});
+  // Wait for the controllerchange-triggered reload to settle. Polling the
+  // controller before its navigation finishes can briefly see the old client.
+  const upgradeNavigation=page.waitForNavigation({waitUntil:'domcontentloaded',timeout:120000});
   await page.locator('#reloadUpdate').click();
+  await upgradeNavigation;
+  await page.locator('#screen .hero h1').waitFor({state:'visible',timeout:30000});
   await page.waitForFunction(async expected=>{
     if(!navigator.serviceWorker.controller)return false;
     const response=await new Promise(resolve=>{
@@ -132,6 +137,8 @@ async function workerStatus(page){
     });
     return response.state==='ready'&&response.activeVersion===expected;
   },v2,{timeout:120000});
+  await page.waitForFunction(()=>document.querySelector('#offlineStatus')?.textContent==='Доступно офлайн',
+    null,{timeout:30000});
   const upgraded=await workerStatus(page);
   assert.equal(upgraded.activeVersion,v2,'New worker must be active after accepting update');
   for(const [name,key] of Object.entries({
