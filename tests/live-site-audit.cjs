@@ -112,7 +112,8 @@ async function pull(path){
   checkedAtUtc:new Date().toISOString(),publicBaseUrl:base.href,
   comparedWith:'current checked-out repository commit (run only from main for production)',
   productionReachable:!fetched.some(r=>r.error||r.status!==200),
-  exactSourceAssetsMatch:!output.some(r=>r.matchesCheckedOutCommit===false),
+  exactSourceAssetsMatch:['app.js','style.css','data/content.json']
+    .every(path=>output.some(r=>r.path===path&&r.status===200&&r.matchesCheckedOutCommit===true)),
   issues,warnings,requests:output
  };
  fs.writeFileSync('live-site-report.json',JSON.stringify(report,null,2)+'\n');
