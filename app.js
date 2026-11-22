@@ -201,6 +201,40 @@ function readingTimingNote(x) {
   const periods = [...new Set(rule.periods)].map(p => names[p]).join(' и ');
   return `<p class="reading-note" data-reading-timing="1"><strong>Когда читать по указанному источнику:</strong> ${clean(periods)}${count ? ` · ${count} ${count % 10 >= 2 && count % 10 <= 4 && (count % 100 < 12 || count % 100 > 14) ? 'раза' : 'раз'} в каждый период` : ''}. Это не фиксированное время по часам.</p>`;
 }
+// Short educational explanations for *specific* source-linked hadith cards.
+// The canonical catalog remains unchanged. Prefer a note supplied by the
+// catalog itself; display these supplements only while source + exact endings
+// match the reviewed snapshots (see docs/adhkar-pronunciation-notes-2026-11-22.md).
+const sourceLinkedPronunciationSupplements = Object.freeze({
+  h_abudawud_5088: {
+    sourceUrl:'https://sunnah.com/abudawud:5088',
+    arabicEnding:'وَهُوَ السَّمِيعُ الْعَلِيمُ',
+    transliterationEnding:'ва хува-с-сами‘у-ль-‘алим.',
+    note:'Основная транскрипция оканчивается на «…ль-‘алим» — это чтение с остановкой. При чтении без остановки конечная дамма слова «الْعَلِيمُ» звучит как краткое «у»: «…ль-‘алиму». Русская запись приблизительна и не передаёт точно арабские звуки.',
+  },
+  h_tirmidhi_3391_morning: {
+    sourceUrl:'https://sunnah.com/tirmidhi:3391',
+    arabicEnding:'وَإِلَيْكَ الْمَصِيرُ',
+    transliterationEnding:'ва иляйка-ль-масыр.',
+    note:'В конце утренней формулы — «…ва иляйка-ль-масыр». При остановке конечное краткое «у» слова «الْمَصِيرُ» не произносится; при продолжении оно звучит: «…ль-масыру». Не заменяйте утреннее окончание вечерним «ан-нушур»: в этой передаче они различаются.',
+  },
+  h_tirmidhi_3391_evening: {
+    sourceUrl:'https://sunnah.com/tirmidhi:3391',
+    arabicEnding:'وَإِلَيْكَ النُّشُورُ',
+    transliterationEnding:'ва иляйка-н-нушур.',
+    note:'В конце вечерней формулы — «…ва иляйка-н-нушур». При остановке конечное краткое «у» слова «النُّشُورُ» не произносится; при продолжении оно звучит: «…н-нушуру». «Н-н» передаёт удвоенную букву ن в слове «النُّشُورُ». Утреннее окончание в этой передаче другое — «аль-масыр».',
+  },
+});
+function pronunciationExplanation(x) {
+  if (x.transliterationNoteRu) return x.transliterationNoteRu;
+  const supplement = sourceLinkedPronunciationSupplements[x.id];
+  if (!supplement || x.originKind !== 'hadith') return '';
+  if (!x.sourceRefs?.some(ref => ref.url === supplement.sourceUrl)) return '';
+  if (!x.arabicText?.endsWith(supplement.arabicEnding) ||
+      !x.transliterationRu?.endsWith(supplement.transliterationEnding)) return '';
+  return supplement.note;
+}
+
 function details(r) {
   const x = r.data, kind = r.kind, key = `${kind}:${x.id}`;
   let html = `<h2 class="detailtitle">${clean(title(x,kind))}</h2><div class="meta material-type">${clean(kind === 'dua' ? materialType(x) : kindTitle[kind])}</div>`;
@@ -210,7 +244,7 @@ function details(r) {
     html += readingTimingNote(x);
     const verses = verseReading(x);
     html += verses || arabic(x.arabicText);
-    if(x.transliterationRu) html += `<details class="source-inline" open><summary>Транскрипция</summary>${para('',x.transliterationRu)}${x.transliterationNoteRu ? `<p class="bodycopy" data-pronunciation-note><strong>Как читать:</strong> ${clean(x.transliterationNoteRu)}</p>` : ''}</details>`;
+    if(x.transliterationRu) { const note = pronunciationExplanation(x); html += `<details class="source-inline" open><summary>Транскрипция</summary>${para('',x.transliterationRu)}${note ? `<p class="bodycopy" data-pronunciation-note><strong>Как читать:</strong> ${clean(note)}</p>` : ''}</details>`; }
     if (!verses) html += para('Перевод смысла',x.translationRu);
     if (x.translationAttribution) html += `<p class="attribution">${clean(brandMetadata(x.translationAttribution).split(' · ')[0])}</p>`;
     html += para('Контекст',x.contextRu) + para('Пояснение',x.explanationRu);
