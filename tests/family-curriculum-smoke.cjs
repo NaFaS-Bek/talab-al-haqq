@@ -9,6 +9,7 @@ const lessons=[
   {file:'family-parent-duties.html',title:/Обязанности родителей перед детьми/,required:['https://quran.com/66/6','https://sunnah.com/bukhari:7138','https://quran.com/4/10']},
   {file:'family-custody.html',title:/Опека после развода/,required:['https://quran.com/2/233','https://sunnah.com/abudawud:2276','https://www.sistani.org/english/book/48/2372/']},
   {file:'family-child-safety.html',title:/Безопасность ребёнка/,required:['https://quran.com/4/135','https://sunnah.com/bukhari:2444','https://www.who.int/news-room/fact-sheets/detail/violence-against-children']},
+  {file:'family-teen-dialogue.html',title:/Подростки/,required:['https://quran.com/31/13-19','https://quran.com/49/12','https://sunnah.com/bukhari:5376','https://www.unicef.org/parenting/child-care/11-tips-communicating-your-teen']},
   {file:'family-prophetic-example.html',title:/Семейная жизнь/,required:['https://quran.com/30/21','https://sunnah.com/bukhari:6039']}
 ];
 (async()=>{
@@ -32,6 +33,28 @@ try{
       await page.waitForURL('**/'+lesson.file);
       assert.match(await page.locator('h1').textContent(),lesson.title,'Lesson title '+lesson.file);
       assert(await page.locator('section.card').count()>=4,'Must have explanation and practical sections');
+      if (lesson.file === 'family-teen-dialogue.html') {
+        assert.equal(await page.locator('section.card').count(),9,
+          'Teen dialogue must have nine topic sections');
+        assert.equal(await page.locator('.quick-nav a[href^="#teen-"]').count(),9,
+          'Teen dialogue quick navigation must cover nine sections');
+        assert.equal(await page.locator('#teen-9 details').count(),5,
+          'Teen dialogue lesson must have five self-checks');
+        for(const href of [
+          'https://quran.com/31/14-15','https://quran.com/16/125',
+          'https://quran.com/20/132','https://sunnah.com/bukhari:6125',
+          'https://www.unicef.org/parenting/mental-health/teens-risky-behaviours',
+          'https://www.who.int/news-room/fact-sheets/detail/adolescent-mental-health'
+        ])assert(await page.locator('a[href="'+href+'"]').count()>0,'Teen dialogue source missing '+href);
+        const body=await page.locator('main').innerText();
+        for(const phrase of [
+          '31:14–15 — отдельное кораническое наставление о родителях',
+          'не устанавливает готовое правило о проверке телефона подростка',
+          'урок не отменяет и не переписывает содержание Абу Дауд 495',
+          'Ни один отдельный признак не равен диагнозу',
+          'При непосредственной опасности для жизни или угрозе самоповреждения'
+        ])assert(body.includes(phrase),'Teen dialogue caveat absent '+phrase);
+      }
       if (lesson.file === 'family-child-safety.html') {
         assert.equal(await page.locator('section.card').count(),8,
           'Child safety lesson must contain eight sections');
