@@ -104,6 +104,17 @@ const fs=require('node:fs');
      'Details must remain usable after corrupted saved data');
    assert.deepEqual(malformedErrors,[],'Malformed localStorage caused a JavaScript error');
    await malformed.close();
+   const noJsContext=await browser.newContext({javaScriptEnabled:false});
+   const noJsPage=await noJsContext.newPage();
+   await noJsPage.goto('http://127.0.0.1:8765/',{waitUntil:'load'});
+   const fallback=noJsPage.locator('noscript');
+   assert(await fallback.isVisible(),'No-JavaScript learner fallback must be displayed');
+   for(const href of ['five-pillars.html','family-rights.html',
+     'arabic-reading-signs.html','wudu-steps.html','salah-steps.html']){
+     assert.equal(await fallback.locator('a[href="'+href+'"]').count(),1,
+       'No-JavaScript fallback missing '+href);
+   }
+   await noJsContext.close();
    console.log('PASS site-wide browser smoke:',results.length,'page/viewport combinations across',pages.length,'HTML pages, offline preview disclosure, theme and favorite persistence');
    console.log('NOT CERTIFIED: production hosting, real devices, offline-ready release, accessibility conformance or security penetration test');
  }finally{
