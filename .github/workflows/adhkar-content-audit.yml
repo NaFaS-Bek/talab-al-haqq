@@ -8,6 +8,8 @@ on:
       - 'tests/adhkar-source-regressions.cjs'
       - 'tests/adhkar-hadith-deep-batch.cjs'
       - 'tests/adhkar-quran-deep-batch.cjs'
+      - 'tests/adhkar-prophets-deep-batch.cjs'
+      - 'docs/adhkar-deep-review-batch-5-2026-11-22.md'
       - 'docs/adhkar-deep-review-batch-4-2026-11-22.md'
       - 'docs/adhkar-deep-review-batch-3-2026-11-22.md'
       - 'tests/transliteration-inventory.cjs'
@@ -35,6 +37,8 @@ jobs:
         run: node tests/adhkar-hadith-deep-batch.cjs
       - name: Four Quranic supplication and narrative-boundary checks
         run: node tests/adhkar-quran-deep-batch.cjs
+      - name: Five prophet supplications and narrative boundaries
+        run: node tests/adhkar-prophets-deep-batch.cjs
       - name: Export transliteration review inventory
         run: node tests/transliteration-inventory.cjs > transliteration-inventory.json
       - name: Validate inventory report
