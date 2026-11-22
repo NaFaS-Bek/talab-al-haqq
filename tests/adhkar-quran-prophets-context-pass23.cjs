@@ -6,7 +6,7 @@ const fs = require('node:fs');
 const root = JSON.parse(fs.readFileSync('data/content.json','utf8'));
 const cards = [...(root.catalog?.entries||[]),...(root.catalog_additions?.entries||[])];
 const byId = new Map(cards.map(c=>[c.id,c]));
-const norm = x=>String(x??'').normalize('NFC').replace(/\\s+/g,' ').trim();
+const norm = x=>String(x??'').normalize('NFC').replace(/\s+/g,' ').trim();
 const specs = [
   {
     "id": "q_2_127_128",
