@@ -28,6 +28,33 @@ try{
       await page.waitForURL('**/'+lesson.file);
       assert.match(await page.locator('h1').textContent(),lesson.title,'Lesson title '+lesson.file);
       assert(await page.locator('section.card').count()>=4,'Must have explanation and practical sections');
+      if (lesson.file === 'family-children.html') {
+        assert.equal(await page.locator('section.card').count(),8,
+          'Child upbringing needs 8 deliberate learning sections');
+        assert.equal(await page.locator('.quick-nav a[href^="#section-"]').count(),8,
+          'All child upbringing sections must be accessible from navigation');
+        assert.equal(await page.locator('#section-8 details').count(),4,
+          'Child upbringing must have four source-aware self checks');
+        for (const href of [
+          'https://sunnah.com/bukhari:2587',
+          'https://quran.com/20/132',
+          'https://quran.com/31/14-15',
+          'https://quran.com/31/16-19',
+        ]) {
+          assert(await page.locator('a[href="'+href+'"]').count()>=1,
+            'Child lesson missing newly verified primary source '+href);
+        }
+        const contents=await page.locator('main').innerText();
+        for(const phrase of [
+          '31:14–15 — кораническое наставление о родителях',
+          'Это хадис именно о несправедливом выделении',
+          'современные педагогические рекомендации',
+          'не устанавливает конкретный возраст ребёнка',
+          'Страх, угрозы, насилие и публичное унижение',
+        ]) {
+          assert(contents.includes(phrase),'Child upbringing evidence boundary missing: '+phrase);
+        }
+      }
       assert.equal(await page.locator('#source-policy').count(),0,'Editorial status must be centralized, not underneath a lesson');
       assert(await page.locator('details summary').count()>=2,'Must have self checks');
       for(const href of lesson.required){
