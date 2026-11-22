@@ -219,6 +219,46 @@ const assert = require('node:assert/strict');
     'Unrelated Quranic dua must not inherit a pause-rule note');
   await page.locator('#modal .close').click();
 
+  // Compare five specific Quranic dua displays against the pinned Tanzil
+  // *mirror* pause marks. Symbols must stay outside the Quranic Arabic text.
+  for (const spec of [
+    {id:'q_14_40_41',search:'Ибрахим: молитва и прощение',jeem:1,silaa:0},
+    {id:'q_2_127_128',search:'Ибрахим и Исмаил: о принятии дела',jeem:0,silaa:2},
+    {id:'q_12_101',search:'Юсуф: о благом завершении',jeem:1,silaa:1},
+    {id:'q_7_89',search:'Шуайб: о справедливом решении',jeem:4,silaa:0},
+    {id:'q_5_114',search:'Мольба Исы о даровании пропитания',jeem:0,silaa:1},
+  ]) {
+    await page.locator('#search').fill(spec.search);
+    const card=page.locator('[data-open="dua:'+spec.id+'"]');
+    assert.equal(await card.count(),1,spec.id+': missing reviewed record');
+    await card.click();
+    const guide=page.locator('#detail [data-quran-pause-guide]');
+    assert.equal(await guide.count(),1,spec.id+': pause-comparison panel missing');
+    assert.equal(await guide.getAttribute('open'),null,'Pause comparison should be collapsed by default');
+    await guide.locator('summary').click();
+    assert.equal(await guide.locator('[data-pause-mark="6DA"]').count(),spec.jeem,
+      spec.id+': incorrect source jeem count');
+    assert.equal(await guide.locator('[data-pause-mark="6D6"]').count(),spec.silaa,
+      spec.id+': incorrect source silaa count');
+    assert.match(await guide.textContent(),/закреплённом стороннем снимке Tanzil Uthmani 1\.1/,
+      'Mirror provenance and limits must be visible');
+    assert.match(await guide.textContent(),/Вакф — остановка, васл — продолжение чтения/,
+      'Reading vocabulary must be explained');
+    const reference=guide.locator('a[href="https://tanzil.net/docs/pause_marks"]');
+    assert.equal(await reference.count(),1,spec.id+': official explanation URL missing');
+    assert.equal(await reference.getAttribute('rel'),'noopener noreferrer');
+    const arabic=await page.locator('#detail .arabic').allTextContents();
+    assert(arabic.length>0,spec.id+': original Quranic text missing');
+    assert(arabic.every(t=>!/[ۚۖ]/u.test(t)),
+      spec.id+': explanatory signs must NOT be spliced into Quranic scripture');
+    await page.locator('#modal .close').click();
+  }
+  await page.locator('#search').fill('Лут: о спасении семьи');
+  await page.locator('[data-open="dua:q_26_169"]').click();
+  assert.equal(await page.locator('#detail [data-quran-pause-guide]').count(),0,
+    'Unrelated Quranic dua must not inherit a source pause-mark discrepancy');
+  await page.locator('#modal .close').click();
+
   assert.deepEqual(errors,[],'Unexpected browser errors');
   await page.screenshot({path:'navigation-mobile.png',fullPage:true});
   await page.setViewportSize({width:1280,height:900});
