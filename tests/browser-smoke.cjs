@@ -89,6 +89,10 @@ const assert = require('node:assert/strict');
   await page.locator('#search').fill('Субханаллахи');
   await page.locator('[data-open="dua:h_muslim_2692"]').click();
   assert.match(await page.locator('#detail [data-reading-timing]').textContent(),/утром и вечером.*100 раз/,'Muslim 2692 time and recitation count must be visible');
+  assert.match(await page.locator('#detail .source-inline').textContent(),/Субханаллахи ва би-хамдихи\./,'Muslim 2692 base transliteration must retain the final -hi');
+  const pronunciation = page.locator('#detail [data-pronunciation-note]');
+  assert.equal(await pronunciation.count(),1,'Muslim 2692 must show its existing pronunciation explanation to readers');
+  assert.match(await pronunciation.textContent(),/без остановки:.*би-хамдихи.*при остановке.*би-хамдих/i,'Explain continuous and pausal readings in the displayed note');
   await page.locator('#modal .close').click();
   await page.locator('#search').fill('5088');
   // Use the direct record search only if the search index contains the hadith number.
