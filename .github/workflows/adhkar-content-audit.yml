@@ -7,6 +7,7 @@ on:
       - 'stories.html'
       - 'tests/quran-stories-source-regressions.cjs'
       - 'docs/quran-stories-pilot-source-review-2026-11-23.md'
+      - 'docs/quran-stories-pass2-source-review-2026-11-23.md'
       - 'family-children.html'
       - 'family-rights.html'
       - 'family-difficult-passages.html'
