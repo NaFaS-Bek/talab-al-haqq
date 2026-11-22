@@ -42,14 +42,8 @@ for(const [id,urls] of Object.entries(sources)){
   assert(body.includes(boundaries[id]),id+': original evidence qualification missing');
 }
 const fiqh=html.slice(html.indexOf('<section class="card" id="duty-6">'),html.indexOf('</section>',html.indexOf('<section class="card" id="duty-6">')));
-for(const term of ['ханафитских','маликитских','шафиитских','ханбалитском','шиитских','внутри самих школ','подарков при жизни','Вторичные правовые материалы','не удостоверенный консенсус']){
+for(const term of ['ханафитских','маликитских','шафиитских','ханбалитском','шиитских','Внутри самих школ','прижизненных дарах','Вторичные правовые материалы','не удостоверенный консенсус']){
   assert(fiqh.includes(term),'Nuanced legal-comparison note missing '+term);
-}
-for(const phrase of [
-  'приоритет','не заменяет','источники',
-]) {
-  // These general terms may appear in surrounding editorial copy but must not
-  // be used as proof of an expert endorsement.
 }
 assert(!/id="source-policy"|expert_checked|проверено экспертом/.test(html),
  'Expert endorsement must be tracked centrally and not be invented');
