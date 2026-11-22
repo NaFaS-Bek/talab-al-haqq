@@ -27,6 +27,7 @@ FORM = {
     "agree": "true",
 }
 FIXTURE = Path("tests/fixtures/tanzil-uthmani-1.1-remaining-duas.txt")
+SECOND_FIXTURE = Path("tests/fixtures/tanzil-uthmani-1.1-quran-sample-54.json")
 REPORT = Path("official-tanzil-provenance-attempt.json")
 LINE = re.compile(r"^(\d+)\|(\d+)\|(.+)$")
 IGNORABLE_FOR_CODEPOINT_DIAGNOSTIC = re.compile("[\u0640\u06d6\u06da\u06de]")
@@ -118,16 +119,43 @@ def run():
         report["unresolved_differences"] = differing
         report["matched_verse_ids"] = sorted(exact + mark_option_only,
                                            key=lambda s: tuple(map(int, s.split(":"))))
+        second_source = json.loads(SECOND_FIXTURE.read_text(encoding="utf-8"))
+        second_verses = second_source.get("verses", {})
+        if len(second_verses) != 54:
+            raise ValueError("Expected exactly 54 separate pinned sample verses")
+        exact_54 = []
+        mark_option_only_54 = []
+        unresolved_54 = []
+        for key, mirror in second_verses.items():
+            fetched = official.get(key)
+            if fetched is None:
+                unresolved_54.append(key + " (missing)")
+            elif fetched == mirror:
+                exact_54.append(key)
+            elif limited_normalization(fetched) == limited_normalization(mirror):
+                mark_option_only_54.append(key)
+            else:
+                unresolved_54.append(key)
+        report["sample54"] = {
+            "sample_sha256": hashlib.sha256(SECOND_FIXTURE.read_bytes()).hexdigest(),
+            "source_mirror": second_source.get("provenance", {}).get("mirror"),
+            "exact_matches": len(exact_54),
+            "same_after_limited_mark_normalization": len(mark_option_only_54),
+            "unresolved_differences": sorted(unresolved_54),
+        }
         report["result"] = (
-            "OFFICIAL_16_EXACT" if len(exact) == 16 else
-            "OFFICIAL_16_MARK_OPTION_DIFFERENCES_ONLY" if not differing else
-            "OFFICIAL_DIFFERENT_VERSES_REQUIRE_REVIEW"
+            "OFFICIAL_54_MATCH_AFTER_LIMITED_MARK_NORMALIZATION"
+            if not (differing or unresolved_54)
+            else "OFFICIAL_SOURCE_DIFFERENCES_REQUIRE_REVIEW"
         )
         print("Official Tanzil download returned 6236 verses. SHA-256:", report["official_response_sha256"])
         print("16 pinned verses: exact", len(exact),
               "normalized mark-option only", len(mark_option_only),
               "requires review", len(differing))
-        return 0 if not differing else 3
+        print("54 verse sample: exact", len(exact_54),
+              "normalized mark-option only", len(mark_option_only_54),
+              "requires review", len(unresolved_54))
+        return 0 if not (differing or unresolved_54) else 3
     except (OSError, UnicodeError, ValueError, urllib.error.URLError) as exc:
         report["result"] = "UNVERIFIED_OFFICIAL_EXPORT_UNAVAILABLE"
         report["error_type"] = type(exc).__name__
