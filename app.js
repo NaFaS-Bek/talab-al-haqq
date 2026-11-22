@@ -178,12 +178,36 @@ function verseReading(x) {
   }).join('');
   return `<div class="verse-reader" aria-label="Чтение по аятам"><p class="verse-intro">Текст разделён по аятам для удобного чтения. Перевод передаёт смысл.</p>${rows}</div>`;
 }
+// Two source-linked timing rules absent from the large catalog are displayed as
+// read-only guidance until their metadata can be migrated into data/content.json.
+// Each is guarded by its exact narration link and its recorded repetition count.
+const sourceLinkedTimingSupplements = Object.freeze({
+  h_muslim_2692: {periods:['morning','evening'],sourceUrl:'https://sunnah.com/muslim:2692',count:100},
+  h_abudawud_5088: {periods:['morning','evening'],sourceUrl:'https://sunnah.com/abudawud:5088',count:3},
+});
+function readingTimingNote(x) {
+  if (x.excerptKind === 'dhikr_instruction') return '';
+  const supplement = sourceLinkedTimingSupplements[x.id];
+  const rule = x.timingRule?.periods?.length ? x.timingRule : supplement;
+  if (!rule || !Array.isArray(rule.periods) || !rule.periods.length) return '';
+  if (!rule.sourceUrl || !x.sourceRefs?.some(ref => ref.url === rule.sourceUrl)) return '';
+  const names = {morning:'утром',evening:'вечером'};
+  if (!rule.periods.every(p => Object.hasOwn(names,p))) return '';
+  const stages = x.repetitionRule?.stages || [];
+  if (supplement && !(stages.length === 1 && stages[0].count === supplement.count)) return '';
+  const count = stages.length === 1 && Number.isSafeInteger(stages[0].count) && stages[0].count > 0
+    && (stages[0].sourceUrl === rule.sourceUrl || supplement?.count === stages[0].count)
+    ? stages[0].count : null;
+  const periods = [...new Set(rule.periods)].map(p => names[p]).join(' и ');
+  return `<p class="reading-note" data-reading-timing="1"><strong>Когда читать по указанному источнику:</strong> ${clean(periods)}${count ? ` · ${count} раз в каждый период` : ''}. Это не фиксированное время по часам.</p>`;
+}
 function details(r) {
   const x = r.data, kind = r.kind, key = `${kind}:${x.id}`;
   let html = `<h2 class="detailtitle">${clean(title(x,kind))}</h2><div class="meta material-type">${clean(kind === 'dua' ? materialType(x) : kindTitle[kind])}</div>`;
   if (kind === 'dua') {
     if (narrativeQuranEntries.has(x.id)) html += `<p class="reading-note">Этот аят или отрывок включает повествование, которое не является словами самой мольбы. Полный текст сохранён без сокращений.</p>`;
     if (x.excerptKind === 'dhikr_instruction') html += `<p class="reading-note">Это наставление из хадиса для изучения, а не установленная формула для дословного повторения.</p>`;
+    html += readingTimingNote(x);
     const verses = verseReading(x);
     html += verses || arabic(x.arabicText);
     if(x.transliterationRu) html += `<details class="source-inline" open><summary>Транскрипция</summary>${para('',x.transliterationRu)}</details>`;
