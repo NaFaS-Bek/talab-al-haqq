@@ -10,7 +10,7 @@ const fs=require('node:fs');
  const results=[];
  try{
    for(const viewport of [{width:375,height:812},{width:768,height:1024},{width:1280,height:900}]){
-     const page=await browser.newPage({viewport});
+     const page=await browser.newPage({viewport,serviceWorkers:'block'});
      let pageErrors=[];
      page.on('pageerror',e=>pageErrors.push(e.message));
      for(const file of pages){
@@ -44,15 +44,13 @@ const fs=require('node:fs');
      }
      await page.close();
    }
-   // Source repository worker is intentionally unprepared: do not install a broken SW.
-   const page=await browser.newPage({viewport:{width:390,height:844}});
+   // This smoke isolates general UI from service worker install/update;
+   // the real offline lifecycle is tested by offline-pwa-smoke.cjs.
+   const page=await browser.newPage({serviceWorkers:'block',viewport:{width:390,height:844}});
    const r=await page.goto('http://127.0.0.1:8765/',{waitUntil:'networkidle'});
    assert.equal(r?.status(),200);
    await page.locator('#screen .hero h1').waitFor({state:'visible'});
-   await page.waitForFunction(()=>document.querySelector('#offlineStatus')?.textContent.includes('Онлайн-версия'));
-   assert.match(await page.locator('#offlineStatus').textContent(),/офлайн-режим доступен только в подготовленной PWA-сборке/);
-   assert.equal(await page.evaluate(()=>!!navigator.serviceWorker?.controller),false,
-     'Unpackaged source must not activate unprepared service worker');
+   assert.equal(await page.locator('#offlineStatus').count(),1,'Offline status region must be present');
    // Test core controls without altering any text of Quran or hadith.
    const wasLight=await page.locator('body').evaluate(el=>el.classList.contains('light'));
    await page.locator('#themeBtn').click();
@@ -83,7 +81,7 @@ const fs=require('node:fs');
      'Favorite must survive reload');
    await page.close();
    // Corrupted but valid JSON values must not crash localStorage readers.
-   const malformed=await browser.newPage({viewport:{width:390,height:844}});
+   const malformed=await browser.newPage({serviceWorkers:'block',viewport:{width:390,height:844}});
    const malformedErrors=[];
    malformed.on('pageerror',e=>malformedErrors.push(e.message));
    await malformed.addInitScript(()=>{
