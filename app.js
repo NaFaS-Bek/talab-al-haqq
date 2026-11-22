@@ -219,6 +219,20 @@ function readingTimingNote(x) {
 // catalog itself; display these supplements only while source + exact endings
 // match the reviewed snapshots (see docs/adhkar-pronunciation-notes-2026-11-22.md).
 const sourceLinkedPronunciationSupplements = Object.freeze({
+  // Arabic endings rechecked against the cited narrations. These are limited
+  // educational pause notes, not an expert audio/phonetics certificate.
+  h_muslim_2708a: {
+    sourceUrl:'https://sunnah.com/muslim:2708a',
+    arabicEnding:'مَا خَلَقَ',
+    transliterationEnding:'ма халяк.',
+    note:'В конце формулы слово «خَلَقَ» имеет конечную фатху. При чтении без остановки она даёт краткое «а» (приблизительно «халяка»); при остановке гласная не произносится. Основная подсказка «…ма халяк» передаёт именно остановку. Русская транскрипция не заменяет арабский текст и чтение с преподавателем.',
+  },
+  h_bukhari_5743: {
+    sourceUrl:'https://sunnah.com/bukhari:5743',
+    arabicEnding:'سَقَمًا',
+    transliterationEnding:'сакама.',
+    note:'Последнее слово «سَقَمًا» оканчивается танвином фатх. При продолжении речи он даёт звук «ан» (приблизительно «сакаман»), а при остановке «н» не произносится и конечное «а» удлиняется. Русская подсказка «…сакама» не показывает долготу гласной. Это пояснение к чтению, а не новая редакция слов мольбы.',
+  },
   h_abudawud_5088: {
     sourceUrl:'https://sunnah.com/abudawud:5088',
     arabicEnding:'وَهُوَ السَّمِيعُ الْعَلِيمُ',
