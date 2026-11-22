@@ -6,6 +6,9 @@ on:
       - 'app.js'
       - 'family-children.html'
       - 'family-child-rights.html'
+      - 'family-parent-duties.html'
+      - 'tests/family-parent-duties-source-regressions.cjs'
+      - 'docs/family-parent-duties-source-review-pass4-2026-11-22.md'
       - 'tests/family-child-rights-source-regressions.cjs'
       - 'docs/family-child-rights-source-review-2026-11-22.md'
       - 'tests/family-children-source-regressions.cjs'
@@ -72,6 +75,8 @@ jobs:
         run: node tests/family-children-source-regressions.cjs
       - name: Child rights source and interpretation safeguards
         run: node tests/family-child-rights-source-regressions.cjs
+      - name: Parental duties source and multi-school fiqh safeguards
+        run: node tests/family-parent-duties-source-regressions.cjs
       - name: Source regression checks
         run: node tests/adhkar-source-regressions.cjs
       - name: Eight hadith source-linked wording regression checks
