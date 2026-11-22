@@ -113,7 +113,7 @@ const fs=require('node:fs');
        'No-JavaScript fallback missing '+href);
    }
    await noJsContext.close();
-   console.log('PASS site-wide browser smoke:',results.length,'page/viewport combinations across',pages.length,'HTML pages, offline preview disclosure, theme and favorite persistence');
+   console.log('PASS site-wide browser smoke:',results.length,'page/viewport combinations across',pages.length,'HTML pages, source UI tests isolated from SW lifecycle, theme and favorite persistence');
    console.log('NOT CERTIFIED: production hosting, real devices, offline-ready release, accessibility conformance or security penetration test');
  }finally{
    await browser.close();
