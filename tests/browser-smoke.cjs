@@ -18,7 +18,7 @@ const assert = require('node:assert/strict');
   const policyText=await quranPolicy.textContent();
   for (const meaning of ['Вакф — остановка','васл — продолжение','обязательная остановка',
     'недопустимая остановка','предпочтительнее остановиться',
-    'предпочтительнее продолжить','10 знаков','54/54 точных совпадений']) {
+    'предпочтительнее продолжить','10 знаков','54/54 контрольных аятов']) {
     assert(policyText.includes(meaning),'Review policy missing: '+meaning);
   }
   for (const mark of ['ۘ','ۙ','ۚ','ۗ','ۖ','ۛ']) {
