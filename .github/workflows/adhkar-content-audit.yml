@@ -12,7 +12,9 @@ on:
       - 'tests/adhkar-prophets-deep-batch-6.cjs'
       - 'tests/adhkar-short-surahs-batch-7.cjs'
       - 'tests/adhkar-hadith-final-13.cjs'
+      - 'tests/adhkar-phonetics-batch2.cjs'
       - 'docs/adhkar-deep-review-batch-8-2026-11-22.md'
+      - 'docs/adhkar-phonetics-pass2-four-hadith-2026-11-22.md'
       - 'docs/adhkar-deep-review-batch-7-2026-11-22.md'
       - 'docs/adhkar-deep-review-batch-6-2026-11-22.md'
       - 'docs/adhkar-deep-review-batch-5-2026-11-22.md'
@@ -51,6 +53,8 @@ jobs:
         run: node tests/adhkar-short-surahs-batch-7.cjs
       - name: Final 13 hadith cards source and wording regression checks
         run: node tests/adhkar-hadith-final-13.cjs
+      - name: Four hadith phonetics end-form and source guards
+        run: node tests/adhkar-phonetics-batch2.cjs
       - name: Export transliteration review inventory
         run: node tests/transliteration-inventory.cjs > transliteration-inventory.json
       - name: Validate inventory report
