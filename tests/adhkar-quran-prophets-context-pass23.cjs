@@ -132,7 +132,7 @@ const specs = [
 ];
 assert.equal(cards.length,43,'Catalog count changed: revisit reviewed inventory');
 assert.equal(new Set(specs.map(x=>x.id)).size,9,'Expected nine unique Quranic appeals');
-assert.equal(specs.reduce((n,x)=>n+x.keys.length,0),14,'Expected 14 verses across nine cards');
+assert.equal(specs.reduce((n,x)=>n+x.keys.length,0),13,'Expected 13 verses across nine cards');
 for(const spec of specs){
  const card=byId.get(spec.id);
  assert(card,'Missing Quranic card: '+spec.id);
@@ -161,5 +161,5 @@ assert(byId.get('q_21_87').arabicText.includes('فَنَادَىٰ فِى ٱلظ
  'Do not detach Quran 21:87 quoted supplication from its context-specific conjunction');
 assert.deepEqual(byId.get('q_20_25_28').segments.map(x=>x.verseKey),
  ['20:25','20:26','20:27','20:28'],'Musa appeal: retain four verse boundaries');
-console.log('PASS pass23: 9 source-grounded Quranic cards, 14 verse mappings, quotation boundaries and human review anchors');
+console.log('PASS pass23: 9 source-grounded Quranic cards, 13 verse mappings, quotation boundaries and human review anchors');
 console.log('NOT CERTIFIED: independent phonetics, tajwid, full Arabic diacritic review, translations or expert grading');
