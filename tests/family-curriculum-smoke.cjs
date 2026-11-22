@@ -8,6 +8,7 @@ const lessons=[
   {file:'family-child-rights.html',title:/Права ребёнка в исламе/,required:['https://quran.com/2/233','https://sunnah.com/bukhari:5467','https://sunnah.com/bukhari:2587']},
   {file:'family-parent-duties.html',title:/Обязанности родителей перед детьми/,required:['https://quran.com/66/6','https://sunnah.com/bukhari:7138','https://quran.com/4/10']},
   {file:'family-custody.html',title:/Опека после развода/,required:['https://quran.com/2/233','https://sunnah.com/abudawud:2276','https://www.sistani.org/english/book/48/2372/']},
+  {file:'family-child-safety.html',title:/Безопасность ребёнка/,required:['https://quran.com/4/135','https://sunnah.com/bukhari:2444','https://www.who.int/news-room/fact-sheets/detail/violence-against-children']},
   {file:'family-prophetic-example.html',title:/Семейная жизнь/,required:['https://quran.com/30/21','https://sunnah.com/bukhari:6039']}
 ];
 (async()=>{
@@ -31,6 +32,26 @@ try{
       await page.waitForURL('**/'+lesson.file);
       assert.match(await page.locator('h1').textContent(),lesson.title,'Lesson title '+lesson.file);
       assert(await page.locator('section.card').count()>=4,'Must have explanation and practical sections');
+      if (lesson.file === 'family-child-safety.html') {
+        assert.equal(await page.locator('section.card').count(),8,
+          'Child safety lesson must contain eight sections');
+        assert.equal(await page.locator('.quick-nav a[href^="#safety-"]').count(),8,
+          'Child safety lesson must link to every section');
+        assert.equal(await page.locator('#safety-8 details').count(),5,
+          'Child safety lesson must have five questions');
+        for(const href of [
+          'https://quran.com/16/90',
+          'https://quran.com/49/11',
+          'https://sunnah.com/bukhari:5997',
+          'https://www.who.int/news-room/fact-sheets/detail/corporal-punishment-and-health',
+          'https://www.tusla.ie/children-first/mandated-persons/how-should-i-deal-with-a-disclosure-of-abuse-from-a-child/',
+          'https://www.unicef.org/parenting/child-care/what-to-do-if-your-child-is-experiencing-cyberbullying'
+        ])assert(await page.locator('a[href="'+href+'"]').count()>0,'Child-safety source missing '+href);
+        const body=await page.locator('main').innerText();
+        for(const phrase of ['Не обещать абсолютную тайну','не заменяет профессиональную защиту или расследование',
+          'не дословные цитаты из Корана, хадисов и не юридические инструкции для всех стран'])
+          assert(body.includes(phrase),'Missing safeguarding note '+phrase);
+      }
       if (lesson.file === 'family-custody.html') {
         assert.equal(await page.locator('section.card').count(),8,
           'Custody lesson must have eight sections');
@@ -186,5 +207,5 @@ try{
     await page.close();
   }
 } finally {await browser.close()}
-console.log('PASS: four family lessons, primary sources, mobile and desktop navigation');
+console.log('PASS: family lessons, sources and mobile/desktop navigation');
 })().catch(err=>{console.error(err);process.exit(1)});
