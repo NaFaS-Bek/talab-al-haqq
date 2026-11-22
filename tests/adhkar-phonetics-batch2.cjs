@@ -17,7 +17,6 @@ const cases = [
     source: 'https://sunnah.com/abudawud:5088',
     arabicStart: 'بِسْمِ اللَّهِ الَّذِي',
     arabicEnd: 'وَهُوَ السَّمِيعُ الْعَلِيمُ',
-    transliterationEnd: 'وَ',
     // Russian text ends in a pausal form, not an invented extra final vowel.
     transliterationSuffix: 'ва хува-с-сами‘у-ль-‘алим.',
     repetitions: [3],
