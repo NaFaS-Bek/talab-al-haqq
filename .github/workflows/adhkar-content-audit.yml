@@ -3,6 +3,9 @@ on:
   pull_request:
     branches: [main]
     paths:
+      - 'app.js'
+      - 'tests/browser-smoke.cjs'
+      - 'docs/adhkar-quran-verb-forms-reading-pass2-2026-11-22.md'
       - 'data/content.json'
       - 'tests/content-audit.cjs'
       - 'tests/adhkar-source-regressions.cjs'
