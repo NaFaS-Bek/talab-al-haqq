@@ -246,6 +246,35 @@ try{
       await page.goBack({waitUntil:'networkidle'});
       assert.match(await page.locator('h1').textContent(),/Муж и жена/,'Back returns to overview');
     }
+    // Linked source guide: supplementary reference, not lesson eleven.
+    await page.goto('http://127.0.0.1:8765/family-rights.html',{waitUntil:'networkidle'});
+    await page.locator('a[href="family-difficult-passages.html#difficult-2"]').click();
+    await page.waitForURL('**/family-difficult-passages.html#difficult-2');
+    assert.match(await page.locator('h1').textContent(),/Сложные семейные тексты/);
+    assert.equal(await page.locator('section.card').count(),7,
+      'Sensitive-source guide must have seven sections');
+    assert.equal(await page.locator('.quick-nav a[href^="#difficult-"]').count(),7,
+      'Sensitive-source guide must have seven navigation anchors');
+    assert.equal(await page.locator('#difficult-7 details').count(),5,
+      'Sensitive-source guide must have five questions');
+    for(const href of [
+      'https://quran.com/4/34',
+      'https://quran.com/an-nisa/34/tafsirs/en-tafisr-ibn-kathir',
+      'https://sunnah.com/muslim:1218a',
+      'https://sunnah.com/muslim:2328a',
+      'https://sunnah.com/abudawud:495',
+      'https://alsalam.ac.uk/an-investigation-of-the-hadith-beat-them-for-it-when-they-are-ten-years-old/'
+    ])assert(await page.locator('a[href="'+href+'"]').count()>0,
+      'Missing sensitive-source reference '+href);
+    const guideText=await page.locator('main').innerText();
+    for(const phrase of ['не одиннадцатый урок','не «позиция всех шиитов»',
+      'не хадисовед и не муфтий','При непосредственной угрозе жизни или здоровью'])
+      assert(guideText.includes(phrase),'Sensitive-source guide caveat missing '+phrase);
+    const guideDims=await page.evaluate(()=>({
+      scroll:document.documentElement.scrollWidth,width:innerWidth
+    }));
+    assert(guideDims.scroll<=guideDims.width+1,'Source guide overflow at '+viewport.width);
+    await page.screenshot({path:'family-difficult-passages-'+viewport.width+'.png',fullPage:true});
     await page.goto('http://127.0.0.1:8765/',{waitUntil:'networkidle'});
     await page.locator('#reviewBtn').click();
     assert.equal(await page.locator('#family-review-status').count(),1,'Family status must be visible in Sources and Review');
