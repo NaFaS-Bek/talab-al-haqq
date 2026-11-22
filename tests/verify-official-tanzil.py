@@ -4,6 +4,8 @@
 This script does NOT edit or redistribute official Quran text. It records only
 retrieval metadata, SHA-256 and the comparison of sixteen fixed verse IDs.
 A failure to fetch is explicitly UNVERIFIED, not a mismatch in the Quran.
+A pinned SHA-256 catches changes to the publisher response; independently
+selected samples cover 16 and 54 verse IDs.
 """
 import datetime
 import hashlib
@@ -29,6 +31,7 @@ FORM = {
 FIXTURE = Path("tests/fixtures/tanzil-uthmani-1.1-remaining-duas.txt")
 SECOND_FIXTURE = Path("tests/fixtures/tanzil-uthmani-1.1-quran-sample-54.json")
 REPORT = Path("official-tanzil-provenance-attempt.json")
+EXPECTED_RESPONSE_SHA256 = "bf4f57b968d03f4131c070b1e285da9be0e0a108a21c910e872801ca273312c8"
 LINE = re.compile(r"^(\d+)\|(\d+)\|(.+)$")
 IGNORABLE_FOR_CODEPOINT_DIAGNOSTIC = re.compile("[\u0640\u06d6\u06da\u06de]")
 
@@ -101,6 +104,13 @@ def run():
         report["official_response_sha256"] = hashlib.sha256(raw).hexdigest()
         report["official_response_bytes"] = len(raw)
         report["official_verse_count"] = len(official)
+        report["matches_pinned_official_sha256"] = (
+            report["official_response_sha256"] == EXPECTED_RESPONSE_SHA256)
+        report["pinned_official_sha256"] = EXPECTED_RESPONSE_SHA256
+        report["full_export_pause_mark_counts"] = {
+            "U+06D6": sum(verse.count("\u06d6") for verse in official.values()),
+            "U+06DA": sum(verse.count("\u06da") for verse in official.values()),
+        }
         exact = []
         mark_option_only = []
         differing = []
@@ -144,9 +154,13 @@ def run():
             "unresolved_differences": sorted(unresolved_54),
         }
         report["result"] = (
-            "OFFICIAL_54_MATCH_AFTER_LIMITED_MARK_NORMALIZATION"
-            if not (differing or unresolved_54)
+            "OFFICIAL_SHA_CHANGED_REQUIRES_REVIEW"
+            if not report["matches_pinned_official_sha256"]
             else "OFFICIAL_SOURCE_DIFFERENCES_REQUIRE_REVIEW"
+            if (differing or unresolved_54)
+            else "OFFICIAL_54_EXACT"
+            if len(exact_54) == 54
+            else "OFFICIAL_54_MARK_OPTION_DIFFERENCES_ONLY"
         )
         print("Official Tanzil download returned 6236 verses. SHA-256:", report["official_response_sha256"])
         print("16 pinned verses: exact", len(exact),
@@ -155,7 +169,9 @@ def run():
         print("54 verse sample: exact", len(exact_54),
               "normalized mark-option only", len(mark_option_only_54),
               "requires review", len(unresolved_54))
-        return 0 if not (differing or unresolved_54) else 3
+        print("Official full-export pause sign counts:", report["full_export_pause_mark_counts"])
+        print("Matches pinned official full response SHA-256:", report["matches_pinned_official_sha256"])
+        return 0 if not (differing or unresolved_54) and report["matches_pinned_official_sha256"] else 3
     except (OSError, UnicodeError, ValueError, urllib.error.URLError) as exc:
         report["result"] = "UNVERIFIED_OFFICIAL_EXPORT_UNAVAILABLE"
         report["error_type"] = type(exc).__name__
