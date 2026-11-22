@@ -68,8 +68,9 @@ def prepared_sw(release):
 
 def build_release(folder, paths, output_sw, release):
     resolved = folder.resolve()
-    if resolved == ROOT or ROOT not in resolved.parents:
-        raise RuntimeError("Build directory must be a subfolder of the repository")
+    build_root = (ROOT / "build").resolve()
+    if resolved != (build_root / "website").resolve():
+        raise RuntimeError("Build destination must be exactly build/website (safe clean target)")
     if resolved.exists():
         shutil.rmtree(resolved)
     resolved.mkdir(parents=True)
