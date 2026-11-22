@@ -57,8 +57,8 @@ for(const spec of specs){
  if(spec.context)assert(c.arabicText.includes(spec.context),
   spec.id+': historically sensitive conclusion must not be silently omitted');
 }
-assert.notEqual(byId.get('q_2_250').arabicText.split(' ')[4], 'قَالَا',
- '2:250 narrative verb is plural not dual');
+assert.equal(byId.get('q_2_250').arabicText.split(' ')[4], 'قَالُوا۟',
+ '2:250 plural narrative verb must not be confused with 7:23 dual form');
 assert.equal(byId.get('q_7_23').arabicText.split(' ')[0], 'قَالَا',
  '7:23 narrative verb is dual, do not conflate with 2:250');
 assert.deepEqual(byId.get('q_14_40_41').segments.map(s=>s.verseKey),['14:40','14:41']);
