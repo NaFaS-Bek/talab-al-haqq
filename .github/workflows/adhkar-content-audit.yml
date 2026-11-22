@@ -7,6 +7,7 @@ on:
       - 'tests/browser-smoke.cjs'
       - 'docs/adhkar-quran-verb-forms-reading-pass2-2026-11-22.md'
       - 'docs/adhkar-quran-consonants-reading-pass3-2026-11-22.md'
+      - 'docs/adhkar-quran-length-shadda-pause-pass4-2026-11-22.md'
       - 'data/content.json'
       - 'tests/content-audit.cjs'
       - 'tests/adhkar-source-regressions.cjs'
