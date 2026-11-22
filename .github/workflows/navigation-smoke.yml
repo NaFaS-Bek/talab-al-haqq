@@ -24,6 +24,7 @@ jobs:
       - run: node tests/site-wide-integrity.cjs
       - run: node tests/navigation-smoke.cjs
       - run: node tests/content-audit.cjs
+      - run: node tests/quran-stories-source-regressions.cjs
       - run: npm install --no-save playwright
       - run: npx playwright install --with-deps chromium
       - run: |
@@ -31,6 +32,7 @@ jobs:
           sleep 2
           node tests/browser-smoke.cjs
           node tests/site-wide-browser-smoke.cjs
+          node tests/quran-stories-browser-smoke.cjs
           node tests/site-performance-baseline.cjs
           node tests/arabic-lesson-smoke.cjs
           node tests/five-pillars-smoke.cjs
