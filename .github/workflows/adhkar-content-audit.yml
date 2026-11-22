@@ -4,6 +4,11 @@ on:
     branches: [main]
     paths:
       - 'app.js'
+      - 'family-children.html'
+      - 'tests/family-children-source-regressions.cjs'
+      - 'tests/family-curriculum-smoke.cjs'
+      - 'docs/family-children-source-review-pass1-2026-11-22.md'
+      - 'docs/family-curriculum-source-review-2026-11-22.md'
       - 'tests/browser-smoke.cjs'
       - 'docs/adhkar-quran-verb-forms-reading-pass2-2026-11-22.md'
       - 'docs/adhkar-quran-consonants-reading-pass3-2026-11-22.md'
@@ -59,6 +64,8 @@ jobs:
           node-version: '22'
       - name: Structural content audit
         run: node tests/content-audit.cjs
+      - name: Child upbringing source and attribution guards
+        run: node tests/family-children-source-regressions.cjs
       - name: Source regression checks
         run: node tests/adhkar-source-regressions.cjs
       - name: Eight hadith source-linked wording regression checks
