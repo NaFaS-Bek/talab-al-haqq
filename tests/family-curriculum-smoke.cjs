@@ -3,7 +3,7 @@ const {chromium}=require('playwright');
 const assert=require('node:assert/strict');
 const lessons=[
   {file:'family-nikah.html',title:/Никах/,required:['https://quran.com/24/32','https://sunnah.com/bukhari:5136']},
-  {file:'family-mahr.html',title:/Махр/,required:['https://quran.com/4/4','https://sunnah.com/bukhari:5150']},
+  {file:'family-mahr.html',title:/Махр/,required:['https://quran.com/4/4','https://quran.com/2/236','https://quran.com/2/237','https://sunnah.com/bukhari:5150']},
   {file:'family-children.html',title:/Воспитание детей/,required:['https://quran.com/31/13','https://sunnah.com/bukhari:5997']},
   {file:'family-child-rights.html',title:/Права ребёнка в исламе/,required:['https://quran.com/2/233','https://sunnah.com/bukhari:5467','https://sunnah.com/bukhari:2587']},
   {file:'family-parent-duties.html',title:/Обязанности родителей перед детьми/,required:['https://quran.com/66/6','https://sunnah.com/bukhari:7138','https://quran.com/4/10']},
