@@ -14,6 +14,8 @@ on:
       - 'tests/family-filial-duties-source-regressions.cjs'
       - 'docs/family-filial-duties-source-review-pass8-2026-11-22.md'
       - 'tests/family-teen-dialogue-source-regressions.cjs'
+      - 'tests/family-cross-lesson-consistency.cjs'
+      - 'docs/family-cross-lesson-consistency-pass9-2026-11-22.md'
       - 'docs/family-teen-dialogue-source-review-pass7-2026-11-22.md'
       - 'tests/family-child-safety-source-regressions.cjs'
       - 'docs/family-child-safety-source-review-pass6-2026-11-22.md'
@@ -89,6 +91,8 @@ jobs:
         run: node tests/family-child-rights-source-regressions.cjs
       - name: Parental duties source and multi-school fiqh safeguards
         run: node tests/family-parent-duties-source-regressions.cjs
+      - name: Cross-lesson family curriculum consistency and review status
+        run: node tests/family-cross-lesson-consistency.cjs
       - name: Parent respect Quran, hadith and comparative fiqh source guards
         run: node tests/family-filial-duties-source-regressions.cjs
       - name: Teen dialogue sources, boundaries and safety checks
