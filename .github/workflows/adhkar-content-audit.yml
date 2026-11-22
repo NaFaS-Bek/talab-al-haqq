@@ -72,6 +72,8 @@ on:
       - 'tests/adhkar-source-context-pass21.cjs'
       - 'tests/adhkar-quran-context-phonetics-pass22.cjs'
       - 'tests/adhkar-quran-prophets-context-pass23.cjs'
+      - 'tests/adhkar-short-surahs-source-context-pass24.cjs'
+      - 'docs/adhkar-short-surahs-source-context-pass24-2026-11-23.md'
       - 'docs/adhkar-quran-prophets-context-pass23-2026-11-23.md'
       - 'docs/adhkar-quran-context-phonetics-pass22-2026-11-23.md'
       - 'docs/adhkar-source-context-pass21-2026-11-23.md'
@@ -174,6 +176,8 @@ jobs:
         run: node tests/adhkar-quran-context-phonetics-pass22.cjs
       - name: Nine prophetic Quranic duas source context and reading anchors (pass 23)
         run: node tests/adhkar-quran-prophets-context-pass23.cjs
+      - name: Seven short surahs and Abu Dawud 5082 source context (pass 24)
+        run: node tests/adhkar-short-surahs-source-context-pass24.cjs
       - name: Three Muslim and Bukhari supplications, source excerpts and wasl/waqf review inventory
         run: node tests/adhkar-wasl-waqf-pass18.cjs
       - name: Four hadith phonetics end-form and source guards
