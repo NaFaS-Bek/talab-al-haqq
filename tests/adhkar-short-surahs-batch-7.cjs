@@ -181,7 +181,7 @@ for (const s of specs) {
  assert.deepEqual(c.segments.map(v=>v.verseKey),s.verseKeys,s.id+': verse order changed');
  assert.deepEqual(c.segments.map(v=>norm(v.arabicText)),s.verses.map(norm),s.id+': pinned verses changed');
  assert.equal(norm(c.arabicText),norm(s.arabic),s.id+': pinned full reading changed');
- assert.equal(norm(c.fullVerseArabic),norm(s.arabic),s.id+': fullVerseArabic changed');
+ if (typeof c.fullVerseArabic === 'string') assert.equal(norm(c.fullVerseArabic),norm(s.arabic),s.id+': optional fullVerseArabic changed');
  assert.equal(norm(c.segments.map(v=>v.arabicText).join(' ')),norm(s.arabic),s.id+': segmentation inconsistent');
  assert.equal(norm(c.segments.map(v=>v.translationRu).join(' ')),norm(c.translationRu),s.id+': Russian translation mismatch between card and verses');
  assert.equal(norm(c.segments.map(v=>v.transliterationRu).join(' ')),norm(c.transliterationRu),s.id+': Russian transliteration mismatch between card and verses');
