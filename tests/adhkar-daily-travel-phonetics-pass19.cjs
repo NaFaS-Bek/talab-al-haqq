@@ -13,7 +13,6 @@ const cases=[
   russian:'Бисмика-Ллахумма амуту ва ахья.'},
  {id:'h_bukhari_6324_waking',source:'https://sunnah.com/bukhari:6324',
   arabic:'الْحَمْدُ لِلَّهِ الَّذِي أَحْيَانَا بَعْدَ مَا أَمَاتَنَا، وَإِلَيْهِ النُّشُورُ',
-  russianEnding:'وا',
   russian:'Аль-хамду лилляхи-ллязи ахьяна ба‘да ма аматана, ва иляйхи-н-нушур.'},
  {id:'h_tirmidhi_1858_before',source:'https://sunnah.com/tirmidhi:1858',
   arabic:'بِسْمِ اللَّهِ',russian:'Бисмиллях.'},
