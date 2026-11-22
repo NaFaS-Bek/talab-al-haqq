@@ -8,6 +8,7 @@ on:
       - 'tests/family-children-source-regressions.cjs'
       - 'tests/family-curriculum-smoke.cjs'
       - 'docs/family-children-source-review-pass1-2026-11-22.md'
+      - 'docs/family-children-age-guidance-pass2-2026-11-22.md'
       - 'docs/family-curriculum-source-review-2026-11-22.md'
       - 'tests/browser-smoke.cjs'
       - 'docs/adhkar-quran-verb-forms-reading-pass2-2026-11-22.md'
