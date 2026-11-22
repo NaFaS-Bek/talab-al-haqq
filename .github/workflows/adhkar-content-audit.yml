@@ -5,6 +5,12 @@ on:
     paths:
       - 'app.js'
       - 'family-children.html'
+      - 'family-rights.html'
+      - 'family-nikah.html'
+      - 'family-mahr.html'
+      - 'family-prophetic-example.html'
+      - 'tests/family-primary-source-context-pass10.cjs'
+      - 'docs/family-primary-source-review-pass10-2026-11-22.md'
       - 'family-child-rights.html'
       - 'family-parent-duties.html'
       - 'family-custody.html'
@@ -91,6 +97,8 @@ jobs:
         run: node tests/family-child-rights-source-regressions.cjs
       - name: Parental duties source and multi-school fiqh safeguards
         run: node tests/family-parent-duties-source-regressions.cjs
+      - name: Deep family primary source context safeguards (pass 10)
+        run: node tests/family-primary-source-context-pass10.cjs
       - name: Cross-lesson family curriculum consistency and review status
         run: node tests/family-cross-lesson-consistency.cjs
       - name: Parent respect Quran, hadith and comparative fiqh source guards
