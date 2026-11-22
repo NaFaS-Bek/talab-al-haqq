@@ -15,6 +15,12 @@ jobs:
         with:
           node-version: '22'
       - run: node --check tests/live-site-audit.cjs
+      - name: Print complete SHA-256 manifest for release verification
+        run: python3 tool/prepare_website.py --print-manifest
+      - name: Ensure committed SW hashes match every educational resource
+        run: python3 tool/prepare_website.py --check-root
+      - name: Prepare reproducible verified offline bundle
+        run: python3 tool/prepare_website.py --build build/website
       - run: node tests/site-wide-integrity.cjs
       - run: node tests/navigation-smoke.cjs
       - run: node tests/content-audit.cjs
@@ -31,6 +37,20 @@ jobs:
           node tests/wudu-salah-smoke.cjs
           node tests/family-rights-smoke.cjs
           node tests/family-curriculum-smoke.cjs
+      - name: Real offline install, update, data and integrity regression
+        run: |
+          cp -a build/website build/tampered
+          printf '\n/* intentionally damaged for SHA-256 rejection test */\n' >> build/tampered/style.css
+          python3 -m http.server 8766 --bind 127.0.0.1 --directory build/website >/tmp/talab-offline.log 2>&1 &
+          python3 -m http.server 8767 --bind 127.0.0.1 --directory build/tampered >/tmp/talab-tampered.log 2>&1 &
+          sleep 2
+          node tests/offline-pwa-smoke.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: verified-offline-release
+          path: build/website/
+          if-no-files-found: ignore
       - uses: actions/upload-artifact@v4
         if: always()
         with:

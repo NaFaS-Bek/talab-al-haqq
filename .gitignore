@@ -1,0 +1,16 @@
+# Deterministic site build output (not source of truth)
+build/
+node_modules/
+# Browser test evidence
+navigation-*.png
+arabic-lesson-*.png
+five-pillars-*.png
+pillar-*.png
+wudu-guide-*.png
+salah-guide-*.png
+family-rights-*.png
+family-family-*.png
+live-home-*.png
+performance-local-baseline.json
+live-site-report.json
+live-browser-report.json

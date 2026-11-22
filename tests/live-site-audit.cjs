@@ -74,7 +74,7 @@ async function pull(path){
     if(!/<title>[^<]*(Талаб аль-Хакк|Talab)/.test(html))
      issues.push(r.path+': expected Talab al-Haqq HTML title missing');
    }
-   if(['app.js','style.css','data/content.json'].includes(r.path)){
+   if(['app.js','style.css','data/content.json','sw.js'].includes(r.path)){
     const local=fs.readFileSync(r.path);
     const matches=cryptoHash(r.bytes)===cryptoHash(local);
     item.matchesCheckedOutCommit=matches;
@@ -112,7 +112,7 @@ async function pull(path){
   checkedAtUtc:new Date().toISOString(),publicBaseUrl:base.href,
   comparedWith:'current checked-out repository commit (run only from main for production)',
   productionReachable:!fetched.some(r=>r.error||r.status!==200),
-  exactSourceAssetsMatch:['app.js','style.css','data/content.json']
+  exactSourceAssetsMatch:['app.js','style.css','data/content.json','sw.js']
     .every(path=>output.some(r=>r.path===path&&r.status===200&&r.matchesCheckedOutCommit===true)),
   issues,warnings,requests:output
  };
