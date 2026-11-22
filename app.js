@@ -385,6 +385,83 @@ function pronunciationExplanation(x) {
   return supplement.note;
 }
 
+// A source-comparison layer, NOT permission to change the Quranic text.
+// The reviewed snapshot was copied from a *third-party* Tanzil Uthmani 1.1 mirror,
+// not an independently authenticated export of Tanzil's current settings.
+// These marks are displayed ONLY in a collapsed explanatory panel, never
+// interpolated into the Arabic scripture or presented as mandatory pauses.
+// Every after-word anchor/position is independently regression-checked against
+// tests/fixtures/tanzil-uthmani-1.1-remaining-duas.txt.
+const quranPauseSourceComparison = Object.freeze({
+  q_14_40_41: {
+    sourceNumber:'14:40–41', sourceUrl:'https://quran.com/14/40',
+    marks:[{verse:'14:40',after:'ذُرِّيَّتِى',symbol:'ۚ'}],
+  },
+  q_2_127_128: {
+    sourceNumber:'2:127–128', sourceUrl:'https://quran.com/2/127',
+    marks:[
+      {verse:'2:127',after:'مِنَّآ',symbol:'ۖ'},
+      {verse:'2:128',after:'عَلَيْنَآ',symbol:'ۖ'},
+    ],
+  },
+  q_12_101: {
+    sourceNumber:'12:101', sourceUrl:'https://quran.com/12/101',
+    marks:[
+      {verse:'12:101',after:'ٱلْأَحَادِيثِ',symbol:'ۚ'},
+      {verse:'12:101',after:'ٱلْـَٔاخِرَةِ',symbol:'ۖ'},
+    ],
+  },
+  q_7_89: {
+    sourceNumber:'7:89', sourceUrl:'https://quran.com/7/89',
+    marks:[
+      {verse:'7:89',after:'مِنْهَا',symbol:'ۚ'},
+      {verse:'7:89',after:'ٱللَّهُ رَبُّنَا',symbol:'ۚ'},
+      {verse:'7:89',after:'عِلْمًا',symbol:'ۚ'},
+      {verse:'7:89',after:'تَوَكَّلْنَا',symbol:'ۚ'},
+    ],
+  },
+  q_5_114: {
+    sourceNumber:'5:114', sourceUrl:'https://quran.com/5/114',
+    marks:[{verse:'5:114',after:'مِّنكَ',symbol:'ۖ'}],
+  },
+});
+const quranPauseMarkMeaning = Object.freeze({
+  'ۚ':'джим (ج): можно сделать паузу или продолжить',
+  'ۖ':'сали (صلى): предпочтительнее продолжить чтение',
+});
+function quranPauseComparison(x) {
+  const record = quranPauseSourceComparison[x.id];
+  if (!record || x.originKind !== 'quran' || x.contentKind !== 'dua') return '';
+  if (!x.sourceRefs?.some(ref =>
+      ref.collection === 'Коран' &&
+      ref.number === record.sourceNumber &&
+      ref.url === record.sourceUrl)) return '';
+  // If editorial Quranic text gains pause signs, this "not displayed"
+  // warning is no longer true and must be replaced by an audited policy.
+  if (/[ۖۚ]/u.test(x.arabicText || '')) return '';
+  if (!record.marks.every(mark => {
+    const segmentId = x.id + '_a' + mark.verse.split(':')[1];
+    const seg = x.segments?.find(s => s.id === segmentId);
+    return Boolean(seg?.arabicText?.includes(mark.after)) &&
+      x.arabicText.split(mark.after).length === 2 &&
+      Object.hasOwn(quranPauseMarkMeaning, mark.symbol);
+  })) return '';
+  const rows = record.marks.map(mark =>
+    '<p class="bodycopy" data-pause-mark="' + clean(mark.symbol.codePointAt(0).toString(16).toUpperCase()) +
+    '"><strong>' + clean(mark.verse) + '</strong>: после <span lang="ar" dir="rtl">' +
+    clean(mark.after) + '</span> — <span lang="ar" dir="rtl">' + clean(mark.symbol) +
+    '</span> (' + clean(quranPauseMarkMeaning[mark.symbol]) + ')</p>'
+  ).join('');
+  return '<details class="source-inline" data-quran-pause-guide="1"><summary>Знаки остановки: сравнение редакций</summary>' +
+    '<p class="bodycopy">В закреплённом стороннем снимке Tanzil Uthmani 1.1 после перечисленных слов есть знаки остановки, которые в текущем тексте сайта не показаны. ' +
+    'Причина различий в параметрах выгрузки независимо не установлена. Это редакционная сверка, а не указание обязательно останавливаться в этих местах.</p>' +
+    rows +
+    '<p class="bodycopy">Вакф — остановка, васл — продолжение чтения. Отсутствие знака в этой записи не означает, что читать нужно без пауз. ' +
+    'Для правильного чтения и выбора места остановки сверяйтесь с полным мусхафом и преподавателем.</p>' +
+    '<p class="attribution"><a href="https://tanzil.net/docs/pause_marks" target="_blank" rel="noopener noreferrer">Обозначения знаков — Tanzil</a></p>' +
+    '</details>';
+}
+
 function details(r) {
   const x = r.data, kind = r.kind, key = `${kind}:${x.id}`;
   let html = `<h2 class="detailtitle">${clean(title(x,kind))}</h2><div class="meta material-type">${clean(kind === 'dua' ? materialType(x) : kindTitle[kind])}</div>`;
@@ -394,6 +471,7 @@ function details(r) {
     html += readingTimingNote(x);
     const verses = verseReading(x);
     html += verses || arabic(x.arabicText);
+    html += quranPauseComparison(x);
     if(x.transliterationRu) { const note = pronunciationExplanation(x); const quranReading = x.transliterationNoteRu ? null : linkedQuranReadingNote(x); html += `<details class="source-inline" open><summary>Транскрипция</summary>${para('',x.transliterationRu)}${note ? `<p class="bodycopy" data-pronunciation-note><strong>Как читать:</strong> ${clean(note)}</p>` : ''}${quranReading ? `<p class="attribution" data-pronunciation-source><a href="${clean(quranReading.referenceUrl)}" target="_blank" rel="noopener noreferrer">${clean(quranReading.referenceLabel || 'Разбор слова: Quranic Arabic Corpus')}</a></p>` : ''}${quranReading?.pauseGuideUrl ? `<p class="attribution" data-pause-source><a href="${clean(quranReading.pauseGuideUrl)}" target="_blank" rel="noopener noreferrer">Общие правила остановки: About Tajweed</a></p>` : ''}</details>`; }
     if (!verses) html += para('Перевод смысла',x.translationRu);
     if (x.translationAttribution) html += `<p class="attribution">${clean(brandMetadata(x.translationAttribution).split(' · ')[0])}</p>`;
