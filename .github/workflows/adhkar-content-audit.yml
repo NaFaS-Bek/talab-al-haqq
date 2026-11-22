@@ -5,6 +5,9 @@ on:
     paths:
       - 'app.js'
       - 'family-children.html'
+      - 'family-child-rights.html'
+      - 'tests/family-child-rights-source-regressions.cjs'
+      - 'docs/family-child-rights-source-review-2026-11-22.md'
       - 'tests/family-children-source-regressions.cjs'
       - 'tests/family-curriculum-smoke.cjs'
       - 'docs/family-children-source-review-pass1-2026-11-22.md'
@@ -67,6 +70,8 @@ jobs:
         run: node tests/content-audit.cjs
       - name: Child upbringing source and attribution guards
         run: node tests/family-children-source-regressions.cjs
+      - name: Child rights source and interpretation safeguards
+        run: node tests/family-child-rights-source-regressions.cjs
       - name: Source regression checks
         run: node tests/adhkar-source-regressions.cjs
       - name: Eight hadith source-linked wording regression checks
