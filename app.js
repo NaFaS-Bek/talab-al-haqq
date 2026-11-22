@@ -307,6 +307,50 @@ const sourceLinkedQuranReadingNotes = Object.freeze({
     referenceUrl:'https://corpus.quran.com/documentation/phonetic.jsp',
     referenceLabel:'Обозначения звуков: Quranic Arabic Corpus',
     note:'В ٱرْزُقْنَا буква ق (qāf) в схеме корпуса обозначается q, отдельно от ك (kāf, k). Поэтому русское «к» в «варзукна» — упрощение, а не точное описание места образования звука. Арабская строка здесь остаётся основным ориентиром.',
+  },
+  q_26_169: {
+    sourceNumber:'26:169',
+    sourceUrl:'https://quran.com/26/169',
+    arabicWord:'نَجِّنِى',
+    russianWord:'наджжини',
+    additionalArabicWord:'مِمَّا',
+    additionalRussianWord:'мимма',
+    endArabic:'يَعْمَلُونَ',
+    endRussian:'йа‘малюн.',
+    referenceUrl:'https://corpus.quran.com/documentation/phonetic.jsp',
+    referenceLabel:'Долгие гласные и шадда: Quranic Arabic Corpus',
+    pauseGuideUrl:'https://abouttajweed.com/tajweed-basics/common-tajweed-errors',
+    note:'В نَجِّنِى буква جّ удвоена шаддой; в مِمَّا шадда стоит над مّ. В последнем слове يَعْمَلُونَ есть долгое ū. Русская запись «йа‘малюн» передаёт чтение при остановке в конце аята: краткое конечное «а» тогда не читается. При продолжении без остановки окончание отличается. Не выбирайте место остановки только по кириллице.',
+  },
+  q_21_89: {
+    sourceNumber:'21:89',
+    sourceUrl:'https://quran.com/21/89',
+    arabicWord:'ٱلْوَٰرِثِينَ',
+    russianWord:'варисин',
+    endArabic:'ٱلْوَٰرِثِينَ',
+    endRussian:'варисин.',
+    referenceUrl:'https://corpus.quran.com/documentation/phonetic.jsp',
+    referenceLabel:'Долгие гласные: Quranic Arabic Corpus',
+    pauseGuideUrl:'https://abouttajweed.com/tajweed-basics/common-tajweed-errors',
+    note:'В конце аята написано ٱلْوَٰرِثِينَ: здесь есть долгие гласные, а у конечной نَ стоит краткая фатха. Русская запись «варисин» приблизительно передаёт остановку в конце аята: краткое конечное «а» не произносится. При чтении слитно, без остановки, форма окончания иная. Это общая учебная подсказка о вакфе, а не указание делать паузу в любом месте.',
+  },
+  q_14_40_41: {
+    sourceNumber:'14:40–41',
+    sourceUrl:'https://quran.com/14/40',
+    arabicWord:'ذُرِّيَّتِى',
+    russianWord:'зурриййати',
+    referenceUrl:'https://corpus.quran.com/documentation/phonetic.jsp',
+    referenceLabel:'Обозначение шадды и долготы: Quranic Arabic Corpus',
+    note:'В ذُرِّيَّتِى знаки шадды над رّ и يّ указывают на удвоение соответствующих согласных. В конце слова есть долгая гласная ī. Кириллическое «зурриййати» — лишь приближение: удвоения и долготу нужно различать при чтении арабского текста, а не выводить их из числа русских букв.',
+  },
+  q_2_127_128: {
+    sourceNumber:'2:127–128',
+    sourceUrl:'https://quran.com/2/127',
+    arabicWord:'مِنَّآ',
+    russianWord:'минна',
+    referenceUrl:'https://corpus.quran.com/documentation/phonetic.jsp',
+    referenceLabel:'Обозначение шадды и долготы: Quranic Arabic Corpus',
+    note:'В مِنَّآ над نّ стоит шадда — согласная удваивается; далее следует долгая гласная ā. Русская запись «минна» не показывает долготу. Точное время протяжения и связное чтение зависят от контекста и правил таджвида, поэтому одной кириллицы для обучения произношению недостаточно.',
   }
 });
 function linkedQuranReadingNote(x) {
@@ -319,6 +363,14 @@ function linkedQuranReadingNote(x) {
   if (!x.segments?.some(s =>
       s.arabicText?.includes(note.arabicWord) &&
       s.transliterationRu?.includes(note.russianWord))) return null;
+  // Additional anchors ensure a note about a second word or the final pause
+  // disappears if the reviewed text changes in either the source or hint.
+  if (note.additionalArabicWord && !x.segments?.some(s =>
+      s.arabicText?.includes(note.additionalArabicWord) &&
+      s.transliterationRu?.includes(note.additionalRussianWord))) return null;
+  if (note.endArabic &&
+      (!x.arabicText.endsWith(note.endArabic) ||
+       !x.transliterationRu.endsWith(note.endRussian))) return null;
   return note;
 }
 function pronunciationExplanation(x) {
@@ -342,7 +394,7 @@ function details(r) {
     html += readingTimingNote(x);
     const verses = verseReading(x);
     html += verses || arabic(x.arabicText);
-    if(x.transliterationRu) { const note = pronunciationExplanation(x); const quranReading = x.transliterationNoteRu ? null : linkedQuranReadingNote(x); html += `<details class="source-inline" open><summary>Транскрипция</summary>${para('',x.transliterationRu)}${note ? `<p class="bodycopy" data-pronunciation-note><strong>Как читать:</strong> ${clean(note)}</p>` : ''}${quranReading ? `<p class="attribution" data-pronunciation-source><a href="${clean(quranReading.referenceUrl)}" target="_blank" rel="noopener noreferrer">${clean(quranReading.referenceLabel || 'Разбор слова: Quranic Arabic Corpus')}</a></p>` : ''}</details>`; }
+    if(x.transliterationRu) { const note = pronunciationExplanation(x); const quranReading = x.transliterationNoteRu ? null : linkedQuranReadingNote(x); html += `<details class="source-inline" open><summary>Транскрипция</summary>${para('',x.transliterationRu)}${note ? `<p class="bodycopy" data-pronunciation-note><strong>Как читать:</strong> ${clean(note)}</p>` : ''}${quranReading ? `<p class="attribution" data-pronunciation-source><a href="${clean(quranReading.referenceUrl)}" target="_blank" rel="noopener noreferrer">${clean(quranReading.referenceLabel || 'Разбор слова: Quranic Arabic Corpus')}</a></p>` : ''}${quranReading?.pauseGuideUrl ? `<p class="attribution" data-pause-source><a href="${clean(quranReading.pauseGuideUrl)}" target="_blank" rel="noopener noreferrer">Общие правила остановки: About Tajweed</a></p>` : ''}</details>`; }
     if (!verses) html += para('Перевод смысла',x.translationRu);
     if (x.translationAttribution) html += `<p class="attribution">${clean(brandMetadata(x.translationAttribution).split(' · ')[0])}</p>`;
     html += para('Контекст',x.contextRu) + para('Пояснение',x.explanationRu);
