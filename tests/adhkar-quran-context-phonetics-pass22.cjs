@@ -36,8 +36,21 @@ for(const spec of specs){
  assert.equal(c.excerptKind,spec.kind,spec.id+': verse scope changed');
  for(const url of spec.links)assert(c.sourceRefs?.some(ref=>ref.url===url),
   spec.id+': missing precise Quran URL '+url);
- assert.deepEqual(c.segments?.map(s=>s.verseKey),spec.verses,
-  spec.id+': verse-segment source mapping changed');
+ // Four older single-verse cards keep the precise verse in sourceRefs but
+ // do not have verseKey on their single teaching segment. Do not invent it.
+ const mapped=(c.segments||[]).map(s=>s.verseKey).filter(Boolean);
+ if(mapped.length){
+  assert.deepEqual(mapped,spec.verses,
+   spec.id+': explicit verse-segment source mapping changed');
+ }else{
+  assert.equal(spec.verses.length,1,
+   spec.id+': multiple verses require explicit segment-to-verse mapping');
+  assert.equal(c.segments?.length,1,
+   spec.id+': legacy single-verse source must be one learning segment');
+  assert(c.sourceRefs.some(ref=>
+    ref.number===spec.verses[0] && ref.url===spec.links[0]),
+   spec.id+': unnumbered segment must retain exact verse source reference');
+ }
  for(const field of ['arabicText','transliterationRu','translationRu']){
   assert.equal(n(c.segments.map(s=>s[field]).join(' ')),n(c[field]),
    spec.id+': segment mismatch in '+field);
