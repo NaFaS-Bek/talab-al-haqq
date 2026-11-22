@@ -11,7 +11,11 @@ const files=[
 ];
 const overview=fs.readFileSync('family-rights.html','utf8');
 const app=fs.readFileSync('app.js','utf8');
-const htmls=new Map([['family-rights.html',overview],...files.map(p=>[p,fs.readFileSync(p,'utf8')])]);
+// Source guide is reachable from family lessons, but is not lesson eleven.
+const supplement='family-difficult-passages.html';
+const htmls=new Map([['family-rights.html',overview],
+  ...files.map(p=>[p,fs.readFileSync(p,'utf8')]),
+  [supplement,fs.readFileSync(supplement,'utf8')]]);
 
 // One common curriculum: exactly ten distinct lessons, linked from both entrances.
 const section=overview.match(/<section class="card" id="family-curriculum"[\s\S]*?<\/section>/);
@@ -24,6 +28,7 @@ for(const p of files){
   assert.equal(app.split('href="'+p+'"').length-1,1,'Category must link once to '+p);
 }
 assert(overview.includes('Продолжить обучение: десять уроков'),'Overview count is stale');
+assert(!overviewLinks.includes(supplement),'Source guide is not the eleventh lesson');
 assert(!/Все материалы пока проходят содержательную проверку/.test(overview),
   'Do not suggest unverified expert review is in progress');
 
