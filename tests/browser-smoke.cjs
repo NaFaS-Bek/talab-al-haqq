@@ -18,7 +18,7 @@ const assert = require('node:assert/strict');
   const policyText=await quranPolicy.textContent();
   for (const meaning of ['Вакф — остановка','васл — продолжение','обязательная остановка',
     'недопустимая остановка','предпочтительнее остановиться',
-    'предпочтительнее продолжить','10 знаков','независимое подтверждение']) {
+    'предпочтительнее продолжить','10 знаков','54/54 точных совпадений']) {
     assert(policyText.includes(meaning),'Review policy missing: '+meaning);
   }
   for (const mark of ['ۘ','ۙ','ۚ','ۗ','ۖ','ۛ']) {
@@ -29,7 +29,7 @@ const assert = require('node:assert/strict');
   assert.equal(await quranPolicy.locator('a[href*="/docs/quran-source-export-and-rendering-policy-"]').count(),1,
     'Editorial policy document must be linked');
   assert.match(await page.locator('.source-info').filter({hasText:'Лицензия текста Корана'}).textContent(),
-    /параметры экспорта ещё требуют независимого подтверждения/,
+    /параметры его выгрузки отдельно не установлены/,
     'Quran license panel must not state false independent source verification');
   await page.locator('#reviewBtn').click();
   assert.equal(await page.locator('#screen .hero h1').count(),1,'Second header click should close review and restore home');
