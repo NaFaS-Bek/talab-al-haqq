@@ -33,8 +33,26 @@ try{
           'Child upbringing needs 8 deliberate learning sections');
         assert.equal(await page.locator('.quick-nav a[href^="#section-"]').count(),8,
           'All child upbringing sections must be accessible from navigation');
-        assert.equal(await page.locator('#section-8 details').count(),4,
-          'Child upbringing must have four source-aware self checks');
+        assert.equal(await page.locator('#section-8 details').count(),6,
+          'Child upbringing must have six source-aware self checks');
+        assert.equal(await page.locator('[data-age-stage]').count(),3,
+          'Child upbringing should offer three age-sensitive examples');
+        for (const id of ['early','school','teen']) {
+          assert.equal(await page.locator('#age-'+id+'[data-age-stage="'+id+'"]').count(),1,
+            'Age guide missing: '+id);
+          assert.equal(await page.locator('.subnav a[href="#age-'+id+'"]').count(),1,
+            'Age sub-navigation missing: '+id);
+        }
+        for (const link of [
+          'https://sunnah.com/abudawud:495',
+          'https://quran.com/16/125',
+          'https://www.unicef.org/parenting/mental-health/build-foundation-0-5-years',
+          'https://www.unicef.org/parenting/child-care/11-tips-communicating-your-teen',
+          'https://www.unicef.org/parenting/child-care/how-discipline-your-child-smart-and-healthy-way',
+        ]) {
+          assert(await page.locator('a[href="'+link+'"]').count()>0,
+            'Age guidance must cite and distinguish source: '+link);
+        }
         for (const href of [
           'https://sunnah.com/bukhari:2587',
           'https://quran.com/20/132',
@@ -51,6 +69,10 @@ try{
           'современные педагогические рекомендации',
           'не устанавливает конкретный возраст ребёнка',
           'Страх, угрозы, насилие и публичное унижение',
+          'В нём присутствует упоминание телесного наказания',
+          'современные педагогические рекомендации',
+          'не дословные наставления Пророка',
+          'не рекомендует телесные наказания',
         ]) {
           assert(contents.includes(phrase),'Child upbringing evidence boundary missing: '+phrase);
         }
