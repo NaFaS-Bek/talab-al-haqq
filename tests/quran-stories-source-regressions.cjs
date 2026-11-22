@@ -16,7 +16,7 @@ assert.equal(blocks.length,3,'Pilot must include three independently sourced sto
 assert.equal((page.match(/<h1\b/g)||[]).length,1,'Exactly one page title');
 assert.match(page,/<html lang="ru">/);
 assert.match(page,/<main\b/);
-assert.match(page,/Редакционные выводы/);
+assert.match(page,/редакционные выводы/i);
 assert.match(page,/не дословный перевод аятов и не хадис/);
 assert.match(page,/независимая богословская рецензия пока не проведена/);
 assert.doesNotMatch(page,/expert_checked|экспертно подтвержден[а-я]*/i);
