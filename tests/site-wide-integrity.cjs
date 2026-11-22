@@ -54,7 +54,9 @@ for(const p of pages){
  const title=html.match(/<title>([^<]*)<\/title>/i)?.[1]||'';
  if(!title.trim())issue(p,'missing title');
  const h1Count=(html.match(/<h1\b/gi)||[]).length;
- if(h1Count!==1)issue(p,'expected one h1; got '+h1Count);
+ if(p==='index.html'){
+   if(h1Count!==0)issue(p,'the loading shell should not duplicate the dynamically rendered h1');
+ }else if(h1Count!==1)issue(p,'expected one static h1; got '+h1Count);
  if(!/<main\b/i.test(html))issue(p,'no main landmark');
  const allIds=[...html.matchAll(/\bid\s*=\s*["']([^"']+)["']/gi)].map(m=>m[1]);
  const seen=new Set();
