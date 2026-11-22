@@ -1,0 +1,8 @@
+# Deterministic site build output (not source of truth)
+build/
+node_modules/
+# Browser test evidence
+*.png
+performance-local-baseline.json
+live-site-report.json
+live-browser-report.json
