@@ -99,6 +99,18 @@ for(const icon of manifest.icons||[])checkLocal(icon.src,'manifest.webmanifest',
 for(const asset of ['app.js','sw.js','style.css','data/content.json','data/caliph_history.json','icon.svg','manifest.webmanifest']){
  if(!paths.has(asset))issue('site','missing essential asset '+asset);
 }
+// Static Workers security rules are source-controlled and must not silently disappear.
+const workerHeaders=fs.readFileSync('_headers','utf8');
+assert(workerHeaders.includes('/*\n'),'Cloudflare header rules must cover site paths');
+for(const required of [
+ 'X-Content-Type-Options: nosniff',
+ 'Referrer-Policy: no-referrer',
+ 'X-Frame-Options: DENY',
+ "Content-Security-Policy: base-uri 'none'; object-src 'none'; frame-ancestors 'none'",
+ 'Strict-Transport-Security: max-age=31536000'
+])assert(workerHeaders.includes(required),'Missing Workers security rule '+required);
+assert(!/script-src\s+[^\n]*'none'/.test(workerHeaders),
+ 'Unexpected strict CSP: existing educational pages include inline JavaScript');
 const app=fs.readFileSync('app.js','utf8');
 for(const m of app.matchAll(/href=["']([^"'<>]+\.html(?:#[^"'<>]*)?)["']/g)){
  if(!m[1].includes('${'))checkLocal(m[1],'index.html','app template link');

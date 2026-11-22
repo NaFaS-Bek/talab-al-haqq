@@ -91,11 +91,19 @@ async function pull(path){
     warnings.push('Production sw.js is an unprepared source worker: offline readiness NOT confirmed');
    if(r.path===''){
     const h=r.headers;
-    if(!h.hsts)warnings.push('HSTS header missing on homepage; check hosting policy');
-    if(!h.csp)warnings.push('CSP header missing on homepage; review with deploy configuration');
-    if(h.xContentTypeOptions.toLowerCase()!=='nosniff')
-     warnings.push('X-Content-Type-Options: nosniff missing on homepage');
-    if(!h.referrerPolicy)warnings.push('Referrer-Policy header missing on homepage');
+    const expectedHeaders=fs.existsSync('_headers');
+    const observed=[
+      ['HSTS',h.hsts],
+      ['CSP',h.csp],
+      ['X-Content-Type-Options: nosniff',
+        h.xContentTypeOptions.toLowerCase()==='nosniff'?'nosniff':''],
+      ['Referrer-Policy',h.referrerPolicy]
+    ];
+    for(const [name,value] of observed)if(!value){
+      const message=name+' missing on homepage';
+      (expectedHeaders?issues:warnings).push(message+
+       (expectedHeaders?' after _headers was committed':' (no _headers baseline)'));
+    }
    }
   }
   output.push(item);
@@ -104,7 +112,8 @@ async function pull(path){
   checkedAtUtc:new Date().toISOString(),publicBaseUrl:base.href,
   comparedWith:'current checked-out repository commit (run only from main for production)',
   productionReachable:!fetched.some(r=>r.error||r.status!==200),
-  exactSourceAssetsMatch:!output.some(r=>r.matchesCheckedOutCommit===false),
+  exactSourceAssetsMatch:['app.js','style.css','data/content.json']
+    .every(path=>output.some(r=>r.path===path&&r.status===200&&r.matchesCheckedOutCommit===true)),
   issues,warnings,requests:output
  };
  fs.writeFileSync('live-site-report.json',JSON.stringify(report,null,2)+'\n');
