@@ -4,6 +4,9 @@ on:
     branches: [main]
     paths:
       - 'app.js'
+      - 'stories.html'
+      - 'tests/quran-stories-source-regressions.cjs'
+      - 'docs/quran-stories-pilot-source-review-2026-11-23.md'
       - 'family-children.html'
       - 'family-rights.html'
       - 'family-difficult-passages.html'
@@ -131,6 +134,8 @@ jobs:
         run: node tests/family-custody-source-regressions.cjs
       - name: Source regression checks
         run: node tests/adhkar-source-regressions.cjs
+      - name: Three Quranic story pilots: primary sources and editorial boundaries
+        run: node tests/quran-stories-source-regressions.cjs
       - name: Eight hadith source-linked wording regression checks
         run: node tests/adhkar-hadith-deep-batch.cjs
       - name: Four Quranic supplication and narrative-boundary checks
