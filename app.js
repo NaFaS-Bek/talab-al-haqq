@@ -199,7 +199,7 @@ function readingTimingNote(x) {
     && (stages[0].sourceUrl === rule.sourceUrl || supplement?.count === stages[0].count)
     ? stages[0].count : null;
   const periods = [...new Set(rule.periods)].map(p => names[p]).join(' и ');
-  return `<p class="reading-note" data-reading-timing="1"><strong>Когда читать по указанному источнику:</strong> ${clean(periods)}${count ? ` · ${count} раз в каждый период` : ''}. Это не фиксированное время по часам.</p>`;
+  return `<p class="reading-note" data-reading-timing="1"><strong>Когда читать по указанному источнику:</strong> ${clean(periods)}${count ? ` · ${count} ${count % 10 >= 2 && count % 10 <= 4 && (count % 100 < 12 || count % 100 > 14) ? 'раза' : 'раз'} в каждый период` : ''}. Это не фиксированное время по часам.</p>`;
 }
 function details(r) {
   const x = r.data, kind = r.kind, key = `${kind}:${x.id}`;
