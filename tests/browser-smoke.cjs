@@ -11,6 +11,26 @@ const assert = require('node:assert/strict');
   await page.locator('#reviewBtn').click();
   assert.match(await page.locator('#screen .sectionhead h2').first().textContent(),/Источники и проверка/,'Header should open review information');
   assert.equal(await page.locator('#reviewBtn').getAttribute('aria-pressed'),'true','Header button must announce review open state');
+  const quranPolicy=page.locator('#quran-display-policy');
+  assert.equal(await quranPolicy.count(),1,'Quran edition and pause mark policy must be available in review');
+  assert.equal(await quranPolicy.getAttribute('open'),null,'Quran policy should be collapsed by default');
+  await quranPolicy.locator('summary').click();
+  const policyText=await quranPolicy.textContent();
+  for (const meaning of ['Вакф — остановка','васл — продолжение','обязательная остановка',
+    'недопустимая остановка','предпочтительнее остановиться',
+    'предпочтительнее продолжить','10 знаков','54/54 контрольных аятов']) {
+    assert(policyText.includes(meaning),'Review policy missing: '+meaning);
+  }
+  for (const mark of ['ۘ','ۙ','ۚ','ۗ','ۖ','ۛ']) {
+    assert(policyText.includes(mark),'One of the six Tanzil pause marks missing: '+mark);
+  }
+  assert.equal(await quranPolicy.locator('a[href="https://tanzil.net/docs/pause_marks"]').count(),1,
+    'Official pause-sign reference must be linked');
+  assert.equal(await quranPolicy.locator('a[href*="/docs/quran-source-export-and-rendering-policy-"]').count(),1,
+    'Editorial policy document must be linked');
+  assert.match(await page.locator('.source-info').filter({hasText:'Лицензия текста Корана'}).textContent(),
+    /параметры его выгрузки отдельно не установлены/,
+    'Quran license panel must not state false independent source verification');
   await page.locator('#reviewBtn').click();
   assert.equal(await page.locator('#screen .hero h1').count(),1,'Second header click should close review and restore home');
   assert.equal(await page.locator('#reviewBtn').getAttribute('aria-pressed'),'false','Header button must announce review closed state');
