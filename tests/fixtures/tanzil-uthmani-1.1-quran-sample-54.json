@@ -11,7 +11,27 @@
     "metadataMirrorBlobSha": "ef53c5df61d52b565e5a952316209971e67bb191",
     "catalogBlobShaAtAudit": "a7326026d2b1d950223b843c624725d4f7280ac3",
     "auditedDate": "2026-11-22",
-    "nonVerseBasmalaTreatment": "Where the source text prepends the basmala to the first aya of short surahs, the site displays only the verse itself. This is a presentation boundary, not permission to change the publisher's verse data."
+    "nonVerseBasmalaTreatment": "Where the source text prepends the basmala to the first aya of short surahs, the site displays only the verse itself. This is a presentation boundary, not permission to change the publisher's verse data.",
+    "independentOfficialAudit": {
+      "observedDateUtc": "2026-11-22",
+      "officialEndpoint": "https://tanzil.net/pub/download/index.php",
+      "method": "POST",
+      "parameters": {
+        "quranType": "uthmani",
+        "outType": "txt-2",
+        "marks": "true",
+        "sajdah": "true",
+        "rub": "true",
+        "tatweel": "true",
+        "agree": "true"
+      },
+      "officialFullResponseSha256": "bf4f57b968d03f4131c070b1e285da9be0e0a108a21c910e872801ca273312c8",
+      "officialVerseCount": 6236,
+      "exactSampleVerses": 54,
+      "sampleVerses": 54,
+      "actionRunUrl": "https://github.com/NaFaS-Bek/talab-al-haqq/actions/runs/45051863184",
+      "note": "54 exact verse matches; proves this sample, not independent comparison of every verse or qualified tajwid review. A DIFFERENT earlier mirror has 9 service-mark-only differences among 16 verses."
+    }
   },
   "cards": {
     "q_17_24": {
