@@ -14,6 +14,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - run: node tests/site-wide-integrity.cjs
       - run: node tests/navigation-smoke.cjs
       - run: node tests/content-audit.cjs
       - run: npm install --no-save playwright
@@ -22,6 +23,7 @@ jobs:
           python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/talab-http.log 2>&1 &
           sleep 2
           node tests/browser-smoke.cjs
+          node tests/site-wide-browser-smoke.cjs
           node tests/arabic-lesson-smoke.cjs
           node tests/five-pillars-smoke.cjs
           node tests/wudu-salah-smoke.cjs
