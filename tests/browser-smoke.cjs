@@ -140,6 +140,26 @@ const assert = require('node:assert/strict');
   assert.match(await page.locator('#detail .arabic').first().textContent(),/النُّشُورُ$/,'Evening Arabic ending remains untouched');
   await page.locator('#modal .close').click();
 
+  await page.locator('#search').fill('أَعُوذُ بِكَلِمَاتِ اللَّهِ');
+  await page.locator('[data-open="dua:h_muslim_2708a"]').click();
+  const pauseAtKhalaqa=page.locator('#detail [data-pronunciation-note]');
+  assert.equal(await pauseAtKhalaqa.count(),1,'Muslim 2708a needs one source-linked pronunciation note');
+  assert.match(await pauseAtKhalaqa.textContent(),/خَلَقَ.*фатх[а-яё]*.*халяка.*при остановке/s,
+    'Explain the final fatha of khalaqa versus pause');
+  assert.equal(await page.locator('#detail [data-reading-timing]').count(),0,
+    'Muslim 2708a must not invent a morning/evening reading schedule');
+  await page.locator('#modal .close').click();
+
+  await page.locator('#search').fill('اللَّهُمَّ رَبَّ النَّاسِ');
+  await page.locator('[data-open="dua:h_bukhari_5743"]').click();
+  const pauseAtSaqaman=page.locator('#detail [data-pronunciation-note]');
+  assert.equal(await pauseAtSaqaman.count(),1,'Bukhari 5743 needs one source-linked pronunciation note');
+  assert.match(await pauseAtSaqaman.textContent(),/سَقَمًا.*танвином фатх.*сакаман.*при остановке/s,
+    'Explain why fathatan gives pausal long a rather than always deleting the final vowel');
+  assert.equal(await page.locator('#detail [data-reading-timing]').count(),0,
+    'Bukhari 5743 must not invent reading-time restrictions');
+  await page.locator('#modal .close').click();
+
   await page.locator('#search').fill('');
   await page.locator('[data-dua-group="daily"]').click();
   await page.locator('[data-open="dua:h_muslim_2018a"]').click();

@@ -66,6 +66,7 @@ on:
       - 'tests/adhkar-short-surahs-batch-7.cjs'
       - 'tests/adhkar-hadith-final-13.cjs'
       - 'tests/adhkar-phonetics-batch2.cjs'
+      - 'tests/adhkar-wasl-waqf-pass18.cjs'
       - 'docs/adhkar-deep-review-batch-8-2026-11-22.md'
       - 'docs/adhkar-quran-unicode-pass1-2026-11-22.md'
       - 'docs/adhkar-quran-unicode-pass2-2026-11-22.md'
@@ -154,6 +155,8 @@ jobs:
         run: node tests/adhkar-short-surahs-batch-7.cjs
       - name: Final 13 hadith cards source and wording regression checks
         run: node tests/adhkar-hadith-final-13.cjs
+      - name: Three Muslim and Bukhari supplications, source excerpts and wasl/waqf review inventory
+        run: node tests/adhkar-wasl-waqf-pass18.cjs
       - name: Four hadith phonetics end-form and source guards
         run: node tests/adhkar-phonetics-batch2.cjs
       - name: Export transliteration review inventory
