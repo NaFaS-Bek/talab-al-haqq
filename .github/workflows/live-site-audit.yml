@@ -1,10 +1,19 @@
 name: Check published site
 on:
+  push:
+    branches: [main]
+    paths:
+      - '_headers'
+      - '.github/workflows/live-site-audit.yml'
+      - 'tests/live-site-audit.cjs'
+      - 'tests/live-site-browser-smoke.cjs'
   pull_request:
     branches: [main]
     paths:
       - '.github/workflows/live-site-audit.yml'
       - 'tests/live-site-audit.cjs'
+      - 'tests/live-site-browser-smoke.cjs'
+      - '_headers'
   workflow_dispatch:
     inputs:
       site_url:
@@ -16,24 +25,48 @@ permissions:
 jobs:
   live-check:
     runs-on: ubuntu-latest
+    timeout-minutes: 18
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: main
           persist-credentials: false
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Verify public pages, live content and headers against main
-        # A live-deployment issue is useful evidence but should not hide a
-        # valid workflow fix while it is being reviewed.
+      - name: Syntax check live audits
+        run: |
+          node --check tests/live-site-audit.cjs
+          node --check tests/live-site-browser-smoke.cjs
+      - name: Verify live pages, assets, and security headers
+        # On a main push Cloudflare may deploy asynchronously; retry for up
+        # to ~2 minutes. On PR use one non-blocking baseline of live main.
         continue-on-error: ${{ github.event_name == 'pull_request' }}
-        run: node tests/live-site-audit.cjs
+        shell: bash
+        run: |
+          attempts=1
+          if [ "$GITHUB_EVENT_NAME" = "push" ]; then attempts=9; fi
+          for ((n=1; n<=attempts; n++)); do
+            if node tests/live-site-audit.cjs; then exit 0; fi
+            if [ "$n" -lt "$attempts" ]; then sleep 15; fi
+          done
+          exit 1
+        env:
+          TALAB_SITE_URL: ${{ github.event_name == 'workflow_dispatch' && inputs.site_url || 'https://talab-al-haqq.rnafasbek.workers.dev/' }}
+      - name: Install browser test dependency
+        run: npm install --no-save playwright
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Exercise real published site at mobile and desktop widths
+        continue-on-error: ${{ github.event_name == 'pull_request' }}
+        run: node tests/live-site-browser-smoke.cjs
         env:
           TALAB_SITE_URL: ${{ github.event_name == 'workflow_dispatch' && inputs.site_url || 'https://talab-al-haqq.rnafasbek.workers.dev/' }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: live-site-audit-report
-          path: live-site-report.json
+          path: |
+            live-site-report.json
+            live-browser-report.json
+            live-home-*.png
           if-no-files-found: warn
