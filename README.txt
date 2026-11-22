@@ -31,6 +31,18 @@ RELEASE = null: это НЕ собранный офлайн-релиз. Инте
   node tests/site-wide-integrity.cjs
   node tests/navigation-smoke.cjs
   node tests/content-audit.cjs
+  node --check tests/live-site-audit.cjs
+Базовое измерение производительности в CI:
+  node tests/site-performance-baseline.cjs
+  (для последней команды нужны запущенный HTTP-сервер и Playwright;
+   измерения локальны и НЕ равны скорости публичного сайта).
+
+Действующий URL сайта из репозитория пока не подтверждён. В GitHub
+появился ручной workflow «Check published site (manual)»: укажите
+подтверждённый HTTPS site_url, затем смотрите live-site-report.json.
+Он проверит реальные ответы и соответствие основных ресурсов ветке main.
+Без URL нельзя утверждать, что проверена именно публичная версия.
+
 Браузерные тесты выполняются в GitHub Actions, включая Chromium на
 мобильных и компьютерных размерах экрана. Это не заменяет тестов на
 реальных iOS/Android и проверки опубликованного хостинга.
