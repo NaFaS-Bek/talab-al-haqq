@@ -5,6 +5,7 @@ const lessons=[
   {file:'family-nikah.html',title:/Никах/,required:['https://quran.com/24/32','https://sunnah.com/bukhari:5136']},
   {file:'family-mahr.html',title:/Махр/,required:['https://quran.com/4/4','https://sunnah.com/bukhari:5150']},
   {file:'family-children.html',title:/Воспитание детей/,required:['https://quran.com/31/13','https://sunnah.com/bukhari:5997']},
+  {file:'family-child-rights.html',title:/Права ребёнка в исламе/,required:['https://quran.com/2/233','https://sunnah.com/bukhari:5467','https://sunnah.com/bukhari:2587']},
   {file:'family-prophetic-example.html',title:/Семейная жизнь/,required:['https://quran.com/30/21','https://sunnah.com/bukhari:6039']}
 ];
 (async()=>{
@@ -28,6 +29,39 @@ try{
       await page.waitForURL('**/'+lesson.file);
       assert.match(await page.locator('h1').textContent(),lesson.title,'Lesson title '+lesson.file);
       assert(await page.locator('section.card').count()>=4,'Must have explanation and practical sections');
+      if (lesson.file === 'family-child-rights.html') {
+        assert.equal(await page.locator('section.card').count(),8,
+          'Child rights must contain eight focused sections');
+        assert.equal(await page.locator('.quick-nav a[href^="#right-"]').count(),8,
+          'Each child right section needs quick navigation');
+        assert.equal(await page.locator('#right-8 details').count(),5,
+          'Child rights should include five source-aware checks');
+        for (const href of [
+          'https://quran.com/17/31',
+          'https://quran.com/2/233',
+          'https://quran.com/20/132',
+          'https://quran.com/49/11',
+          'https://quran.com/4/2',
+          'https://quran.com/4/9',
+          'https://sunnah.com/bukhari:5364',
+          'https://sunnah.com/bukhari:5467',
+          'https://sunnah.com/bukhari:2587',
+        ]) {
+          assert.equal(await page.locator('a[href="'+href+'"]').count()>0,true,
+            'Child-rights source is absent '+href);
+        }
+        const pageText=await page.locator('main').innerText();
+        for (const phrase of [
+          'конкретный запрет на убийство',
+          'Описание тахника не является медицинской рекомендацией',
+          'Контекст аята связан с кормлением',
+          'Аят 49:11 обращён к верующим в целом',
+          'Это рассказ о дарении одному из детей',
+          'Эти аяты имеют конкретные имущественные и опекунские контексты',
+        ]) {
+          assert(pageText.includes(phrase),'Missing child-rights source-boundary explanation '+phrase);
+        }
+      }
       if (lesson.file === 'family-children.html') {
         assert.equal(await page.locator('section.card').count(),8,
           'Child upbringing needs 8 deliberate learning sections');
