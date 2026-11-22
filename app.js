@@ -17,6 +17,7 @@ function save(key, value) {
 let db = {}, caliphs = null, tab = 'home', filter = 'all', query = '', entries = [], library = [], history = [], active = null;
 let favs = get('favs', []), counts = get('counts', {}), theme = get('theme', 'dark'), reading = get('reading', {});
 let modalStack = [], lastFocus = null;
+let reviewReturnState = null;
 let knowledgeGroup = null, educationTopic = null, duaGroup = null;
 const groupButton = (label, description, attr, value, count = null) => `<button class="item category-item" ${attr}="${clean(value)}"><span class="itembody"><strong>${clean(label)}</strong><small>${clean(description)}</small></span>${count === null ? '' : `<span class="category-count" aria-label="Материалов: ${count}">${count}</span>`}<span class="arrow" aria-hidden="true">›</span></button>`;
 const backButton = (target) => `<button class="action" data-back="${target}">← Назад к разделам</button>`;
@@ -32,6 +33,19 @@ function initData(d, c) {
   library = d.library.items; history = d.history.events; render();
 }
 function setTab(t) { tab = t; query = ''; filter = 'all'; knowledgeGroup = null; educationTopic = null; duaGroup = null; render(); window.scrollTo(0, 0); }
+function toggleReview() {
+  if (tab !== 'review') {
+    reviewReturnState = {tab, filter, query, knowledgeGroup, educationTopic, duaGroup, scrollY: window.scrollY};
+    setTab('review');
+    return;
+  }
+  if (!reviewReturnState) { setTab('home'); return; }
+  const previous = reviewReturnState;
+  reviewReturnState = null;
+  ({tab, filter, query, knowledgeGroup, educationTopic, duaGroup} = previous);
+  render();
+  requestAnimationFrame(() => window.scrollTo(0, previous.scrollY));
+}
 function textSearch(x) {
   const words = [x.titleRu,x.transliterationRu,x.translationRu,x.meaningRu,x.summaryRu,x.arabicText,x.arabicName,...(x.tagsRu || []),...(x.aliasesRu || []),...(x.searchTerms || []),...(x.sections || []).map(s => s.textRu)];
   return words.join(' ').toLocaleLowerCase('ru').includes(query.toLocaleLowerCase('ru'));
@@ -44,7 +58,7 @@ function item(x, kind, about = false) {
 }
 function search() { return `<label class="search"><span aria-hidden="true">⌕</span><input id="search" type="search" aria-label="Найти материал" placeholder="Найти материал…" value="${clean(query)}" autocomplete="off"></label>`; }
 function section(t, more) { return `<div class="sectionhead"><h2>${clean(t)}</h2>${more ? `<button data-tab="${clean(more)}">Смотреть всё →</button>` : ''}</div>`; }
-function footer() { return `<footer class="footer"><button class="action" data-tab="review">Источники и проверка</button></footer>`; }
+function footer() { return ''; }
 function home() {
   const last = reading.last && findRecord(reading.last);
   return `<section class="hero"><span class="eyebrow" lang="ar" dir="rtl">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</span><h1>Пусть каждый день начинается с доброго</h1><p>Дуа, утренние и вечерние азкары, имена Аллаха и исламские знания — в одном месте.</p><button data-tab="dua">Открыть молитвы →</button></section>${last ? section('Продолжить чтение') + item(last.data,last.kind) : ''}${section('Разделы')}<div class="grid"><button class="tile" data-tab="dua" data-filter="morning"><span class="emoji" aria-hidden="true">${uiIcon('sun')}</span><strong>Утренние азкары</strong><small>Начать день с поминания</small></button><button class="tile" data-tab="dua" data-filter="evening"><span class="emoji" aria-hidden="true">${uiIcon('moon')}</span><strong>Вечерние азкары</strong><small>Мольбы перед ночью</small></button><button class="tile" data-tab="dua"><span class="emoji" aria-hidden="true">${uiIcon('dua')}</span><strong>Дуа по ситуациям</strong><small>Обращения к Аллаху</small></button><button class="tile" data-tab="names"><span class="emoji" aria-hidden="true">${uiIcon('names')}</span><strong>99 имён Аллаха</strong><small>Значения и размышления</small></button><button class="tile" data-tab="library"><span class="emoji" aria-hidden="true">${uiIcon('library')}</span><strong>Исламские знания</strong><small>Вера, пророки, люди и события</small></button><button class="tile" data-tab="caliphs"><span class="emoji" aria-hidden="true">${uiIcon('library')}</span><strong>История халифов</strong><small>Биографии и источники</small></button><a class="tile tile-link" href="family-rights.html"><span class="emoji" aria-hidden="true">${uiIcon('heart')}</span><strong>Муж и жена: права и обязанности</strong><small>Коран, хадисы и жизненные примеры</small></a></div>${section('С чего начать')}<div class="quicklinks">${groupButton('Основы ислама','Вера, поклонение и повседневная практика','data-home-knowledge','basics')}${groupButton('Истории пророков','Биографии и уроки историй','data-home-knowledge','prophet')}${groupButton('Исторические события','Хронология исламской истории','data-home-knowledge','events')}</div>${section('Часто ищут','dua')}${entries.slice(0,3).map(x => item(x,'dua')).join('')}${footer()}`;
@@ -110,6 +124,8 @@ function review() {
 function render() {
   document.body.classList.toggle('light',theme === 'light'); $('#themeBtn').innerHTML = uiIcon(theme === 'light' ? 'sun' : 'moon');
   $('#screen').innerHTML = ({home,dua,names,library:knowledge,favorites,review,caliphs:caliphPage}[tab] || home)();
+  $('#reviewBtn').setAttribute('aria-pressed', String(tab === 'review'));
+  $('#reviewBtn').setAttribute('aria-label', tab === 'review' ? 'Закрыть «Источники и проверка»' : 'Открыть «Источники и проверка»');
   document.querySelectorAll('.bottom button').forEach(b => b.classList.toggle('active',b.dataset.tab === (tab === 'caliphs' ? 'library' : tab)));
 }
 function findRecord(key) {
@@ -222,7 +238,7 @@ function close() {
 function refreshDetail() { if(!active) return; const y = $('.sheet').scrollTop; const expanded = $('#materialSource')?.open; $('#detail').innerHTML = details(active); if(expanded) $('#materialSource').open = true; $('.sheet').scrollTop = y; }
 document.addEventListener('click',async e => {
   const b = e.target.closest('button,[data-close]'); if(!b) return;
-  if(b.dataset.tab) { while(active) close(); setTab(b.dataset.tab); if(b.dataset.filter) { duaGroup=b.dataset.filter; render(); } return; }
+  if(b.dataset.tab) { while(active) close(); if(b.dataset.tab === 'review') { toggleReview(); } else { reviewReturnState = null; setTab(b.dataset.tab); if(b.dataset.filter) { duaGroup=b.dataset.filter; render(); } } return; }
   if(b.dataset.close) { close(); return; }
   if(b.id === 'themeBtn') { const next = theme === 'light' ? 'dark' : 'light'; if(save('theme',next)) { theme=next; render(); } return; }
   if(b.dataset.back) { if(b.dataset.back==='dua') duaGroup=null; else {knowledgeGroup=null;educationTopic=null;} query=''; render(); return; }
