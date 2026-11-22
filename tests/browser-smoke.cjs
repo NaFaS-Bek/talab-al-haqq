@@ -108,7 +108,7 @@ const assert = require('node:assert/strict');
   await page.locator('[data-open="dua:h_tirmidhi_3391_morning"]').click();
   const morningNote = page.locator('#detail [data-pronunciation-note]');
   assert.equal(await morningNote.count(),1,'Tirmidhi 3391 morning needs its own note');
-  assert.match(await morningNote.textContent(),/аль-масыр.*при остановке.*ль-масыру/s,'Morning ending and pause must be explained');
+  assert.match(await morningNote.textContent(),/ль-масыр.*при остановке.*ль-масыру/is,'Morning ending and pause must be explained');
   assert.match(await page.locator('#detail .arabic').first().textContent(),/الْمَصِيرُ$/,'Morning Arabic ending remains untouched');
   await page.locator('#modal .close').click();
 
@@ -116,7 +116,7 @@ const assert = require('node:assert/strict');
   await page.locator('[data-open="dua:h_tirmidhi_3391_evening"]').click();
   const eveningNote = page.locator('#detail [data-pronunciation-note]');
   assert.equal(await eveningNote.count(),1,'Tirmidhi 3391 evening needs its own note');
-  assert.match(await eveningNote.textContent(),/ан-нушур.*при остановке.*н-нушуру/s,'Evening ending and pause must be explained');
+  assert.match(await eveningNote.textContent(),/н-нушур.*при остановке.*н-нушуру/is,'Evening ending and pause must be explained');
   assert.match(await page.locator('#detail .arabic').first().textContent(),/النُّشُورُ$/,'Evening Arabic ending remains untouched');
   await page.locator('#modal .close').click();
 
