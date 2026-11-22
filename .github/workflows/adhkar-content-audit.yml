@@ -9,6 +9,9 @@ on:
       - 'family-parent-duties.html'
       - 'family-custody.html'
       - 'family-child-safety.html'
+      - 'family-teen-dialogue.html'
+      - 'tests/family-teen-dialogue-source-regressions.cjs'
+      - 'docs/family-teen-dialogue-source-review-pass7-2026-11-22.md'
       - 'tests/family-child-safety-source-regressions.cjs'
       - 'docs/family-child-safety-source-review-pass6-2026-11-22.md'
       - 'tests/family-custody-source-regressions.cjs'
@@ -83,6 +86,8 @@ jobs:
         run: node tests/family-child-rights-source-regressions.cjs
       - name: Parental duties source and multi-school fiqh safeguards
         run: node tests/family-parent-duties-source-regressions.cjs
+      - name: Teen dialogue sources, boundaries and safety checks
+        run: node tests/family-teen-dialogue-source-regressions.cjs
       - name: Child safeguarding lesson sources and safety limitations
         run: node tests/family-child-safety-source-regressions.cjs
       - name: Custody after divorce source and child-safety safeguards
