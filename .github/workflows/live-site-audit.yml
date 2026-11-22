@@ -1,5 +1,10 @@
-name: Check published site (manual)
+name: Check published site
 on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/live-site-audit.yml'
+      - 'tests/live-site-audit.cjs'
   workflow_dispatch:
     inputs:
       site_url:
@@ -20,9 +25,12 @@ jobs:
         with:
           node-version: '22'
       - name: Verify public pages, live content and headers against main
+        # A live-deployment issue is useful evidence but should not hide a
+        # valid workflow fix while it is being reviewed.
+        continue-on-error: ${{ github.event_name == 'pull_request' }}
         run: node tests/live-site-audit.cjs
         env:
-          TALAB_SITE_URL: ${{ inputs.site_url }}
+          TALAB_SITE_URL: ${{ github.event_name == 'workflow_dispatch' && inputs.site_url || 'https://talab-al-haqq.rnafasbek.workers.dev/' }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:
