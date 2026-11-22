@@ -115,14 +115,11 @@ async function workerStatus(page){
   assert(offlineJson.json.catalog?.entries,'Downloaded Quran/dua catalog is incomplete');
 
   // Update from release v1 to v2 after reconnecting, without clearing local data.
-  await context.setOffline(false);
   const {version:v2,marker}=makeUpdate();
   assert.notEqual(v2,initial.version,'Update needs a new content-addressed version');
-  await page.evaluate(async()=>{
-    const registration=await navigator.serviceWorker.getRegistration();
-    if(!registration)throw Error('Installed release registration missing');
-    await registration.update();
-  });
+  // The page stays open: reconnecting must discover the new release
+  // by the 'online' listener installed during its last offline load.
+  await context.setOffline(false);
   await page.waitForFunction(()=>Boolean(document.querySelector('#updateBanner')&&!document.querySelector('#updateBanner').hidden),
     null,{timeout:120000});
   await page.locator('#reloadUpdate').click();
