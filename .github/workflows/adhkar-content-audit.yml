@@ -11,6 +11,8 @@ on:
       - 'tests/adhkar-quran-unicode-batch1.cjs'
       - 'tests/adhkar-quran-unicode-remaining-duas.cjs'
       - 'tests/adhkar-tanzil-exact-54.cjs'
+      - 'tests/adhkar-quran-transliteration-review-anchors.cjs'
+      - 'docs/adhkar-quran-transliteration-review-pass1-2026-11-22.md'
       - 'tests/fixtures/tanzil-uthmani-1.1-quran-sample-54.json'
       - 'tests/fixtures/tanzil-uthmani-1.1-four-duas.txt'
       - 'tests/fixtures/tanzil-uthmani-1.1-remaining-duas.txt'
@@ -60,6 +62,8 @@ jobs:
         run: node tests/adhkar-quran-unicode-remaining-duas.cjs
       - name: Independent Tanzil exact Unicode comparison for 54 Quran verses
         run: node tests/adhkar-tanzil-exact-54.cjs
+      - name: Quranic dua phonetic review anchors (not expert certification)
+        run: node tests/adhkar-quran-transliteration-review-anchors.cjs
       - name: Five prophet supplications and narrative boundaries
         run: node tests/adhkar-prophets-deep-batch.cjs
       - name: Six additional prophet supplications and context boundaries
