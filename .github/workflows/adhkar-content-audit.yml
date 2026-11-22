@@ -8,12 +8,15 @@ on:
       - 'tests/adhkar-source-regressions.cjs'
       - 'tests/adhkar-hadith-deep-batch.cjs'
       - 'tests/adhkar-quran-deep-batch.cjs'
+      - 'tests/adhkar-quran-unicode-batch1.cjs'
+      - 'tests/fixtures/tanzil-uthmani-1.1-four-duas.txt'
       - 'tests/adhkar-prophets-deep-batch.cjs'
       - 'tests/adhkar-prophets-deep-batch-6.cjs'
       - 'tests/adhkar-short-surahs-batch-7.cjs'
       - 'tests/adhkar-hadith-final-13.cjs'
       - 'tests/adhkar-phonetics-batch2.cjs'
       - 'docs/adhkar-deep-review-batch-8-2026-11-22.md'
+      - 'docs/adhkar-quran-unicode-pass1-2026-11-22.md'
       - 'docs/adhkar-phonetics-pass2-four-hadith-2026-11-22.md'
       - 'docs/adhkar-deep-review-batch-7-2026-11-22.md'
       - 'docs/adhkar-deep-review-batch-6-2026-11-22.md'
@@ -45,6 +48,8 @@ jobs:
         run: node tests/adhkar-hadith-deep-batch.cjs
       - name: Four Quranic supplication and narrative-boundary checks
         run: node tests/adhkar-quran-deep-batch.cjs
+      - name: Four Quranic verses exact Unicode comparison with Tanzil snapshot
+        run: node tests/adhkar-quran-unicode-batch1.cjs
       - name: Five prophet supplications and narrative boundaries
         run: node tests/adhkar-prophets-deep-batch.cjs
       - name: Six additional prophet supplications and context boundaries
