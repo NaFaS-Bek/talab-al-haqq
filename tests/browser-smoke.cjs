@@ -99,13 +99,34 @@ const assert = require('node:assert/strict');
   if (await page.locator('[data-open="dua:h_abudawud_5088"]').count() === 0) await page.locator('#search').fill('С именем Аллаха');
   await page.locator('[data-open="dua:h_abudawud_5088"]').click();
   assert.match(await page.locator('#detail [data-reading-timing]').textContent(),/утром и вечером.*3 раза/,'Abu Dawud 5088 time and recitation count must be visible');
+  const abudawudNote = page.locator('#detail [data-pronunciation-note]');
+  assert.equal(await abudawudNote.count(),1,'Abu Dawud 5088 must show one reading explanation');
+  assert.match(await abudawudNote.textContent(),/с остановкой.*ль-‘алиму/s,'Explain Abu Dawud 5088 final short u versus pause');
   await page.locator('#modal .close').click();
+
+  await page.locator('#search').fill('Когда наступило утро');
+  await page.locator('[data-open="dua:h_tirmidhi_3391_morning"]').click();
+  const morningNote = page.locator('#detail [data-pronunciation-note]');
+  assert.equal(await morningNote.count(),1,'Tirmidhi 3391 morning needs its own note');
+  assert.match(await morningNote.textContent(),/ль-масыр.*при остановке.*ль-масыру/is,'Morning ending and pause must be explained');
+  assert.match(await page.locator('#detail .arabic').first().textContent(),/الْمَصِيرُ$/,'Morning Arabic ending remains untouched');
+  await page.locator('#modal .close').click();
+
+  await page.locator('#search').fill('Когда наступил вечер');
+  await page.locator('[data-open="dua:h_tirmidhi_3391_evening"]').click();
+  const eveningNote = page.locator('#detail [data-pronunciation-note]');
+  assert.equal(await eveningNote.count(),1,'Tirmidhi 3391 evening needs its own note');
+  assert.match(await eveningNote.textContent(),/н-нушур.*при остановке.*н-нушуру/is,'Evening ending and pause must be explained');
+  assert.match(await page.locator('#detail .arabic').first().textContent(),/النُّشُورُ$/,'Evening Arabic ending remains untouched');
+  await page.locator('#modal .close').click();
+
   await page.locator('#search').fill('');
   await page.locator('[data-dua-group="daily"]').click();
   await page.locator('[data-open="dua:h_muslim_2018a"]').click();
   assert.match(await page.locator('#detail .material-type').textContent(),/Наставление/);
   assert.equal(await page.locator('#detail .counter').count(),0,'Narrative instruction should not show a repetition counter');
   assert.equal(await page.locator('#detail [data-reading-timing]').count(),0,'Narrative instruction must not be mistaken for timed recitation');
+  assert.equal(await page.locator('#detail [data-pronunciation-note]').count(),0,'Unrelated narration must not inherit a pronunciation note');
   await page.locator('#modal .close').click();
   await page.locator('[data-back="dua"]').click();
   await page.locator('[data-dua-group="prophets"]').click();
