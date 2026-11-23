@@ -56,8 +56,8 @@ class StoryText(HTMLParser):
     def handle_endtag(self, tag):
         if self.capturing is not None and tag == self.capturing[0]:
             raw = " ".join(self.capturing[1])
-            plain = re.sub(r"[\\u0600-\\u08FF]+", " ", html.unescape(raw))
-            plain = re.sub(r"\\s+", " ", plain).strip()
+            plain = re.sub(r"[\u0600-\u08FF]+", " ", html.unescape(raw))
+            plain = re.sub(r"\s+", " ", plain).strip()
             if plain:
                 self.fragments.append(plain)
             self.capturing = None
@@ -141,7 +141,7 @@ def main():
     if args.preview_text:
         parts, source_hash = read_story(args.story)
         print("SOURCE_STORIES_SHA256=" + source_hash)
-        print("\\n\\n".join(parts))
+        print("\n\n".join(parts))
         return 0
     generate(args.story, args.voice, overwrite=args.overwrite)
     return 0
