@@ -33,7 +33,7 @@ const fs=require('node:fs');
            unlabeled,brokenImages
          };
        });
-       assert.equal(info.language,file==='about-tg.html'?'tg':'ru','Missing document lang '+file);
+       assert.equal(info.language,file.endsWith('-tg.html')?'tg':'ru','Missing document lang '+file);
        assert(info.title.length>0,'Missing page title '+file);
        assert.equal(info.h1,1,'Expected one h1 on '+file);
        assert(info.scroll<=info.width+2,'Horizontal overflow in '+file+' at '+viewport.width+': '+info.scroll+' > '+info.width);
