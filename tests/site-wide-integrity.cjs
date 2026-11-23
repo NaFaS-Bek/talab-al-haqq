@@ -7,7 +7,14 @@ const path=require('node:path');
 const root=process.cwd();
 const pages=fs.readdirSync(root).filter(n=>/\.html$/i.test(n)).sort();
 assert(pages.includes('index.html'),'Entry point index.html missing');
-assert(pages.includes('about.html'),'About page for Russian-speaking Muslim learners missing');
+assert(pages.includes('about.html'),'Russian project information missing');
+assert(pages.includes('about-tg.html'),'Tajik project information missing');
+assert(pages.includes('stories-tg.html'),'Tajik Quran story pilot missing');
+const tajik=fs.readFileSync('about-tg.html','utf8');
+const i18n=fs.readFileSync('i18n.js','utf8');
+for(const phrase of ['Дар бораи лоиҳа','Тарҷумаи тоҷикӣ','фатво','сарчашмаҳо']) assert(tajik.includes(phrase),'Missing Tajik editorial disclosure: '+phrase);
+assert(i18n.includes('nfs_lang') && i18n.includes('talab-language-change'),'Persistent language switching missing');
+assert(i18n.includes('Never translate religious source text automatically'),'Arabic safety guard missing');
 const about=fs.readFileSync('about.html','utf8');
 const appNavigation=fs.readFileSync('app.js','utf8');
 const entry=fs.readFileSync('index.html','utf8');
@@ -58,7 +65,7 @@ function checkLocal(value,base,kind){
 }
 for(const p of pages){
  const html=cleanHtml.get(p);
- if(!/<html\b[^>]*\blang=["']ru["']/i.test(html))issue(p,'missing lang=ru');
+ if(!html.includes('lang="'+(p.endsWith('-tg.html')?'tg':'ru')+'"'))issue(p,'missing document language');
  if(!/<meta\s+charset=["']?utf-8/i.test(html))issue(p,'missing utf-8 meta');
  if(!/<meta\b[^>]*name=["']viewport["']/i.test(html))issue(p,'missing viewport meta');
  const title=html.match(/<title>([^<]*)<\/title>/i)?.[1]||'';
