@@ -196,7 +196,8 @@
     '.talab-lang-switch button{cursor:pointer;font:600 12px/1.2 system-ui,sans-serif;min-height:34px;min-width:48px;padding:5px 7px;border:0;border-radius:8px;color:inherit;background:transparent}' +
     '.talab-lang-switch button.is-selected{background:#456c59;color:#fff}' +
     '.talab-lang-switch button:focus-visible{outline:3px solid #d9c693;outline-offset:2px}' +
-    '.talab-translation-notice{border:1px solid #68836e;border-radius:12px;padding:10px 14px;font-size:.92rem;margin:10px 0 16px;line-height:1.5}';
+    '.talab-translation-notice{border:1px solid #68836e;border-radius:12px;padding:10px 14px;font-size:.92rem;margin:10px 0 16px;line-height:1.5}' +
+    '@media(max-width:600px){.top{flex-wrap:wrap;gap:8px}.top .header-actions{width:100%;display:flex;justify-content:flex-end;gap:6px;flex-wrap:wrap}.top .brand{max-width:100%}}';
   document.head.appendChild(style);
   document.addEventListener('DOMContentLoaded', () => {
     if (pageKind() !== 'other') {
