@@ -59,6 +59,15 @@ const assert=require('node:assert/strict');
    await page.locator('#story-abubakr details summary').first().click();
    assert(await page.locator('#story-abubakr details').first().evaluate(e=>e.open),'Question accordion broken');
 
+   // The prerecorded panel is optional; an absent MP3 must not expose a broken player.
+   assert.equal(await page.locator('#audio-studio-track').count(),1,'Real MP3 element required');
+   await page.evaluate(()=>{
+     const audio=document.getElementById('audio-studio-track');
+     Object.defineProperty(audio,'duration',{configurable:true,value:60});
+     audio.dispatchEvent(new Event('loadedmetadata'));
+   });
+   assert(await page.locator('#audio-studio').isVisible(),'Verified audio should reveal the optional recorded player');
+
    // Voice API is mocked: tests UI orchestration, not the quality of a real voice.
    assert.equal(await page.locator('.story-listen').count(),15);
    await page.locator('#story-yusuf .story-listen').click();
@@ -89,6 +98,11 @@ const assert=require('node:assert/strict');
    await page.locator('#audio-voice').selectOption('auto');
    await page.locator('#audio-stop').click();
    assert(await page.locator('#audio-player').isHidden(),'Stop closes player');
+   // Starting a recorded narration must stop competing browser TTS.
+   await page.locator('#story-yusuf .story-listen').click();
+   assert(await page.locator('#audio-player').isVisible());
+   await page.evaluate(()=>document.getElementById('audio-studio-track').dispatchEvent(new Event('play')));
+   assert(await page.locator('#audio-player').isHidden(),'Recorded MP3 playback must stop simultaneous TTS');
    assert.equal(await page.locator('.audio-active').count(),0,'Stop clears highlights');
    await page.locator('#story-category').selectOption('kindness');
    await page.locator('#audio-play-visible').click();
