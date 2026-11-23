@@ -2,6 +2,7 @@
 // Source and attribution regressions; not independent fiqh, tafsir or isnad certification.
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
+const {execFileSync}=require('node:child_process');
 const page=fs.readFileSync('stories.html','utf8');
 const app=fs.readFileSync('app.js','utf8');
 const index=fs.readFileSync('index.html','utf8');
@@ -45,6 +46,11 @@ assert(page.includes('SpeechSynthesisUtterance')&&page.includes('speechSynthesis
 for(const id of ['audio-preview','audio-pitch'])assert(page.includes('id="'+id+'"'),'Missing tone/preview '+id);
 assert(page.includes('function likelyMale(voice)'),'Expected automatic Russian male preference');
 assert(page.includes('utterance.pitch='),'Pitch tuning missing');
+assert(page.includes('id="audio-studio"')&&page.includes('id="audio-studio-track"'),'Missing real audio playback element');
+assert(page.includes('loadedmetadata')&&page.includes('talab-studio-audio-play'),'Recorded MP3 availability and stop-of-TTS needed');
+const previewText=execFileSync('python3',['tool/generate_story_audio.py','--story','yusuf','--preview-text'],{encoding:'utf8'});
+assert(previewText.includes('Юсуф')&&previewText.includes('Чему учит история'),'MP3 generator must narrate real editorial story');
+assert(!previewText.includes('quran.com')&&!previewText.includes('Подумай и обсуди'),'MP3 script may not narrate links or hidden answers');
 assert(page.includes('h2, .narrative h3, .narrative p, .lesson h3, .lesson li'),'Must read narrative and lessons only');
 assert(page.includes('\\u0600-\\u06FF'),'Arabic-script exclusion required');
 
@@ -87,7 +93,9 @@ assert(index.includes('<a href="stories.html">'),'No-JS fallback link must remai
 const releaseMatch=sw.match(/^const RELEASE = (\{[^\r\n]+\});/m);
 assert(releaseMatch,'Offline PWA release must be prepared');
 const release=JSON.parse(releaseMatch[1]);
-assert.equal(Object.keys(release.resources).length,37,'37 offline assets expected');
+const hasReviewedMp3=fs.existsSync('audio/stories/yusuf.mp3');
+assert.equal(Object.keys(release.resources).length,37+Number(hasReviewedMp3),'Offline assets must include reviewed MP3 only when present');
+if(hasReviewedMp3)assert(/^[0-9a-f]{64}$/.test(release.resources['audio/stories/yusuf.mp3']||''),'MP3 must be pinned in release');
 for(const p of ['stories.html','app.js','index.html']){
  assert(/^[0-9a-f]{64}$/.test(release.resources[p]||''),'Missing SHA-256 for '+p);
 }
