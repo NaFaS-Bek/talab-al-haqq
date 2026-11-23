@@ -80,13 +80,17 @@
   }
   function pageKind() {
     const name = location.pathname.split('/').pop();
-    return name === 'about.html' || name === 'about-tg.html' ? 'about' : 'other';
+    if (name === 'about.html' || name === 'about-tg.html') return 'about';
+    if (name === 'stories.html' || name === 'stories-tg.html') return 'stories';
+    return 'other';
   }
   function setLanguage(lang) {
     if (!LOCALES.includes(lang)) return;
     try { localStorage.setItem(KEY, JSON.stringify(lang)); } catch (_) {}
-    if (pageKind() === 'about') {
-      const destination = lang === 'tg' ? 'about-tg.html' : 'about.html';
+    if (pageKind() === 'about' || pageKind() === 'stories') {
+      const destination = pageKind() === 'about'
+        ? (lang === 'tg' ? 'about-tg.html' : 'about.html')
+        : (lang === 'tg' ? 'stories-tg.html' : 'stories.html');
       if (location.pathname.split('/').pop() !== destination) {
         location.assign(destination + location.search + location.hash);
         return;
@@ -99,8 +103,8 @@
   function renderSwitcher() {
     const slot = document.getElementById('talab-lang-switch');
     if (!slot) return;
-    const lang = pageKind() === 'about'
-      ? (location.pathname.split('/').pop() === 'about-tg.html' ? 'tg' : 'ru')
+    const lang = pageKind() !== 'other'
+      ? (location.pathname.split('/').pop().endsWith('-tg.html') ? 'tg' : 'ru')
       : language();
     slot.querySelectorAll('button[data-language]').forEach(btn => {
       const selected = btn.dataset.language === lang;
@@ -149,12 +153,12 @@
     });
   }
   function apply() {
-    const lang = pageKind() === 'about'
-      ? (location.pathname.endsWith('about-tg.html') ? 'tg' : 'ru')
+    const lang = pageKind() !== 'other'
+      ? (location.pathname.endsWith('-tg.html') ? 'tg' : 'ru')
       : language();
     document.documentElement.setAttribute('lang', lang);
     renderSwitcher();
-    if (pageKind() === 'about') return;
+    if (pageKind() !== 'other') return;
     const screen = document.getElementById('screen');
     let msg = document.getElementById('talab-translation-notice');
     if (lang === 'tg') {
@@ -168,7 +172,10 @@
         screen.prepend(msg);
       }
       if (msg) msg.textContent = notice;
-      if (screen) screen.querySelectorAll('a[href="about.html"]').forEach(a => a.href='about-tg.html');
+      if (screen) {
+        screen.querySelectorAll('a[href="about.html"]').forEach(a => a.href='about-tg.html');
+        screen.querySelectorAll('a[href="stories.html"]').forEach(a => a.href='stories-tg.html');
+      }
      } else {
       if (msg) msg.remove();
       const nav = document.getElementById('nav');
@@ -192,8 +199,8 @@
     '.talab-translation-notice{border:1px solid #68836e;border-radius:12px;padding:10px 14px;font-size:.92rem;margin:10px 0 16px;line-height:1.5}';
   document.head.appendChild(style);
   document.addEventListener('DOMContentLoaded', () => {
-    if (pageKind() === 'about') {
-      const pageLanguage = location.pathname.endsWith('about-tg.html') ? 'tg' : 'ru';
+    if (pageKind() !== 'other') {
+      const pageLanguage = location.pathname.endsWith('-tg.html') ? 'tg' : 'ru';
       try { localStorage.setItem(KEY, JSON.stringify(pageLanguage)); } catch (_) {}
     }
     mountSwitcher();
