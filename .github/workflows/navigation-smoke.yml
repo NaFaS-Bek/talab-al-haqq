@@ -22,6 +22,8 @@ jobs:
       - name: Prepare reproducible verified offline bundle
         run: python3 tool/prepare_website.py --build build/website
       - run: node tests/site-wide-integrity.cjs
+      - name: Inventory external source links (offline only; no HTTP validation)
+        run: node tests/external-links-inventory.cjs
       - run: node tests/navigation-smoke.cjs
       - run: node tests/content-audit.cjs
       - run: node tests/quran-stories-source-regressions.cjs
@@ -47,6 +49,12 @@ jobs:
           python3 -m http.server 8767 --bind 127.0.0.1 --directory build/tampered >/tmp/talab-tampered.log 2>&1 &
           sleep 2
           node tests/offline-pwa-smoke.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: external-links-inventory
+          path: build/external-links-inventory.json
+          if-no-files-found: ignore
       - uses: actions/upload-artifact@v4
         if: always()
         with:
