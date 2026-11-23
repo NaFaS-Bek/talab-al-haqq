@@ -141,7 +141,12 @@ function render() {
   $('#reviewBtn').setAttribute('aria-pressed', String(tab === 'review'));
   $('#reviewBtn').setAttribute('aria-label', tab === 'review' ? 'Закрыть «Источники и проверка»' : 'Открыть «Источники и проверка»');
   document.querySelectorAll('.bottom button').forEach(b => b.classList.toggle('active',b.dataset.tab === (tab === 'caliphs' ? 'library' : tab)));
+  window.TalabI18n?.apply();
 }
+document.addEventListener('talab-language-change', () => {
+  if (db?.catalog?.entries) { render(); if (active) refreshDetail(); }
+});
+
 function findRecord(key) {
   if (typeof key !== 'string') return null;
   const separator = key.indexOf(':'); const kind = key.slice(0,separator), id = key.slice(separator+1);
