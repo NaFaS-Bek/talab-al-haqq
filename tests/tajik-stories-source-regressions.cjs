@@ -5,13 +5,13 @@ const source=fs.readFileSync('stories-tg.html','utf8');
 const ru=fs.readFileSync('stories.html','utf8');
 const original=[...ru.matchAll(/<article class="story" id="([^"]+)" data-story="([^"]+)"/g)].map(x=>x[1]);
 const blocks=[...source.matchAll(/<article class="story" id="([^"]+)"[\s\S]*?<\/article>/g)];
-assert.equal(original.length,15);
+assert.equal(original.length,18);
 assert.deepEqual(blocks.map(b=>b[1]),['story-yusuf','story-musa','story-ibrahim'],'Tajik batch must correspond to first three original stories');
 assert.match(source,/<html lang="tg">/);
 assert.match(source,/<h1>Қиссаҳои ибратомӯз<\/h1>/);
 assert.match(source,/бозгӯии мустақили маънои оятҳо/);
 assert.match(source,/ташхиси мустақили коршиносон анҷом наёфтааст/);
-assert.match(source,/12 қиссаи дигар/);
+assert.match(source,/15 қиссаи дигар/);
 assert(source.includes('href="stories.html"'),'Tajik readers must be told how to reach remaining Russian originals');
 const sources={
  'story-yusuf':['12/89','12/90','12/91','12/92'],
