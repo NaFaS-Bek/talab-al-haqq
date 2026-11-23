@@ -7,6 +7,16 @@ const path=require('node:path');
 const root=process.cwd();
 const pages=fs.readdirSync(root).filter(n=>/\.html$/i.test(n)).sort();
 assert(pages.includes('index.html'),'Entry point index.html missing');
+assert(pages.includes('about.html'),'About page for Russian-speaking Muslim learners missing');
+const about=fs.readFileSync('about.html','utf8');
+const appNavigation=fs.readFileSync('app.js','utf8');
+const entry=fs.readFileSync('index.html','utf8');
+for(const fragment of ['Для кого этот сайт','Как мы работаем с источниками','Важные ограничения','Независимая богословская экспертиза','не являются фетвами','из разных стран']){
+ assert(about.includes(fragment),'About page must honestly explain '+fragment);
+}
+assert(appNavigation.includes('href="about.html"'),'Home or review navigation should link to About page');
+assert(entry.includes('href="about.html"'),'No-JavaScript homepage should link to About page');
+
 assert(pages.length>=22,'Unexpected decrease in static page inventory');
 const paths=new Set();
 function visit(dir=''){

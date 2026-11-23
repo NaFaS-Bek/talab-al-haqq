@@ -87,7 +87,7 @@ assert(index.includes('<a href="stories.html">'),'No-JS fallback link must remai
 const releaseMatch=sw.match(/^const RELEASE = (\{[^\r\n]+\});/m);
 assert(releaseMatch,'Offline PWA release must be prepared');
 const release=JSON.parse(releaseMatch[1]);
-assert.equal(Object.keys(release.resources).length,37,'37 offline assets expected');
+assert.equal(Object.keys(release.resources).length,38,'38 offline assets expected');
 for(const p of ['stories.html','app.js','index.html']){
  assert(/^[0-9a-f]{64}$/.test(release.resources[p]||''),'Missing SHA-256 for '+p);
 }
