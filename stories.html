@@ -29,6 +29,20 @@ button{min-height:46px;padding:9px 16px;background:var(--card);border:1px solid 
 footer{padding-bottom:54px;color:var(--muted);font-size:.9rem}
 @media(max-width:600px){header,main,footer{padding:16px}.quick a{width:100%;text-align:center}.story{padding:16px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+.audio-tools{margin:18px 0;padding:15px 18px;border:1px solid var(--line);border-radius:18px;background:var(--paper)}
+.audio-tools p{margin:7px 0 0}
+.story-listen{margin:0 0 15px;font-size:.93rem;border-color:var(--accent)}
+.audio-player[hidden]{display:none}
+.audio-player{position:fixed;z-index:100;left:50%;bottom:calc(10px + env(safe-area-inset-bottom, 0px));transform:translateX(-50%);width:min(660px,calc(100% - 20px));padding:12px 16px;background:var(--paper);border:2px solid var(--accent);border-radius:18px;box-shadow:0 8px 35px rgba(0,0,0,.4)}
+.audio-player strong{display:block;font-size:.92rem;line-height:1.45}
+.audio-player .audio-controls{display:flex;gap:8px;align-items:end;flex-wrap:wrap;margin-top:8px}
+.audio-player .audio-controls label{display:grid;gap:3px;flex:1 1 125px;font-size:.78rem;color:var(--muted)}
+.audio-player .audio-controls select{min-height:42px;padding:7px 9px;font-size:.88rem}
+.audio-player .audio-controls button{min-height:42px;padding:7px 12px;font-size:.9rem}
+.audio-active{background:var(--card);outline:2px solid var(--accent);outline-offset:4px;border-radius:5px}
+body.audio-open main{padding-bottom:190px}
+@media(max-width:600px){.audio-player{padding:10px 12px}.audio-player .audio-controls{gap:6px}.audio-player .audio-controls label{flex-basis:115px}}
 </style>
 </head>
 <body>
@@ -38,6 +52,20 @@ footer{padding-bottom:54px;color:var(--muted);font-size:.9rem}
 <h1>Поучительные истории из Корана и хадисов</h1>
 <p class="lead">Пятнадцать небольших историй о прощении, надежде, заботе о семье, мудром воспитании и верности. Каждый пересказ опирается на указанные аяты и, в истории об Абу Бакре, отдельный хадис.</p>
 <section class="notice" aria-label="Достоверность и ограничения"><strong>Как читать этот раздел.</strong> Ниже — редакционные пересказы смысла аятов и отдельного хадиса, <strong>не дословные переводы и не цитаты священных текстов</strong>. Мы не добавляем вымышленные диалоги, даты, реплики, подробности внешности или чудеса. Ссылки ведут к первоисточнику. Истории прошли ограниченную редакционную сверку, но <strong>независимая богословская рецензия пока не проведена</strong>. Для точного чтения обращайтесь к самим аятам.</section>
+
+<section class="audio-tools" aria-label="Аудиочтение историй">
+<button type="button" id="audio-play-visible">▶ Слушать показанные истории</button>
+<p class="small" id="audio-feedback" role="status" aria-live="polite">Озвучиваются только русские пересказы и уроки, без источников и скрытых ответов. Голос зависит от устройства.</p>
+</section>
+<div class="audio-player" id="audio-player" hidden aria-label="Управление аудиочтением">
+<strong id="audio-now">Чтение истории</strong>
+<div class="audio-controls">
+<button type="button" id="audio-pause">⏸ Пауза</button>
+<button type="button" id="audio-stop">■ Стоп</button>
+<label for="audio-speed">Скорость<select id="audio-speed"><option value="0.8">0,8×</option><option value="1" selected>1×</option><option value="1.2">1,2×</option><option value="1.4">1,4×</option></select></label>
+<label for="audio-voice">Голос<select id="audio-voice"><option value="auto">Автоматически (русский)</option></select></label>
+</div>
+</div>
 <nav class="quick" aria-label="Выбрать историю"><a href="#story-yusuf">Юсуф: прощение</a><a href="#story-musa">Мать Мусы: доверие</a><a href="#story-ibrahim">Ибрахим и Исмаил: общее дело</a><a href="#story-maryam">Марьям: забота</a><a href="#story-luqman">Лукман: мудрость</a><a href="#story-abubakr">Абу Бакр: верность</a><a href="#story-nuh">Нух: забота</a><a href="#story-ayyub">Айюб: терпение</a><a href="#story-yunus">Юнус: покаяние</a><a href="#story-zakariya">Закария: надежда</a><a href="#story-ibrahim-father">Ибрахим: уважение</a><a href="#story-musa-well">Муса: помощь</a><a href="#story-sulayman-ant">Сулейман: благодарность</a><a href="#story-saba-queen">Правительница Сабы: совет</a><a href="#story-musa-harun">Муса и Харун: поддержка</a></nav>
 <section class="intro" aria-label="Поиск и фильтр">
 <h2>Найти историю</h2>
@@ -49,6 +77,7 @@ footer{padding-bottom:54px;color:var(--muted);font-size:.9rem}
 <article class="story" id="story-yusuf" data-story="forgiveness" data-search="юсуф братья прощение раскаяние милосердие">
 <div class="meta"><span>Пророк Юсуф</span><span>Тема: прощение</span><span>Для семейного обсуждения: от 10 лет</span><span>Источник: Коран 12:89–92</span></div>
 <h2>Юсуф: сила не упрекать</h2>
+<button class="story-listen" type="button" aria-label="Слушать историю: Юсуф: сила не упрекать">▶ Слушать историю</button>
 <div class="narrative"><h3>История по аятам</h3>
 <p>В суре «Юсуф» описана встреча Юсуфа со своими братьями. Юсуф напомнил им о том, как они прежде поступили с ним и его братом. Братья спросили, не он ли Юсуф; он подтвердил это и упомянул милость Аллаха к нему и его брату. В ответ братья признали, что поступили неправильно.</p>
 <p>Юсуф не стал упрекать их в тот день и обратился к Аллаху с пожеланием прощения для них. Именно этот ответ, переданный в Коране, является центральной частью нашего рассказа. Мы не добавляем воображаемых объятий, подробностей их разговора или обещаний, которых в этих аятах нет.</p></div>
@@ -62,6 +91,7 @@ footer{padding-bottom:54px;color:var(--muted);font-size:.9rem}
 <article class="story" id="story-musa" data-story="trust" data-search="муса мать сестра ребенок доверие страх надежда испытание семья">
 <div class="meta"><span>Мать и сестра Мусы</span><span>Тема: доверие и испытания</span><span>Для семейного обсуждения: от 10 лет</span><span>Источник: Коран 28:7–13</span></div>
 <h2>Мать Мусы: надежда среди тревоги</h2>
+<button class="story-listen" type="button" aria-label="Слушать историю: Мать Мусы: надежда среди тревоги">▶ Слушать историю</button>
 <div class="narrative"><h3>История по аятам</h3>
 <p>В суре «Аль-Касас» говорится, что матери Мусы было внушено кормить сына, а когда она станет опасаться за него — положить его в воду, не поддаваясь страху и печали. В аяте сообщается обещание Аллаха вернуть ей сына и сделать его одним из посланников.</p>
 <p>Ребёнка подобрали люди из семьи Фараона. Мать Мусы переживала сильную тревогу, но Аллах укрепил её сердце. Она попросила сестру мальчика проследить за ним. Затем в повествовании сказано, что Муса не принял кормилиц, и его сестра указала на семью, которая могла бы заботиться о ребёнке.</p>
@@ -76,6 +106,7 @@ footer{padding-bottom:54px;color:var(--muted);font-size:.9rem}
 <article class="story" id="story-ibrahim" data-story="family" data-search="ибрахим исмаил кааба дом основы молитва совместная работа семья принятие">
 <div class="meta"><span>Ибрахим и Исмаил</span><span>Тема: семья и совместное дело</span><span>Для семейного обсуждения: от 8 лет</span><span>Источник: Коран 2:125–129</span></div>
 <h2>Ибрахим и Исмаил: общее дело и скромность</h2>
+<button class="story-listen" type="button" aria-label="Слушать историю: Ибрахим и Исмаил: общее дело и скромность">▶ Слушать историю</button>
 <div class="narrative"><h3>История по аятам</h3>
 <p>В суре «Аль-Бакара» Дом назван местом, к которому люди обращаются и где находят безопасность. В этом же отрывке говорится о повелении Ибрахиму и Исмаилу очищать Дом для совершающих поклонение.</p>
 <p>Коран затем сообщает, что Ибрахим и Исмаил возводили основания Дома и обращались к Аллаху с просьбой принять их труд. В следующем аяте они просят сделать их покорными Аллаху, наставить их потомство, показать обряды поклонения и принять покаяние. В 2:129 содержится просьба послать людям наставляющего посланника.</p>
@@ -91,6 +122,7 @@ footer{padding-bottom:54px;color:var(--muted);font-size:.9rem}
 <article class="story" id="story-maryam" data-story="family" data-search="марьям мариам мать имран закария забота девочка семья воспитание благодарность">
 <div class="meta"><span>Марьям и её мать</span><span>Тема: семья и забота</span><span>Для семейного обсуждения: от 9 лет</span><span>Источник: Коран 3:35–37</span></div>
 <h2>Марьям: забота начинается с доброго намерения</h2>
+<button class="story-listen" type="button" aria-label="Слушать историю: Марьям: забота начинается с доброго намерения">▶ Слушать историю</button>
 <div class="narrative"><h3>История по аятам</h3>
 <p>В суре «Аль Имран» говорится, как жена Имрана обратилась к Аллаху ещё до рождения ребёнка, посвятив Ему то, что носила. Когда родилась дочь, мать назвала её Марьям и попросила у Аллаха защиты для неё и её потомства.</p>
 <p>Затем Коран сообщает, что Аллах принял Марьям добрым принятием и поручил заботу о ней Закарии. Когда Закария приходил к ней в место поклонения, он находил у неё пропитание; в аяте передан ответ Марьям о том, что это от Аллаха.</p>
@@ -110,6 +142,7 @@ footer{padding-bottom:54px;color:var(--muted);font-size:.9rem}
 <article class="story" id="story-luqman" data-story="wisdom" data-search="лукман сын мудрость наставление родители благодарность смирение терпение намаз доброта">
 <div class="meta"><span>Лукман и его сын</span><span>Тема: мудрость и воспитание</span><span>Для семейного обсуждения: от 10 лет</span><span>Источник: Коран 31:12–19</span></div>
 <h2>Лукман: мудрость в разговоре с сыном</h2>
+<button class="story-listen" type="button" aria-label="Слушать историю: Лукман: мудрость в разговоре с сыном">▶ Слушать историю</button>
 <div class="narrative"><h3>История по аятам</h3>
 <p>Коран сообщает, что Лукману была дарована мудрость, связанная с благодарностью Аллаху. Далее приводится его наставление сыну: не приобщать никого к Аллаху в поклонении. Лукман обращается к сыну заботливо и объясняет серьёзность этого вопроса.</p>
 <p><strong>Важная граница источника:</strong> аяты 31:14–15 содержат наставление Всевышнего людям об отношении к родителям. Это <strong>не прямая речь Лукмана</strong>. В них говорится о благодарности родителям и достойном обращении с ними даже при несогласии в вопросах веры.</p>
@@ -134,6 +167,7 @@ footer{padding-bottom:54px;color:var(--muted);font-size:.9rem}
 <article class="story" id="story-abubakr" data-story="companions" data-search="абу бакр пророк мухаммад сподвижник пещера хиджра дружба доверие верность поддержка хадис">
 <div class="meta"><span>Пророк Мухаммад ﷺ и Абу Бакр</span><span>Тема: сподвижники и верность</span><span>Для семейного обсуждения: от 10 лет</span><span>Источники: Коран 9:40; аль-Бухари 3653</span></div>
 <h2>Абу Бакр в пещере: верность в испытании</h2>
+<button class="story-listen" type="button" aria-label="Слушать историю: Абу Бакр в пещере: верность в испытании">▶ Слушать историю</button>
 <div class="narrative"><h3>История по Корану и хадису</h3>
 <p>В Коране, 9:40, упомянуты двое, находившиеся в пещере во время опасности, и приведены слова Пророка ﷺ, ободряющего своего спутника и напоминающего о поддержке Аллаха. <strong>В самом аяте спутник не назван по имени.</strong></p>
 <p>В отдельном сообщении, переданном в «Сахих аль-Бухари» под номером 3653, Абу Бакр рассказывает от первого лица, как находился вместе с Пророком ﷺ в пещере. Он опасался, что их обнаружат, если преследователи посмотрят под ноги. Пророк ﷺ ответил ему словами, напоминающими о присутствии и помощи Аллаха.</p>
@@ -152,6 +186,7 @@ footer{padding-bottom:54px;color:var(--muted);font-size:.9rem}
 <article class="story" id="story-nuh" data-story="family" data-search="нух сын ковчег потоп семья ответственность забота выбор молитва">
 <div class="meta"><span>Пророк Нух и его сын</span><span>Тема: семья и ответственность</span><span>Для семейного обсуждения: от 12 лет</span><span>Источник: Коран 11:42–47</span></div>
 <h2>Нух и его сын: любовь не отменяет личного выбора</h2>
+<button class="story-listen" type="button" aria-label="Слушать историю: Нух и его сын: любовь не отменяет личного выбора">▶ Слушать историю</button>
 <div class="narrative"><h3>История по аятам</h3>
 <p>Коран описывает, как корабль Нуха двигался среди огромных волн. Нух позвал сына присоединиться к тем, кто находился на корабле, но сын ответил, что укроется на горе. В тексте говорится, что волна разделила их и сын оказался среди утонувших.</p>
 <p>Позднее Нух обратился к Аллаху, напоминая о своём сыне и семье. Ему было дано наставление не просить о том, чего он не знает. В ответ Нух попросил защиты от просьбы без знания и обратился с мольбой о прощении и милости.</p>
@@ -173,6 +208,7 @@ footer{padding-bottom:54px;color:var(--muted);font-size:.9rem}
 <article class="story" id="story-ayyub" data-story="trust" data-search="айюб испытание терпение боль надежда молитва милость исцеление">
 <div class="meta"><span>Пророк Айюб</span><span>Тема: испытание и надежда</span><span>Для семейного обсуждения: от 9 лет</span><span>Источник: Коран 21:83–84</span></div>
 <h2>Айюб: обращаться за помощью во время испытания</h2>
+<button class="story-listen" type="button" aria-label="Слушать историю: Айюб: обращаться за помощью во время испытания">▶ Слушать историю</button>
 <div class="narrative"><h3>История по аятам</h3>
 <p>В суре «Аль-Анбия» рассказывается, как Айюб обратился к своему Господу, когда его коснулось несчастье. Он вспомнил о милости Аллаха.</p>
 <p>Следующий аят сообщает, что Аллах ответил на его мольбу, избавил его от беды и одарил милостью его семью. В этих двух аятах не указаны продолжительность испытания, диагноз или имена окружающих, и мы не добавляем их из популярных пересказов.</p></div>
@@ -190,6 +226,7 @@ footer{padding-bottom:54px;color:var(--muted);font-size:.9rem}
 <article class="story" id="story-yunus" data-story="forgiveness" data-search="юнус кит темнота покаяние прощение признание ошибки молитва">
 <div class="meta"><span>Пророк Юнус</span><span>Тема: покаяние и надежда</span><span>Для семейного обсуждения: от 10 лет</span><span>Источник: Коран 21:87–88; 37:139, 142</span></div>
 <h2>Юнус: надежда даже в глубокой темноте</h2>
+<button class="story-listen" type="button" aria-label="Слушать историю: Юнус: надежда даже в глубокой темноте">▶ Слушать историю</button>
 <div class="narrative"><h3>История по аятам</h3>
 <p>В суре «Ас-Саффат» Юнус назван посланником, и там сообщается о том, как его проглотила большая рыба. В суре «Аль-Анбия» он назван «обладателем рыбы»; здесь передана его мольба, произнесённая во мраке.</p>
 <p>В своём обращении Юнус признаёт собственную неправоту, прославляет Аллаха и обращается только к Нему. Следующий аят сообщает, что Аллах ответил ему и избавил от беды. Мы не добавляем рассказы о точном числе дней внутри рыбы или её виде: выбранные аяты не устанавливают эти подробности.</p></div>
@@ -209,6 +246,7 @@ footer{padding-bottom:54px;color:var(--muted);font-size:.9rem}
 <article class="story" id="story-zakariya" data-story="family" data-search="закария йахья ребенок семья возраст надежда молитва родители">
 <div class="meta"><span>Пророк Закария</span><span>Тема: семья и надежда</span><span>Для семейного обсуждения: от 9 лет</span><span>Источник: Коран 19:2–11</span></div>
 <h2>Закария: тихая мольба и надежда</h2>
+<button class="story-listen" type="button" aria-label="Слушать историю: Закария: тихая мольба и надежда">▶ Слушать историю</button>
 <div class="narrative"><h3>История по аятам</h3>
 <p>Сура «Марьям» рассказывает, как Закария обратился к Господу с тихой мольбой. Он говорил о своей старости и просил даровать ему наследника, которым Аллах будет доволен.</p>
 <p>В повествовании ему сообщается радостная весть о сыне по имени Яхья. Закария удивляется, учитывая свой возраст и положение жены, а затем получает ответ о могуществе Аллаха. В этом пересказе мы не уточняем числовой возраст и не приписываем участникам лишних диалогов.</p></div>
@@ -230,6 +268,7 @@ footer{padding-bottom:54px;color:var(--muted);font-size:.9rem}
 <article class="story" id="story-ibrahim-father" data-story="family" data-search="ибрахим отец семья уважение религия разногласие разговор терпение">
 <div class="meta"><span>Пророк Ибрахим и его отец</span><span>Тема: семья и уважительный разговор</span><span>Для семейного обсуждения: от 10 лет</span><span>Источник: Коран 19:41–48</span></div>
 <h2>Ибрахим и его отец: уважительный разговор при несогласии</h2>
+<button class="story-listen" type="button" aria-label="Слушать историю: Ибрахим и его отец: уважительный разговор при несогласии">▶ Слушать историю</button>
 <div class="narrative"><h3>История по аятам</h3>
 <p>В суре «Марьям» Ибрахим обращается к своему отцу с наставлением о поклонении. В переданной речи он многократно обращается к нему как к отцу, объясняя, почему не согласен с его выбором.</p>
 <p>Отец отвечает угрозой и велит Ибрахиму уйти. Ибрахим отвечает словами мира и говорит, что будет просить прощения для отца; далее сообщает о своём удалении от прежнего поклонения. Это описание конкретного эпизода; оно не является универсальным постановлением обо всех обстоятельствах отношений с неверующими родственниками.</p></div>
@@ -253,6 +292,7 @@ footer{padding-bottom:54px;color:var(--muted);font-size:.9rem}
 <article class="story" id="story-musa-well" data-story="kindness" data-search="муса мадиан женщины колодец скот помощь доброта честность работа">
 <div class="meta"><span>Пророк Муса и две женщины</span><span>Тема: доброта и бескорыстная помощь</span><span>Для семейного обсуждения: от 10 лет</span><span>Источник: Коран 28:22–28</span></div>
 <h2>Муса у водопоя: помощь без требования награды</h2>
+<button class="story-listen" type="button" aria-label="Слушать историю: Муса у водопоя: помощь без требования награды">▶ Слушать историю</button>
 <div class="narrative"><h3>История по аятам</h3>
 <p>На пути в Мадьян Муса обратился к Аллаху с надеждой на верное направление. У источника он заметил людей, поивших скот, а в стороне — двух женщин. Узнав, что они ждут ухода других пастухов и что их отец пожилой человек, Муса помог напоить их животных.</p>
 <p>После этого Муса отошёл в тень и обратился с мольбой о благе. Позднее одна из женщин пригласила его к своему отцу, который хотел вознаградить его. В дальнейшем Коран описывает разговор о работе и семейном соглашении. В отрывке не названы имена женщин или их отца, поэтому мы их не придумываем.</p></div>
@@ -275,6 +315,7 @@ footer{padding-bottom:54px;color:var(--muted);font-size:.9rem}
 <article class="story" id="story-sulayman-ant" data-story="wisdom" data-search="сулейман муравей армия благодарность животные природа мудрость">
 <div class="meta"><span>Пророк Сулейман и муравей</span><span>Тема: мудрость и благодарность</span><span>Для семейного обсуждения: от 7 лет</span><span>Источник: Коран 27:17–19</span></div>
 <h2>Сулейман и муравей: замечать даже малого</h2>
+<button class="story-listen" type="button" aria-label="Слушать историю: Сулейман и муравей: замечать даже малого">▶ Слушать историю</button>
 <div class="narrative"><h3>История по аятам</h3>
 <p>Коран рассказывает, что перед Сулейманом были собраны войска из джиннов, людей и птиц. При приближении к долине муравьёв один муравей предостерёг остальных, чтобы те укрылись в своих жилищах и не были раздавлены по неведению.</p>
 <p>Сулейман улыбнулся услышанным словам и обратился к Аллаху с просьбой помочь ему благодарить за дарованные блага, совершать угодные Ему добрые дела и быть среди праведных рабов. Мы не добавляем подробностей о том, как выглядел муравей или войско.</p></div>
@@ -293,6 +334,7 @@ footer{padding-bottom:54px;color:var(--muted);font-size:.9rem}
 <article class="story" id="story-saba-queen" data-story="wisdom" data-search="саба царица правительница женщина сулейман совет письмо решение мудрость">
 <div class="meta"><span>Правительница Сабы и Сулейман</span><span>Тема: совет и переосмысление</span><span>Для семейного обсуждения: от 11 лет</span><span>Источник: Коран 27:29–35, 44</span></div>
 <h2>Правительница Сабы: прежде чем решить — выслушать</h2>
+<button class="story-listen" type="button" aria-label="Слушать историю: Правительница Сабы: прежде чем решить — выслушать">▶ Слушать историю</button>
 <div class="narrative"><h3>История по аятам</h3>
 <p>В суре «Ан-Намль» описана правительница, получившая письмо от Сулеймана. Она сообщила об этом своим приближённым и попросила их мнения, объяснив, что не принимает важных решений, не советуясь с ними.</p>
 <p>Затем она решила отправить дар и посмотреть на ответ посланников. Позднее в повествовании говорится о её встрече с Сулейманом и признании своей неправоты перед Аллахом. <strong>Коран в этих аятах не называет её личного имени</strong>, поэтому распространённое имя «Билкис» не выдаётся здесь за имя, названное в Коране.</p></div>
@@ -313,6 +355,7 @@ footer{padding-bottom:54px;color:var(--muted);font-size:.9rem}
 <article class="story" id="story-musa-harun" data-story="family" data-search="муса харун брат поддержка общая миссия фараон просьба разговор мягкость">
 <div class="meta"><span>Пророки Муса и Харун</span><span>Тема: семья и взаимная поддержка</span><span>Для семейного обсуждения: от 9 лет</span><span>Источник: Коран 20:25–36, 42–46</span></div>
 <h2>Муса и Харун: вместе нести трудное поручение</h2>
+<button class="story-listen" type="button" aria-label="Слушать историю: Муса и Харун: вместе нести трудное поручение">▶ Слушать историю</button>
 <div class="narrative"><h3>История по аятам</h3>
 <p>Получив поручение, Муса обратился к Аллаху с просьбой облегчить ему дело и сделать его речь понятной. Он попросил дать ему помощника из семьи — брата Харуна, чтобы тот укреплял его и разделял с ним ответственность.</p>
 <p>Коран передаёт, что просьба была принята. Позднее Мусе и Харуну было велено идти к Фараону и говорить с ним мягко. Когда они опасались его враждебности, им было сказано не бояться. В этом пересказе мы не добавляем предполагаемые разговоры между братьями.</p></div>
@@ -335,7 +378,7 @@ footer{padding-bottom:54px;color:var(--muted);font-size:.9rem}
 </article>
 
 <p class="empty" id="story-empty" hidden>По такому запросу историй пока нет. Попробуйте другую тему или сбросьте фильтр.</p>
-<section class="notice"><strong>Редакционное примечание.</strong> Возрастные пометки — ориентиры для семейного чтения, а не религиозные постановления. Ссылки на внешние источники требуют подключения к интернету; тексты пятнадцати историй доступны без сети в подготовленной проверяемой PWA-версии. Аудиочтение пока не включено.</section>
+<section class="notice"><strong>Редакционное примечание.</strong> Возрастные пометки — ориентиры для семейного чтения, а не религиозные постановления. Ссылки на внешние источники требуют подключения к интернету; тексты пятнадцати историй доступны без сети в подготовленной проверяемой PWA-версии. Автоматическое чтение русских пересказов доступно в поддерживаемом браузере; офлайн-воспроизведение зависит от голосового движка устройства. Арабские аяты не озвучиваются синтезатором.</section>
 </main><footer>Талаб аль-Хакк · Поучительные истории · Источники: Коран и хадисы · <a href="./">Вернуться к знаниям</a></footer>
 <script>
 (function(){
@@ -364,6 +407,157 @@ footer{padding-bottom:54px;color:var(--muted);font-size:.9rem}
   search.addEventListener('input',filterStories);
   category.addEventListener('change',filterStories);
   reset.addEventListener('click',function(){search.value='';category.value='all';filterStories();search.focus()});
+})();
+</script>
+<script>
+/* Only Russian editorial paragraphs and lessons are spoken, never Arabic recitation. */
+(function(){
+  'use strict';
+  const supported=('speechSynthesis' in window)&&('SpeechSynthesisUtterance' in window);
+  const buttons=Array.from(document.querySelectorAll('.story-listen'));
+  const playVisible=document.getElementById('audio-play-visible');
+  const player=document.getElementById('audio-player');
+  const pause=document.getElementById('audio-pause');
+  const stop=document.getElementById('audio-stop');
+  const speed=document.getElementById('audio-speed');
+  const voiceChoice=document.getElementById('audio-voice');
+  const now=document.getElementById('audio-now');
+  const feedback=document.getElementById('audio-feedback');
+  if(!supported){
+    [playVisible,...buttons].forEach(button=>{button.disabled=true;button.title='На этом устройстве озвучка недоступна'});
+    feedback.textContent='Ваш браузер не поддерживает автоматическое чтение. Текст остаётся доступен для обычного чтения.';
+    return;
+  }
+  const synth=window.speechSynthesis;
+  let russianVoices=[],queue=[],position=0,session=0,isPaused=false,activeNode=null;
+  function status(message){feedback.textContent=message}
+  function refreshVoices(){
+    const selected=voiceChoice.value;
+    russianVoices=synth.getVoices().filter(v=>/^ru(?:[-_]|$)/i.test(v.lang));
+    voiceChoice.replaceChildren(new Option('Автоматически (русский)','auto'));
+    russianVoices.forEach((voice,i)=>{
+      voiceChoice.add(new Option(voice.name+(voice.localService?' · на устройстве':''),String(i)));
+    });
+    if([...voiceChoice.options].some(x=>x.value===selected))voiceChoice.value=selected;
+  }
+  refreshVoices();
+  if(typeof synth.addEventListener==='function')synth.addEventListener('voiceschanged',refreshVoices);
+  else synth.onvoiceschanged=refreshVoices;
+  try{
+    const stored=localStorage.getItem('talab_audio_speed');
+    if(['0.8','1','1.2','1.4'].includes(stored))speed.value=stored;
+  }catch(e){}
+  speed.addEventListener('change',()=>{
+    try{localStorage.setItem('talab_audio_speed',speed.value)}catch(e){}
+    if(!player.hidden)status('Скорость изменится со следующего фрагмента.');
+  });
+  function clearHighlight(){
+    if(activeNode)activeNode.classList.remove('audio-active');
+    activeNode=null;
+  }
+  function stopReading(message){
+    session+=1;
+    queue=[];position=0;isPaused=false;
+    synth.cancel();
+    clearHighlight();
+    player.hidden=true;
+    document.body.classList.remove('audio-open');
+    pause.textContent='⏸ Пауза';
+    if(message)status(message);
+  }
+  function splitText(text){
+    const sentences=text.match(/[^.!?…]+[.!?…]*/g)||[text];
+    const pieces=[];
+    let pending='';
+    for(let sentence of sentences){
+      sentence=sentence.trim();
+      if(!sentence)continue;
+      if(pending&&(pending+' '+sentence).length>225){pieces.push(pending);pending=''}
+      while(sentence.length>260){
+        let cut=sentence.lastIndexOf(' ',220);
+        if(cut<80)cut=220;
+        pieces.push(sentence.slice(0,cut).trim());
+        sentence=sentence.slice(cut).trim();
+      }
+      pending=pending?pending+' '+sentence:sentence;
+    }
+    if(pending)pieces.push(pending);
+    return pieces;
+  }
+  function contentFor(story){
+    const title=story.querySelector('h2')?.textContent.trim()||'История';
+    const nodes=story.querySelectorAll('h2, .narrative h3, .narrative p, .lesson h3, .lesson li');
+    return Array.from(nodes).flatMap(node=>{
+      const safe=(node.textContent||'').replace(/[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]+/gu,' ')
+        .replace(/\s+/g,' ').trim();
+      return safe?splitText(safe).map(text=>({node,text,title})):[];
+    });
+  }
+  function finish(){stopReading('Чтение завершено.')}
+  function speakNext(){
+    if(position>=queue.length){finish();return}
+    const entry=queue[position],currentSession=session;
+    clearHighlight();
+    activeNode=entry.node;
+    activeNode.classList.add('audio-active');
+    now.textContent=entry.title+' · фрагмент '+(position+1)+' из '+queue.length;
+    const utterance=new SpeechSynthesisUtterance(entry.text);
+    utterance.lang='ru-RU';
+    utterance.rate=Number(speed.value)||1;
+    if(voiceChoice.value!=='auto'){
+      const chosen=russianVoices[Number(voiceChoice.value)];
+      if(chosen)utterance.voice=chosen;
+    }else if(russianVoices.length){
+      utterance.voice=russianVoices.find(v=>v.default)||russianVoices[0];
+    }
+    utterance.onend=()=>{
+      if(currentSession!==session)return;
+      position+=1;
+      speakNext();
+    };
+    utterance.onerror=(event)=>{
+      if(currentSession!==session)return;
+      if(event.error==='canceled'||event.error==='interrupted')return;
+      stopReading('Не удалось воспроизвести звук. Проверьте голосовые настройки устройства и попробуйте снова.');
+    };
+    try{synth.speak(utterance)}
+    catch(e){stopReading('Браузер не смог запустить голос. Проверьте настройки озвучивания.')}
+  }
+  function startReading(stories){
+    stopReading();
+    queue=stories.flatMap(contentFor);
+    if(!queue.length){status('В выбранном разделе нет текста для озвучивания.');return}
+    player.hidden=false;
+    document.body.classList.add('audio-open');
+    status('Чтение началось. Можно поставить на паузу или остановить.');
+    speakNext();
+  }
+  playVisible.addEventListener('click',()=>{
+    const visible=Array.from(document.querySelectorAll('article[data-story]')).filter(story=>!story.hidden);
+    startReading(visible);
+  });
+  buttons.forEach(button=>{
+    button.addEventListener('click',()=>{
+      const story=button.closest('article[data-story]');
+      if(story)startReading([story]);
+    });
+  });
+  pause.addEventListener('click',()=>{
+    if(player.hidden)return;
+    if(isPaused){
+      synth.resume();
+      isPaused=false;
+      pause.textContent='⏸ Пауза';
+      status('Чтение продолжается.');
+    }else{
+      synth.pause();
+      isPaused=true;
+      pause.textContent='▶ Продолжить';
+      status('Чтение приостановлено.');
+    }
+  });
+  stop.addEventListener('click',()=>stopReading('Чтение остановлено.'));
+  window.addEventListener('pagehide',()=>stopReading());
 })();
 </script>
 </body></html>
