@@ -12,7 +12,7 @@ const expectStories=[
  {id:'story-ibrahim',topic:'family',quran:['2/125','2/127','2/128','2/129'],hadith:[]},
  {id:'story-maryam',topic:'family',quran:['3/35','3/36','3/37'],hadith:[]},
  {id:'story-luqman',topic:'wisdom',quran:['31/12','31/13','31/14','31/15','31/16','31/17','31/18','31/19'],hadith:[]},
- {id:'story-abubakr',topic:'companions',quran:['9/40'],hadith:['bukhari:3653']}
+ {id:'story-abubakr',topic:'companions',quran:['9/40'],hadith:['bukhari:3653']},
  {id:'story-nuh',topic:'family',quran:["11/42","11/43","11/45","11/46","11/47"],hadith:[]},
  {id:'story-ayyub',topic:'trust',quran:["21/83","21/84"],hadith:[]},
  {id:'story-yunus',topic:'forgiveness',quran:["37/139","37/142","21/87","21/88"],hadith:[]},
