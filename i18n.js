@@ -169,7 +169,20 @@
       }
       if (msg) msg.textContent = notice;
       if (screen) screen.querySelectorAll('a[href="about.html"]').forEach(a => a.href='about-tg.html');
-    } else if (msg) msg.remove();
+     } else {
+      if (msg) msg.remove();
+      const nav = document.getElementById('nav');
+      if (nav) {
+        const reverse = Object.fromEntries(Object.entries(translations).map(([ru,tg])=>[tg,ru]));
+        const walker = document.createTreeWalker(nav, NodeFilter.SHOW_TEXT);
+        const nodes = [];
+        while (walker.nextNode()) nodes.push(walker.currentNode);
+        for (const node of nodes) {
+          const value = node.nodeValue.trim();
+          if (Object.prototype.hasOwnProperty.call(reverse,value)) node.nodeValue = node.nodeValue.replace(value,reverse[value]);
+        }
+      }
+    }
   }
   const style = document.createElement('style');
   style.textContent = '.talab-lang-switch{display:inline-flex;gap:3px;padding:3px;border:1px solid #63816d;border-radius:12px;align-items:center;max-width:100%;flex-shrink:0}' +
@@ -178,6 +191,13 @@
     '.talab-lang-switch button:focus-visible{outline:3px solid #d9c693;outline-offset:2px}' +
     '.talab-translation-notice{border:1px solid #68836e;border-radius:12px;padding:10px 14px;font-size:.92rem;margin:10px 0 16px;line-height:1.5}';
   document.head.appendChild(style);
-  document.addEventListener('DOMContentLoaded', () => { mountSwitcher(); apply(); });
+  document.addEventListener('DOMContentLoaded', () => {
+    if (pageKind() === 'about') {
+      const pageLanguage = location.pathname.endsWith('about-tg.html') ? 'tg' : 'ru';
+      try { localStorage.setItem(KEY, JSON.stringify(pageLanguage)); } catch (_) {}
+    }
+    mountSwitcher();
+    apply();
+  });
   window.TalabI18n = Object.freeze({ language, setLanguage, apply, translations });
 })();
