@@ -42,6 +42,9 @@ for(const id of ['audio-play-visible','audio-player','audio-pause','audio-stop',
  assert(page.includes('id="'+id+'"'),'Missing audio control '+id);
 }
 assert(page.includes('SpeechSynthesisUtterance')&&page.includes('speechSynthesis'),'Missing speech API');
+for(const id of ['audio-preview','audio-pitch'])assert(page.includes('id="'+id+'"'),'Missing tone/preview '+id);
+assert(page.includes('function likelyMale(voice)'),'Expected automatic Russian male preference');
+assert(page.includes('utterance.pitch='),'Pitch tuning missing');
 assert(page.includes('h2, .narrative h3, .narrative p, .lesson h3, .lesson li'),'Must read narrative and lessons only');
 assert(page.includes('\\u0600-\\u06FF'),'Arabic-script exclusion required');
 
