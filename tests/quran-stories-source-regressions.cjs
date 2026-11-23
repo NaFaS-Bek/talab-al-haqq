@@ -13,9 +13,18 @@ const expectStories=[
  {id:'story-maryam',topic:'family',quran:['3/35','3/36','3/37'],hadith:[]},
  {id:'story-luqman',topic:'wisdom',quran:['31/12','31/13','31/14','31/15','31/16','31/17','31/18','31/19'],hadith:[]},
  {id:'story-abubakr',topic:'companions',quran:['9/40'],hadith:['bukhari:3653']}
+ {id:'story-nuh',topic:'family',quran:["11/42","11/43","11/45","11/46","11/47"],hadith:[]},
+ {id:'story-ayyub',topic:'trust',quran:["21/83","21/84"],hadith:[]},
+ {id:'story-yunus',topic:'forgiveness',quran:["37/139","37/142","21/87","21/88"],hadith:[]},
+ {id:'story-zakariya',topic:'family',quran:["19/2","19/3","19/4","19/5","19/7","19/9"],hadith:[]},
+ {id:'story-ibrahim-father',topic:'family',quran:["19/41","19/42","19/43","19/44","19/45","19/46","19/47","19/48"],hadith:[]},
+ {id:'story-musa-well',topic:'kindness',quran:["28/22","28/23","28/24","28/25","28/26","28/27","28/28"],hadith:[]},
+ {id:'story-sulayman-ant',topic:'wisdom',quran:["27/17","27/18","27/19"],hadith:[]},
+ {id:'story-saba-queen',topic:'wisdom',quran:["27/29","27/30","27/32","27/35","27/44"],hadith:[]},
+ {id:'story-musa-harun',topic:'family',quran:["20/25","20/27","20/29","20/30","20/32","20/36","20/42","20/44","20/46"],hadith:[]},
 ];
 const blocks=[...page.matchAll(/<article\s+class="story"\s+id="([^"]+)"\s+data-story="([^"]+)"[\s\S]*?<\/article>/g)];
-assert.equal(blocks.length,6,'Exactly six pilot stories expected');
+assert.equal(blocks.length,15,'Exactly fifteen stories expected');
 assert.equal((page.match(/<h1\b/g)||[]).length,1,'Exactly one document h1');
 assert.match(page,/<html lang="ru">/);
 assert.match(page,/<main\b/);
@@ -28,7 +37,7 @@ for(const name of ['story-search','story-category','story-reset','results','stor
 }
 assert(page.includes('role="status" aria-live="polite"'),'Search count needs accessible status');
 assert(page.includes('function filterStories()'),'Search controls must have wired logic');
-for(const category of ['all','forgiveness','trust','family','wisdom','companions']){
+for(const category of ['all','forgiveness','trust','family','wisdom','companions','kindness']){
  assert(page.includes('<option value="'+category+'">'),'Missing category option '+category);
 }
 for(let i=0;i<expectStories.length;i++){
@@ -71,5 +80,5 @@ assert.equal(Object.keys(release.resources).length,37,'37 offline assets expecte
 for(const p of ['stories.html','app.js','index.html']){
  assert(/^[0-9a-f]{64}$/.test(release.resources[p]||''),'Missing SHA-256 for '+p);
 }
-console.log('PASS: six source-grounded stories, Quran/hadith distinction, source URLs, filters, navigation and 37-asset PWA');
+console.log('PASS: fifteen source-grounded stories, Quran/hadith distinction, source URLs, filters, navigation and 37-asset PWA');
 console.log('NOT CERTIFIED: independent exegetical, isnad, Arabic, translation or theological review');

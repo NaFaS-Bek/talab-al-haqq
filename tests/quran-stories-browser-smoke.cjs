@@ -12,8 +12,8 @@ const assert=require('node:assert/strict');
    const response=await page.goto('http://127.0.0.1:8765/stories.html',{waitUntil:'networkidle'});
    assert.equal(response?.status(),200,'Stories page unavailable');
    const visible=page.locator('article[data-story]:visible');
-   assert.equal(await page.locator('article[data-story]').count(),6);
-   assert.equal(await visible.count(),6,'All six articles must be visible initially');
+   assert.equal(await page.locator('article[data-story]').count(),15);
+   assert.equal(await visible.count(),15,'All fifteen articles must be visible initially');
    await page.locator('#story-search').fill('Юсуф');
    assert.equal(await visible.count(),1,'Search must find Yusuf');
    assert.equal(await visible.first().getAttribute('id'),'story-yusuf');
@@ -21,11 +21,12 @@ const assert=require('node:assert/strict');
    assert.equal(await visible.count(),0,'Combined mismatching filters should show zero');
    assert(await page.locator('#story-empty').isVisible(),'Missing empty result');
    await page.locator('#story-reset').click();
-   assert.equal(await visible.count(),6,'Reset must show all six stories');
+   assert.equal(await visible.count(),15,'Reset must show all fifteen stories');
    for(const [category,expectedIds] of [
-    ['family',['story-ibrahim','story-maryam']],
-    ['wisdom',['story-luqman']],
-    ['companions',['story-abubakr']]
+    ['family',['story-ibrahim','story-maryam','story-nuh','story-zakariya','story-ibrahim-father','story-musa-harun']],
+    ['wisdom',['story-luqman','story-sulayman-ant','story-saba-queen']],
+    ['companions',['story-abubakr']],
+    ['kindness',['story-musa-well']]
    ]){
     await page.locator('#story-category').selectOption(category);
     const ids=await visible.evaluateAll(els=>els.map(el=>el.id));
@@ -36,7 +37,7 @@ const assert=require('node:assert/strict');
    assert(await page.locator('#story-abubakr details').first().evaluate(e=>e.open),'Question accordion broken');
    const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth+2);
    assert.equal(overflow,false,'Horizontal overflow at '+viewport.width);
-   assert.deepEqual(errors,[],'JS error on six-story page');
+   assert.deepEqual(errors,[],'JS error on fifteen-story page');
    await page.goto('http://127.0.0.1:8765/',{waitUntil:'networkidle'});
    await page.locator('#screen .hero h1').waitFor({state:'visible'});
    assert(await page.locator('#screen a[href="stories.html"]').count()>0,'Homepage stories link');
@@ -45,6 +46,6 @@ const assert=require('node:assert/strict');
    assert.equal(await page.locator('#screen a[href="stories.html"]').count(),1,'Prophet knowledge link');
    await page.close();
   }
-  console.log('PASS: six story texts, filters, details, search, navigation and mobile/desktop widths');
+  console.log('PASS: fifteen story texts, filters, details, search, navigation and mobile/desktop widths');
  }finally{await browser.close()}
 })().catch(e=>{console.error(e);process.exit(1)});
