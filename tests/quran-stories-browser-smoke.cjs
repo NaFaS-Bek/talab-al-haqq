@@ -11,12 +11,15 @@ const assert=require('node:assert/strict');
      window.__spokenChunks=[];
      const fake={
        speaking:false,paused:false,
-       getVoices(){return [{name:'Тестовый русский',lang:'ru-RU',voiceURI:'test-ru',default:true,localService:true}]},
+       getVoices(){return [
+         {name:'Anna',lang:'ru-RU',voiceURI:'test-female',default:true,localService:true},
+         {name:'Pavel',lang:'ru-RU',voiceURI:'test-male',default:false,localService:true}
+       ]},
        addEventListener(){},
        speak(utterance){
          this.speaking=true;
          window.__currentSpeech=utterance;
-         window.__spokenChunks.push({text:utterance.text,lang:utterance.lang,rate:utterance.rate});
+         window.__spokenChunks.push({text:utterance.text,lang:utterance.lang,rate:utterance.rate,pitch:utterance.pitch,voice:utterance.voice?.voiceURI||null});
        },
        cancel(){this.speaking=false;this.paused=false},
        pause(){this.paused=true},
@@ -63,6 +66,9 @@ const assert=require('node:assert/strict');
    let spoken=await page.evaluate(()=>window.__spokenChunks);
    assert(spoken[0].text.includes('Юсуф'),'Read selected story title first');
    assert.equal(spoken[0].lang,'ru-RU');
+   assert.equal(spoken[0].voice,'test-male','Prefer named Russian male voice over female default');
+   assert.equal(spoken[0].pitch,0.82,'Low pitch default');
+   assert.equal(spoken[0].rate,0.85,'Calm pace default');
    assert(await page.locator('#story-yusuf .audio-active').count()>0,'Read-aloud highlights its fragment');
    await page.evaluate(()=>window.__currentSpeech.onend());
    spoken=await page.evaluate(()=>window.__spokenChunks);
@@ -73,9 +79,17 @@ const assert=require('node:assert/strict');
    assert(await page.evaluate(()=>window.speechSynthesis.paused),'Pause sent to speech engine');
    await page.locator('#audio-pause').click();
    assert(!await page.evaluate(()=>window.speechSynthesis.paused),'Resume sent to speech engine');
+   await page.locator('#audio-pitch').selectOption('0.72');
+   await page.locator('#audio-voice').selectOption('test-female');
+   await page.locator('#audio-preview').click();
+   spoken=await page.evaluate(()=>window.__spokenChunks);
+   assert(spoken[spoken.length-1].text.includes('пример спокойного чтения'),'Preview sample');
+   assert.equal(spoken[spoken.length-1].voice,'test-female','Manual voice selection overrides male preference');
+   assert.equal(spoken[spoken.length-1].pitch,0.72,'Low pitch preview');
    await page.locator('#audio-stop').click();
    assert(await page.locator('#audio-player').isHidden(),'Stop closes player');
    assert.equal(await page.locator('.audio-active').count(),0,'Stop clears highlights');
+   await page.locator('#audio-voice').selectOption('auto');
    await page.locator('#story-category').selectOption('kindness');
    await page.locator('#audio-play-visible').click();
    spoken=await page.evaluate(()=>window.__spokenChunks);
