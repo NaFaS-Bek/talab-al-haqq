@@ -18,7 +18,7 @@ const sources={
  'story-musa':['28/7','28/8','28/9','28/10','28/11','28/12','28/13'],
  'story-ibrahim':['2/125','2/127','2/128','2/129']
 };
-for(const [,id,html] of blocks){
+for(const [html,id] of blocks){
  assert(html.includes('Хулосаҳои таҳрирӣ'),id+' missing editorial lessons');
  assert(html.includes('Мақом: бозгӯӣ дар сатҳи таҳрирӣ'),id+' missing status');
  const actual=[...new Set([...html.matchAll(/href="https:\/\/quran\.com\/(\d+\/\d+)"/g)].map(m=>m[1]))].sort();
