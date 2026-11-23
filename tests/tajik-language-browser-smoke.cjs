@@ -57,7 +57,7 @@ const assert=require('node:assert/strict');
       assert.equal(await page.locator('html').getAttribute('lang'),'tg');
       await page.locator('#talab-lang-switch [data-language="ru"]').click();
       await page.waitForURL('**/stories.html');
-      assert.equal(await page.locator('article.story').count(),15);
+      assert.equal(await page.locator('article.story').count(),18);
       assert.equal(await page.locator('html').getAttribute('lang'),'ru');
       assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2),true,'No horizontal overflow');
       assert.deepEqual(errors,[],'Browser errors during locale switch');
