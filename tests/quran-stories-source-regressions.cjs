@@ -37,6 +37,14 @@ for(const name of ['story-search','story-category','story-reset','results','stor
 }
 assert(page.includes('role="status" aria-live="polite"'),'Search count needs accessible status');
 assert(page.includes('function filterStories()'),'Search controls must have wired logic');
+assert.equal((page.match(/class="story-listen"/g)||[]).length,15,'Every story needs a listen button');
+for(const id of ['audio-play-visible','audio-player','audio-pause','audio-stop','audio-speed','audio-voice','audio-feedback']){
+ assert(page.includes('id="'+id+'"'),'Missing audio control '+id);
+}
+assert(page.includes('SpeechSynthesisUtterance')&&page.includes('speechSynthesis'),'Missing speech API');
+assert(page.includes('h2, .narrative h3, .narrative p, .lesson h3, .lesson li'),'Must read narrative and lessons only');
+assert(page.includes('\\u0600-\\u06FF'),'Arabic-script exclusion required');
+
 for(const category of ['all','forgiveness','trust','family','wisdom','companions','kindness']){
  assert(page.includes('<option value="'+category+'">'),'Missing category option '+category);
 }
