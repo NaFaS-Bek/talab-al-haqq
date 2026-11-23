@@ -41,7 +41,7 @@ const assert=require('node:assert/strict');
       await aboutLink.click();
       assert(page.url().endsWith('/about-tg.html'),'Tajik locale must link to Tajik About page');
       assert.equal(await page.locator('html').getAttribute('lang'),'tg');
-      assert(await page.locator('#limits').innerText().then(s=>s.includes('Ҳанӯз тамоми муҳтавои сомона')));
+      assert(await page.locator('section[aria-labelledby="limits"]').innerText().then(s=>s.includes('Ҳанӯз тамоми муҳтавои сомона')));
       await page.locator('#talab-lang-switch [data-language="ru"]').click();
       await page.waitForURL('**/about.html');
       assert.equal(await page.locator('html').getAttribute('lang'),'ru');
