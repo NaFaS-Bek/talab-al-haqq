@@ -40,6 +40,8 @@ footer{padding-bottom:54px;color:var(--muted);font-size:.9rem}
 .audio-player .audio-controls label{display:grid;gap:3px;flex:1 1 125px;font-size:.78rem;color:var(--muted)}
 .audio-player .audio-controls select{min-height:42px;padding:7px 9px;font-size:.88rem}
 .audio-player .audio-controls button{min-height:42px;padding:7px 12px;font-size:.9rem}
+.audio-player .audio-controls #audio-preview{flex:1 1 135px}
+.audio-tools #audio-settings{margin-top:10px}
 .audio-active{background:var(--card);outline:2px solid var(--accent);outline-offset:4px;border-radius:5px}
 body.audio-open main{padding-bottom:190px}
 @media(max-width:600px){.audio-player{padding:10px 12px}.audio-player .audio-controls{gap:6px}.audio-player .audio-controls label{flex-basis:115px}}
@@ -55,15 +57,17 @@ body.audio-open main{padding-bottom:190px}
 
 <section class="audio-tools" aria-label="Аудиочтение историй">
 <button type="button" id="audio-play-visible">▶ Слушать показанные истории</button>
-<p class="small" id="audio-feedback" role="status" aria-live="polite">Озвучиваются только русские пересказы и уроки, без источников и скрытых ответов. Голос зависит от устройства.</p>
+<p class="small" id="audio-feedback" role="status" aria-live="polite">Спокойный низкий голос выбран по умолчанию. Мужской голос используется, если такой установлен в браузере. Арабские аяты не озвучиваются.</p>
 </section>
 <div class="audio-player" id="audio-player" hidden aria-label="Управление аудиочтением">
 <strong id="audio-now">Чтение истории</strong>
 <div class="audio-controls">
 <button type="button" id="audio-pause">⏸ Пауза</button>
 <button type="button" id="audio-stop">■ Стоп</button>
-<label for="audio-speed">Скорость<select id="audio-speed"><option value="0.8">0,8×</option><option value="1" selected>1×</option><option value="1.2">1,2×</option><option value="1.4">1,4×</option></select></label>
-<label for="audio-voice">Голос<select id="audio-voice"><option value="auto">Автоматически (русский)</option></select></label>
+<label for="audio-speed">Скорость<select id="audio-speed"><option value="0.75">0,75×</option><option value="0.85" selected>0,85× · спокойно</option><option value="1">1×</option><option value="1.2">1,2×</option><option value="1.4">1,4×</option></select></label>
+<label for="audio-pitch">Тембр<select id="audio-pitch"><option value="0.72">Очень низкий</option><option value="0.82" selected>Низкий · спокойный</option><option value="0.94">Обычный</option></select></label>
+<label for="audio-voice">Голос<select id="audio-voice"><option value="auto">Предпочитать мужской (русский)</option></select></label>
+<button type="button" id="audio-preview">♫ Проверить голос</button>
 </div>
 </div>
 <nav class="quick" aria-label="Выбрать историю"><a href="#story-yusuf">Юсуф: прощение</a><a href="#story-musa">Мать Мусы: доверие</a><a href="#story-ibrahim">Ибрахим и Исмаил: общее дело</a><a href="#story-maryam">Марьям: забота</a><a href="#story-luqman">Лукман: мудрость</a><a href="#story-abubakr">Абу Бакр: верность</a><a href="#story-nuh">Нух: забота</a><a href="#story-ayyub">Айюб: терпение</a><a href="#story-yunus">Юнус: покаяние</a><a href="#story-zakariya">Закария: надежда</a><a href="#story-ibrahim-father">Ибрахим: уважение</a><a href="#story-musa-well">Муса: помощь</a><a href="#story-sulayman-ant">Сулейман: благодарность</a><a href="#story-saba-queen">Правительница Сабы: совет</a><a href="#story-musa-harun">Муса и Харун: поддержка</a></nav>
@@ -378,7 +382,7 @@ body.audio-open main{padding-bottom:190px}
 </article>
 
 <p class="empty" id="story-empty" hidden>По такому запросу историй пока нет. Попробуйте другую тему или сбросьте фильтр.</p>
-<section class="notice"><strong>Редакционное примечание.</strong> Возрастные пометки — ориентиры для семейного чтения, а не религиозные постановления. Ссылки на внешние источники требуют подключения к интернету; тексты пятнадцати историй доступны без сети в подготовленной проверяемой PWA-версии. Автоматическое чтение русских пересказов доступно в поддерживаемом браузере; офлайн-воспроизведение зависит от голосового движка устройства. Арабские аяты не озвучиваются синтезатором.</section>
+<section class="notice"><strong>Редакционное примечание.</strong> Возрастные пометки — ориентиры для семейного чтения, а не религиозные постановления. Ссылки на внешние источники требуют подключения к интернету; тексты пятнадцати историй доступны без сети в подготовленной проверяемой PWA-версии. Автоматическое чтение русских пересказов поддерживается браузером; по умолчанию установлен более спокойный темп и сниженная высота голоса. Мужской тембр зависит от доступных системных голосов и не гарантируется. Арабские аяты не озвучиваются синтезатором.</section>
 </main><footer>Талаб аль-Хакк · Поучительные истории · Источники: Коран и хадисы · <a href="./">Вернуться к знаниям</a></footer>
 <script>
 (function(){
@@ -420,7 +424,9 @@ body.audio-open main{padding-bottom:190px}
   const pause=document.getElementById('audio-pause');
   const stop=document.getElementById('audio-stop');
   const speed=document.getElementById('audio-speed');
+  const pitchChoice=document.getElementById('audio-pitch');
   const voiceChoice=document.getElementById('audio-voice');
+  const preview=document.getElementById('audio-preview');
   const now=document.getElementById('audio-now');
   const feedback=document.getElementById('audio-feedback');
   if(!supported){
@@ -430,27 +436,69 @@ body.audio-open main{padding-bottom:190px}
   }
   const synth=window.speechSynthesis;
   let russianVoices=[],queue=[],position=0,session=0,isPaused=false,activeNode=null;
+  const maleName=/pavel|павел|dmitr|дмитр|alexandr|aleksandr|александр|mihail|mikhail|михаил|maksim|maxim|максим|yur(?:i|y)|юри|юрий|igor|игор|ivan|иван|nikolai|николай|serge|серге|andrey|andrei|андре|artem|арт[её]м|oleg|олег|vladimir|владимир|male|мужск/i;
+  const femaleName=/female|женск|alena|алёна|алена|anna|анна|irina|ирина|maria|мария|tatyana|татьяна|svetlana|светлана|olga|ольга|katya|катя|ekaterina|екатерина/i;
   function status(message){feedback.textContent=message}
+  function likelyMale(voice){return maleName.test(voice.name)&&!femaleName.test(voice.name)}
+  function currentVoice(){
+    if(voiceChoice.value!=='auto')return russianVoices.find(v=>v.voiceURI===voiceChoice.value)||null;
+    return russianVoices.find(likelyMale)||russianVoices.find(v=>v.default)||russianVoices[0]||null;
+  }
+  function reportVoice(){
+    const voice=currentVoice();
+    if(!russianVoices.length){
+      status('В системе не обнаружены русские голоса. Попробуем голос браузера с языком ru-RU, но качество не гарантировано.');
+    }else if(voice&&likelyMale(voice)){
+      status('Подобран предположительно мужской русский голос: '+voice.name+'. Проверьте звучание кнопкой «Проверить голос».');
+    }else{
+      status('Мужской русский голос не обнаружен по названию. Выберите голос из списка или установите дополнительный русский голос в настройках устройства.');
+    }
+  }
   function refreshVoices(){
-    const selected=voiceChoice.value;
-    russianVoices=synth.getVoices().filter(v=>/^ru(?:[-_]|$)/i.test(v.lang));
-    voiceChoice.replaceChildren(new Option('Автоматически (русский)','auto'));
-    russianVoices.forEach((voice,i)=>{
-      voiceChoice.add(new Option(voice.name+(voice.localService?' · на устройстве':''),String(i)));
+    const previous=voiceChoice.value;
+    let available=[];
+    try{available=synth.getVoices()||[]}catch(e){}
+    russianVoices=available.filter(v=>/^ru(?:[-_]|$)/i.test(v.lang))
+      .sort((a,b)=>Number(likelyMale(b))-Number(likelyMale(a)));
+    voiceChoice.replaceChildren(new Option('Предпочитать мужской (русский)','auto'));
+    russianVoices.forEach(voice=>{
+      const hint=likelyMale(voice)?' · возможно мужской':'';
+      voiceChoice.add(new Option(voice.name+hint+(voice.localService?' · на устройстве':''),voice.voiceURI));
     });
-    if([...voiceChoice.options].some(x=>x.value===selected))voiceChoice.value=selected;
+    let stored='';
+    try{stored=localStorage.getItem('talab_audio_voice')||''}catch(e){}
+    const desired=previous!=='auto'?previous:stored;
+    if(desired&&Array.from(voiceChoice.options).some(x=>x.value===desired))voiceChoice.value=desired;
+    reportVoice();
   }
   refreshVoices();
   if(typeof synth.addEventListener==='function')synth.addEventListener('voiceschanged',refreshVoices);
   else synth.onvoiceschanged=refreshVoices;
   try{
     const stored=localStorage.getItem('talab_audio_speed');
-    if(['0.8','1','1.2','1.4'].includes(stored))speed.value=stored;
+    if(['0.75','0.85','1','1.2','1.4'].includes(stored))speed.value=stored;
+    const storedPitch=localStorage.getItem('talab_audio_pitch');
+    if(['0.72','0.82','0.94'].includes(storedPitch))pitchChoice.value=storedPitch;
   }catch(e){}
   speed.addEventListener('change',()=>{
     try{localStorage.setItem('talab_audio_speed',speed.value)}catch(e){}
     if(!player.hidden)status('Скорость изменится со следующего фрагмента.');
   });
+  pitchChoice.addEventListener('change',()=>{
+    try{localStorage.setItem('talab_audio_pitch',pitchChoice.value)}catch(e){}
+    if(!player.hidden)status('Тембр изменится со следующего фрагмента. Изменение тембра зависит от синтезатора.');
+  });
+  voiceChoice.addEventListener('change',()=>{
+    try{localStorage.setItem('talab_audio_voice',voiceChoice.value)}catch(e){}
+    reportVoice();
+  });
+  function configureUtterance(utterance){
+    utterance.lang='ru-RU';
+    utterance.rate=Number(speed.value)||0.85;
+    utterance.pitch=Number(pitchChoice.value)||0.82;
+    const voice=currentVoice();
+    if(voice)utterance.voice=voice;
+  }
   function clearHighlight(){
     if(activeNode)activeNode.classList.remove('audio-active');
     activeNode=null;
@@ -502,14 +550,7 @@ body.audio-open main{padding-bottom:190px}
     activeNode.classList.add('audio-active');
     now.textContent=entry.title+' · фрагмент '+(position+1)+' из '+queue.length;
     const utterance=new SpeechSynthesisUtterance(entry.text);
-    utterance.lang='ru-RU';
-    utterance.rate=Number(speed.value)||1;
-    if(voiceChoice.value!=='auto'){
-      const chosen=russianVoices[Number(voiceChoice.value)];
-      if(chosen)utterance.voice=chosen;
-    }else if(russianVoices.length){
-      utterance.voice=russianVoices.find(v=>v.default)||russianVoices[0];
-    }
+    configureUtterance(utterance);
     utterance.onend=()=>{
       if(currentSession!==session)return;
       position+=1;
@@ -555,6 +596,18 @@ body.audio-open main{padding-bottom:190px}
       pause.textContent='▶ Продолжить';
       status('Чтение приостановлено.');
     }
+  });
+  preview.addEventListener('click',()=>{
+    // Cancel an existing story session before previewing, to avoid overlap.
+    stopReading();
+    player.hidden=false;
+    document.body.classList.add('audio-open');
+    now.textContent='Пример спокойного чтения';
+    const sample=new SpeechSynthesisUtterance('Мир вам. Это пример спокойного чтения поучительных историй.');
+    configureUtterance(sample);
+    sample.onend=()=>{if(queue.length===0)status('Пример завершён. Нажмите «Слушать историю», чтобы начать рассказ.')};
+    sample.onerror=e=>{if(e.error!=='canceled'&&e.error!=='interrupted')status('Не удалось воспроизвести голос. Попробуйте другой вариант или проверьте настройки устройства.')};
+    try{synth.speak(sample)}catch(e){status('Голосовой движок недоступен. Проверьте настройки устройства.')}
   });
   stop.addEventListener('click',()=>stopReading('Чтение остановлено.'));
   window.addEventListener('pagehide',()=>stopReading());
