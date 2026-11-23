@@ -34,6 +34,7 @@ jobs:
           sleep 2
           node tests/browser-smoke.cjs
           node tests/site-wide-browser-smoke.cjs
+          node tests/tajik-language-browser-smoke.cjs
           node tests/quran-stories-browser-smoke.cjs
           node tests/site-performance-baseline.cjs
           node tests/arabic-lesson-smoke.cjs
