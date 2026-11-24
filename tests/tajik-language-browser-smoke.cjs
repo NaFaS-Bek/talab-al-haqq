@@ -82,7 +82,7 @@ const assert=require('node:assert/strict');
         await page.locator('[data-back="dua"]').click();
       }
       await page.locator('#nav [data-tab="names"]').click();
-      assert.match(await page.locator('[data-tg-names-progress]').innerText(),/80 аз 99/);
+      assert.match(await page.locator('[data-tg-names-progress]').innerText(),/99 аз 99/);
       assert.equal(await page.locator('[data-open^="name:"]').count(),99);
       for(const id of Array.from({length:20},(_,i)=>'name_'+String(i+1).padStart(3,'0'))){
         await page.locator('[data-open="name:'+id+'"]').click();
@@ -92,7 +92,7 @@ const assert=require('node:assert/strict');
         if(id==='name_018') assert.match(await page.locator('#detail [data-tg-name]').innerText(),/шубҳа/);
         await page.keyboard.press('Escape');
       }
-      for(let n=21;n<=80;n++){
+      for(let n=21;n<=99;n++){
         const id='name_'+String(n).padStart(3,'0');
         await page.locator('[data-open="name:'+id+'"]').click();
         assert.equal(await page.locator('#detail [data-tg-name]').count(),1,id);
@@ -101,10 +101,11 @@ const assert=require('node:assert/strict');
         assert.equal(await page.locator('#detail .counter').count(),0,id);
         await page.keyboard.press('Escape');
       }
-      await page.locator('[data-open="name:name_081"]').click();
-      assert.equal(await page.locator('#detail [data-tg-name]').count(),0);
-      assert.match(await page.locator('#detail').innerText(),/Тарҷумаи тоҷикӣ ҳанӯз омода нест/);
-      await page.keyboard.press('Escape');
+      for(const [id,warning] of [['name_083',/заиф/],['name_096',/шубҳа/]]){
+        await page.locator('[data-open="name:'+id+'"]').click();
+        assert.match(await page.locator('#detail [data-tg-name]').innerText(),warning,id);
+        await page.keyboard.press('Escape');
+      }
       await page.locator('#nav [data-tab="home"]').click();
       const aboutLink=page.locator('#screen a[href$="about-tg.html"]');
       assert.equal(await aboutLink.count(),1);

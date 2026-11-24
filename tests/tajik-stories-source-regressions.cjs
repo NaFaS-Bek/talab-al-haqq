@@ -92,10 +92,14 @@ assert.deepEqual(duaRecords.find(e=>e.id==='h_muslim_2202').repetitionRule.stage
 
 const nameMeanings=JSON.parse(fs.readFileSync('app.js','utf8').match(/const tajikNameMeanings = Object\.freeze\((\{[\s\S]*?\})\);/)[1]);
 assert.equal(catalog.names.names.length,99);
-assert.deepEqual(Object.keys(nameMeanings),catalog.names.names.slice(0,80).map(n=>n.id));
+assert.deepEqual(Object.keys(nameMeanings),catalog.names.names.slice(0,99).map(n=>n.id));
 for(const [id,t] of Object.entries(nameMeanings)){
  const n=catalog.names.names.find(x=>x.id===id);
  assert.equal(t.arabic,n.arabic);assert.equal(t.sourceUrl,n.nameSource.url);assert.equal(t.sourceBasis,n.nameSource.basisNote);assert.equal(t.duaArabic,n.supplication.arabic);assert.equal(n.supplication.kind,'personal');assert(t.meaning&&t.explanation&&t.dua&&t.basis);
 }
 assert.match(nameMeanings.name_018.basis,/шубҳа/);
-console.log('PASS: first 80 names, personal supplications, exact source guards and disputed-name caveat');
+console.log('PASS: all 99 names, personal supplications, exact source guards and disputed-name caveat');
+
+assert.match(nameMeanings.name_083.basis,/заиф/);
+assert.match(nameMeanings.name_096.basis,/шубҳа/);
+assert.match(nameMeanings.name_099.basis,/шумораи такрор/);
