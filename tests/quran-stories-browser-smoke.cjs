@@ -35,8 +35,8 @@ const assert=require('node:assert/strict');
    const response=await page.goto('http://127.0.0.1:8765/stories.html',{waitUntil:'networkidle'});
    assert.equal(response?.status(),200,'Stories page unavailable');
    const visible=page.locator('article[data-story]:visible');
-   assert.equal(await page.locator('article[data-story]').count(),15);
-   assert.equal(await visible.count(),15,'All fifteen articles must be visible initially');
+   assert.equal(await page.locator('article[data-story]').count(),18);
+   assert.equal(await visible.count(),18,'All eighteen articles must be visible initially');
    await page.locator('#story-search').fill('Юсуф');
    assert.equal(await visible.count(),1,'Search must find Yusuf');
    assert.equal(await visible.first().getAttribute('id'),'story-yusuf');
@@ -44,10 +44,10 @@ const assert=require('node:assert/strict');
    assert.equal(await visible.count(),0,'Combined mismatching filters should show zero');
    assert(await page.locator('#story-empty').isVisible(),'Missing empty result');
    await page.locator('#story-reset').click();
-   assert.equal(await visible.count(),15,'Reset must show all fifteen stories');
+   assert.equal(await visible.count(),18,'Reset must show all eighteen stories');
    for(const [category,expectedIds] of [
     ['family',['story-ibrahim','story-maryam','story-nuh','story-zakariya','story-ibrahim-father','story-musa-harun']],
-    ['wisdom',['story-luqman','story-sulayman-ant','story-saba-queen']],
+    ['wisdom',['story-luqman','story-sulayman-ant','story-saba-queen','story-musa-servant']],
     ['companions',['story-abubakr']],
     ['kindness',['story-musa-well']]
    ]){
@@ -59,17 +59,19 @@ const assert=require('node:assert/strict');
    await page.locator('#story-abubakr details summary').first().click();
    assert(await page.locator('#story-abubakr details').first().evaluate(e=>e.open),'Question accordion broken');
 
-   // The prerecorded panel is optional; an absent MP3 must not expose a broken player.
-   assert.equal(await page.locator('#audio-studio-track').count(),1,'Real MP3 element required');
+   // Unapproved or absent MP3 must not trigger a request or expose a player.
+   assert.equal(await page.locator('#audio-studio-track').count(),1);
+   assert(await page.locator('#audio-studio').isHidden());
+   assert.equal(await page.locator('#audio-studio-track').getAttribute('src'),null);
    await page.evaluate(()=>{
      const audio=document.getElementById('audio-studio-track');
      Object.defineProperty(audio,'duration',{configurable:true,value:60});
      audio.dispatchEvent(new Event('loadedmetadata'));
    });
-   assert(await page.locator('#audio-studio').isVisible(),'Verified audio should reveal the optional recorded player');
+   assert(await page.locator('#audio-studio').isHidden(),'Metadata is not editorial approval');
 
    // Voice API is mocked: tests UI orchestration, not the quality of a real voice.
-   assert.equal(await page.locator('.story-listen').count(),15);
+   assert.equal(await page.locator('.story-listen').count(),18);
    await page.locator('#story-yusuf .story-listen').click();
    assert(await page.locator('#audio-player').isVisible(),'Audio player opens from story button');
    let spoken=await page.evaluate(()=>window.__spokenChunks);
@@ -98,12 +100,20 @@ const assert=require('node:assert/strict');
    await page.locator('#audio-voice').selectOption('auto');
    await page.locator('#audio-stop').click();
    assert(await page.locator('#audio-player').isHidden(),'Stop closes player');
-   // Starting a recorded narration must stop competing browser TTS.
-   await page.locator('#story-yusuf .story-listen').click();
-   assert(await page.locator('#audio-player').isVisible());
-   await page.evaluate(()=>document.getElementById('audio-studio-track').dispatchEvent(new Event('play')));
-   assert(await page.locator('#audio-player').isHidden(),'Recorded MP3 playback must stop simultaneous TTS');
    assert.equal(await page.locator('.audio-active').count(),0,'Stop clears highlights');
+   await page.locator('#story-yusuf .story-listen').click();
+   await page.evaluate(()=>document.getElementById('audio-studio-track').dispatchEvent(new Event('play')));
+   assert(await page.locator('#audio-player').isHidden(),'Recorded playback stops browser TTS');
+   await page.evaluate(()=>{
+     const audio=document.getElementById('audio-studio-track');
+     window.__studioPauses=0;
+     Object.defineProperty(audio,'paused',{configurable:true,value:false});
+     audio.pause=()=>window.__studioPauses++;
+   });
+   await page.locator('#audio-settings').click();
+   await page.locator('#audio-preview').click();
+   assert(await page.evaluate(()=>window.__studioPauses)>0,'Preview stops recorded playback');
+   await page.locator('#audio-stop').click();
    await page.locator('#story-category').selectOption('kindness');
    await page.locator('#audio-play-visible').click();
    spoken=await page.evaluate(()=>window.__spokenChunks);
@@ -113,7 +123,7 @@ const assert=require('node:assert/strict');
 
    const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth+2);
    assert.equal(overflow,false,'Horizontal overflow at '+viewport.width);
-   assert.deepEqual(errors,[],'JS error on fifteen-story page');
+   assert.deepEqual(errors,[],'JS error on eighteen-story page');
    await page.goto('http://127.0.0.1:8765/',{waitUntil:'networkidle'});
    await page.locator('#screen .hero h1').waitFor({state:'visible'});
    assert(await page.locator('#screen a[href="stories.html"]').count()>0,'Homepage stories link');
@@ -122,6 +132,6 @@ const assert=require('node:assert/strict');
    assert.equal(await page.locator('#screen a[href="stories.html"]').count(),1,'Prophet knowledge link');
    await page.close();
   }
-  console.log('PASS: fifteen story texts, read-aloud UI, filters, details, search, navigation and mobile/desktop widths');
+  console.log('PASS: eighteen story texts, read-aloud UI, filters, details, search, navigation and mobile/desktop widths');
  }finally{await browser.close()}
 })().catch(e=>{console.error(e);process.exit(1)});

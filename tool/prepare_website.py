@@ -17,7 +17,7 @@ ROOT = Path(__file__).resolve().parent.parent
 SW = ROOT / "sw.js"
 SW_LINE = re.compile(rb"(?m)^const RELEASE = (?:null|\{[^\r\n]+\});(?=\r?$)")
 REQUIRED = [
-    "index.html", "app.js", "style.css", "pillars-common.css",
+    "index.html", "app.js", "i18n.js", "style.css", "pillars-common.css",
     "manifest.webmanifest", "icon.svg",
     "data/content.json", "data/caliph_history.json",
     "TANZIL-LICENSE.txt",

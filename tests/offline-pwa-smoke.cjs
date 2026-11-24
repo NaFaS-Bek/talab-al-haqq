@@ -96,7 +96,10 @@ async function workerStatus(page){
   for(const name of files){
     const response=await page.goto(new URL(name,base).href,{waitUntil:'domcontentloaded',timeout:15000});
     assert.equal(response?.status(),200,'Cached offline navigation failed: '+name);
-    assert((await page.title()).includes('Талаб аль-Хакк'),'Offline page has wrong title: '+name);
+    const expectedBrand=name.endsWith('-tg.html')?'Талаб ал-Ҳаққ':'Талаб аль-Хакк';
+    assert((await page.title()).includes(expectedBrand),'Offline page has wrong title: '+name);
+    assert.equal(await page.locator('html').getAttribute('lang'),name.endsWith('-tg.html')?'tg':'ru',
+      'Offline page has wrong document language: '+name);
   }
   await page.goto(base,{waitUntil:'domcontentloaded'});
   await page.locator('#screen .hero h1').waitFor({state:'visible',timeout:18000});

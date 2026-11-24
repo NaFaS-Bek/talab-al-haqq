@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#101a17">
-<meta name="description" content="Пятнадцать поучительных историй из Корана и хадисов: пророки, семьи и сподвижники. Точные источники, уроки и вопросы для размышления.">
+<meta name="description" content="Восемнадцать поучительных историй из Корана и хадисов: пророки, семьи и сподвижники. Точные источники, уроки и вопросы для размышления.">
 <title>Поучительные истории из Корана и хадисов — Талаб аль-Хакк</title>
 <style>
 :root{--bg:#101a17;--paper:#192923;--card:#20342d;--line:#365244;--ink:#f2f3e9;--muted:#c0cec3;--accent:#e7d1a2;--soft:#b8d7c5;color-scheme:dark}
@@ -57,17 +57,17 @@ body.audio-open main{padding-bottom:190px}
 <main>
 <p class="eyebrow">Коран и хадисы · Пророки, семьи и сподвижники</p>
 <h1>Поучительные истории из Корана и хадисов</h1>
-<p class="lead">Пятнадцать небольших историй о прощении, надежде, заботе о семье, мудром воспитании и верности. Каждый пересказ опирается на указанные аяты и, в истории об Абу Бакре, отдельный хадис.</p>
+<p class="lead">Восемнадцать небольших историй о прощении, надежде, заботе о семье, мудром воспитании и верности. Каждый пересказ опирается на указанные аяты и, в истории об Абу Бакре, отдельный хадис.</p>
 <section class="notice" aria-label="Достоверность и ограничения"><strong>Как читать этот раздел.</strong> Ниже — редакционные пересказы смысла аятов и отдельного хадиса, <strong>не дословные переводы и не цитаты священных текстов</strong>. Мы не добавляем вымышленные диалоги, даты, реплики, подробности внешности или чудеса. Ссылки ведут к первоисточнику. Истории прошли ограниченную редакционную сверку, но <strong>независимая богословская рецензия пока не проведена</strong>. Для точного чтения обращайтесь к самим аятам.</section>
 
 <section class="audio-tools" aria-label="Аудиочтение историй">
 <button type="button" id="audio-play-visible">▶ Слушать показанные истории</button>
 <p class="small" id="audio-feedback" role="status" aria-live="polite">Спокойный низкий голос выбран по умолчанию. Мужской голос используется, если такой установлен в браузере. Арабские аяты не озвучиваются.</p>
 </section>
-<section class="audio-studio" id="audio-studio" hidden aria-label="Профессиональная запись истории Юсуфа">
-<h2>🎧 История Юсуфа · запись мужским голосом</h2>
-<p>Русский редакционный пересказ и нравственные уроки, а не чтение Корана. Запись становится доступной только после проверки качества звука и публикации файла.</p>
-<audio id="audio-studio-track" controls preload="metadata" aria-label="Прослушать историю Юсуфа" src="./audio/stories/yusuf.mp3"></audio>
+<section class="audio-studio" id="audio-studio" hidden aria-label="Готовая запись истории Юсуфа">
+<h2>История Юсуфа · запись мужским голосом</h2>
+<p>Синтезированный голос: русский редакционный пересказ и нравственные уроки, а не чтение Корана.</p>
+<audio id="audio-studio-track" controls preload="none" aria-label="Прослушать историю Юсуфа" data-src="./audio/stories/yusuf.mp3"></audio>
 </section>
 <div class="audio-player" id="audio-player" hidden aria-label="Управление аудиочтением">
 <strong id="audio-now">Чтение истории</strong>
@@ -80,12 +80,12 @@ body.audio-open main{padding-bottom:190px}
 <button type="button" id="audio-preview">♫ Проверить голос</button>
 </div>
 </div>
-<nav class="quick" aria-label="Выбрать историю"><a href="#story-yusuf">Юсуф: прощение</a><a href="#story-musa">Мать Мусы: доверие</a><a href="#story-ibrahim">Ибрахим и Исмаил: общее дело</a><a href="#story-maryam">Марьям: забота</a><a href="#story-luqman">Лукман: мудрость</a><a href="#story-abubakr">Абу Бакр: верность</a><a href="#story-nuh">Нух: забота</a><a href="#story-ayyub">Айюб: терпение</a><a href="#story-yunus">Юнус: покаяние</a><a href="#story-zakariya">Закария: надежда</a><a href="#story-ibrahim-father">Ибрахим: уважение</a><a href="#story-musa-well">Муса: помощь</a><a href="#story-sulayman-ant">Сулейман: благодарность</a><a href="#story-saba-queen">Правительница Сабы: совет</a><a href="#story-musa-harun">Муса и Харун: поддержка</a></nav>
+<nav class="quick" aria-label="Выбрать историю"><a href="#story-yusuf">Юсуф: прощение</a><a href="#story-musa">Мать Мусы: доверие</a><a href="#story-ibrahim">Ибрахим и Исмаил: общее дело</a><a href="#story-maryam">Марьям: забота</a><a href="#story-luqman">Лукман: мудрость</a><a href="#story-abubakr">Абу Бакр: верность</a><a href="#story-nuh">Нух: забота</a><a href="#story-ayyub">Айюб: терпение</a><a href="#story-yunus">Юнус: покаяние</a><a href="#story-zakariya">Закария: надежда</a><a href="#story-ibrahim-father">Ибрахим: уважение</a><a href="#story-musa-well">Муса: помощь</a><a href="#story-sulayman-ant">Сулейман: благодарность</a><a href="#story-saba-queen">Правительница Сабы: совет</a><a href="#story-musa-harun">Муса и Харун: поддержка</a><a href="#story-cave-youths">Юноши пещеры: стойкость</a><a href="#story-talut-jalut">Талут: испытание</a><a href="#story-musa-servant">Муса: границы знания</a></nav>
 <section class="intro" aria-label="Поиск и фильтр">
 <h2>Найти историю</h2>
 <div class="controls"><label for="story-search">Поиск по словам<input id="story-search" type="search" placeholder="Например, прощение или семья" autocomplete="off"></label>
 <label for="story-category">Тема<select id="story-category"><option value="all">Все темы</option><option value="forgiveness">Прощение</option><option value="trust">Доверие и испытания</option><option value="family">Семья и совместное дело</option><option value="wisdom">Мудрость и воспитание</option><option value="companions">Сподвижники</option><option value="kindness">Помощь и доброта</option></select></label><button type="button" id="story-reset">Сбросить</button></div>
-<p id="results" role="status" aria-live="polite">Показаны 15 историй</p>
+<p id="results" role="status" aria-live="polite">Показаны 18 историй</p>
 </section>
 
 <article class="story" id="story-yusuf" data-story="forgiveness" data-search="юсуф братья прощение раскаяние милосердие">
@@ -391,8 +391,82 @@ body.audio-open main{padding-bottom:190px}
 <p class="small">Статус: кораническая основа сопоставлена редакционно; независимая экспертная рецензия не проводилась.</p>
 </article>
 
+<article class="story" id="story-cave-youths" data-story="trust" data-search="юноши пещера асхаб аль кахф спящие вера смелость испытание надежда">
+<div class="meta"><span>Юноши пещеры</span><span>Тема: доверие и испытания</span><span>Для семейного обсуждения: от 11 лет</span><span>Источник: Коран 18:9–22</span></div>
+<h2>Юноши пещеры: сохранить веру в испытании</h2>
+<button class="story-listen" type="button" aria-label="Слушать историю: Юноши пещеры: сохранить веру в испытании">▶ Слушать историю</button>
+<div class="narrative"><h3>История по аятам</h3>
+<p>В суре «Аль-Кахф» говорится о юношах, которые уверовали в своего Господа. Они не захотели поклоняться иным божествам и укрылись в пещере, обращаясь к Аллаху с просьбой о милости и правильном пути. Коран сообщает, что Аллах погрузил их в сон на многие годы.</p>
+<p>Когда юноши пробудились, они стали спрашивать друг друга, сколько времени пробыли там. Они предложили одному из них осторожно отправиться в город за пищей. Коран сообщает, что их история стала знамением, и предостерегает от споров без знания об их числе. Поэтому мы не приписываем им вымышленных имён, не называем достоверным какое-либо конкретное число юношей и не добавляем деталей о месте пещеры.</p></div>
+<section class="lesson"><h3>Чему учит история — редакционные выводы</h3><ul><li>Верность убеждениям требует мужества, особенно когда человек оказывается в меньшинстве.</li><li>Просьба о милости и руководстве может сопровождать решение в сложных обстоятельствах.</li><li>Когда источник не устанавливает деталь однозначно, лучше признать границы знания, чем спорить о догадках.</li></ul></section>
+<h3>Подумай и обсуди</h3>
+<details><summary>О чём юноши просили своего Господа?</summary><p>О милости и правильном руководстве в их деле. Основание — Коран 18:10.</p></details>
+<details><summary>Почему здесь нет точного числа юношей?</summary><p>В аяте 18:22 упоминаются разные мнения об их числе и предостережение от бесплодных споров. Мы не представляем одно из предположений как достоверный факт.</p></details>
+<div class="sources"><strong>Источники: только Коран.</strong><ul>
+<li><a href="https://quran.com/18/10" target="_blank" rel="noopener noreferrer">18:10 — просьба о милости и руководстве</a></li>
+<li><a href="https://quran.com/18/11" target="_blank" rel="noopener noreferrer">18:11 — сон в пещере</a></li>
+<li><a href="https://quran.com/18/13" target="_blank" rel="noopener noreferrer">18:13 — вера юношей</a></li>
+<li><a href="https://quran.com/18/14" target="_blank" rel="noopener noreferrer">18:14 — стойкость веры</a></li>
+<li><a href="https://quran.com/18/16" target="_blank" rel="noopener noreferrer">18:16 — решение укрыться</a></li>
+<li><a href="https://quran.com/18/19" target="_blank" rel="noopener noreferrer">18:19 — пробуждение и забота о пище</a></li>
+<li><a href="https://quran.com/18/21" target="_blank" rel="noopener noreferrer">18:21 — знамение</a></li>
+<li><a href="https://quran.com/18/22" target="_blank" rel="noopener noreferrer">18:22 — не спорить о неизвестном</a></li>
+</ul></div>
+<p class="small">Статус: кораническая основа сопоставлена редакционно; независимая экспертная рецензия не проводилась.</p>
+</article>
+
+<article class="story" id="story-talut-jalut" data-story="trust" data-search="талут джалут давуд испытание река войско стойкость мудрость терпение мужество">
+<div class="meta"><span>Талут, Джалут и Давуд</span><span>Тема: доверие и испытания</span><span>Для семейного обсуждения: от 12 лет</span><span>Источник: Коран 2:246–251</span></div>
+<h2>Талут и Джалут: испытание стойкости</h2>
+<button class="story-listen" type="button" aria-label="Слушать историю: Талут и Джалут: испытание стойкости">▶ Слушать историю</button>
+<div class="narrative"><h3>История по аятам</h3>
+<p>После времени Мусы часть сынов Исраиля попросила своего пророка назначить им царя для предстоящей борьбы. Когда же борьба была предписана, многие отступили. Их пророк объявил, что Аллах избрал Талута царём. Некоторые возразили из-за его недостаточного богатства; в ответ пророк указал на избрание Аллахом, а также на данные Талуту знания и физическую силу.</p>
+<p>Выступив с войском, Талут сообщил об испытании рекой. Многие не выдержали его условия, но некоторые продолжили путь. Перед встречей с Джалутом и его войском верующие просили Аллаха о терпении и стойкости. Коран говорит об их победе по воле Аллаха и о том, что Давуд одолел Джалута. Здесь мы не придумываем подробности сражения или оружия, которых нет в указанных аятах.</p></div>
+<section class="lesson"><h3>Чему учит история — редакционные выводы</h3><ul><li>Богатство само по себе не является единственным мерилом пригодности к руководству.</li><li>Держать данное слово бывает труднее, чем дать обещание.</li><li>Стойкость в испытании не исключает обращения к Аллаху с просьбой о помощи.</li></ul></section>
+<h3>Подумай и обсуди</h3>
+<details><summary>Почему некоторые возражали против назначения Талута?</summary><p>Они считали себя более достойными власти и указывали на отсутствие у Талута большого богатства. См. 2:247.</p></details>
+<details><summary>О чём просили верующие перед встречей с Джалутом?</summary><p>О терпении, твёрдости и помощи. См. 2:250.</p></details>
+<div class="sources"><strong>Источники: только Коран.</strong><ul>
+<li><a href="https://quran.com/2/246" target="_blank" rel="noopener noreferrer">2:246 — обещание и испытание</a></li>
+<li><a href="https://quran.com/2/247" target="_blank" rel="noopener noreferrer">2:247 — избрание Талута</a></li>
+<li><a href="https://quran.com/2/248" target="_blank" rel="noopener noreferrer">2:248 — знамение царства</a></li>
+<li><a href="https://quran.com/2/249" target="_blank" rel="noopener noreferrer">2:249 — испытание рекой</a></li>
+<li><a href="https://quran.com/2/250" target="_blank" rel="noopener noreferrer">2:250 — мольба о стойкости</a></li>
+<li><a href="https://quran.com/2/251" target="_blank" rel="noopener noreferrer">2:251 — победа и Давуд</a></li>
+</ul></div>
+<p class="small">Статус: кораническая основа сопоставлена редакционно; независимая экспертная рецензия не проводилась. Это рассказ о событии прошлого, а не указание читателю совершать насилие.</p>
+</article>
+
+<article class="story" id="story-musa-servant" data-story="wisdom" data-search="муса праведный раб аллаха знание терпение обучение учитель корабль мальчик сироты стена мудрость">
+<div class="meta"><span>Пророк Муса и раб Аллаха</span><span>Тема: мудрость и границы знания</span><span>Для семейного обсуждения: от 14 лет</span><span>Источник: Коран 18:60–82</span></div>
+<h2>Муса и раб Аллаха: не всё нам известно</h2>
+<button class="story-listen" type="button" aria-label="Слушать историю: Муса и раб Аллаха: не всё нам известно">▶ Слушать историю</button>
+<div class="narrative"><h3>История по аятам</h3>
+<p>Муса отправился в путь, а затем встретил одного из рабов Аллаха, которому были дарованы милость и особое знание. Муса попросил разрешения следовать за ним ради обучения. Его спутник предупредил, что терпение будет трудным, и велел не расспрашивать о происходящем, пока сам не объяснит.</p>
+<p>Во время пути спутник повредил судно, затем убил отрока, а позднее восстановил стену в селении, жители которого отказались принять путников. Муса возражал против поступков, смысла которых не понимал. Перед расставанием спутник объяснил обстоятельства: судно принадлежало бедным людям и могло быть отобрано царём; относительно отрока он сообщил о его верующих родителях и особой причине случившегося; стена скрывала сокровище двух сирот. Он подчеркнул, что действовал не по собственной воле.</p>
+<p>Это трудный для чтения сюжет, в котором упоминается гибель ребёнка. Коран не даёт обычным людям права повторять такие поступки на основании собственных догадок. Мы не называем этого раба по имени, поскольку в самих аятах 18:60–82 его имя не приводится.</p></div>
+<section class="lesson"><h3>Чему учит история — редакционные выводы</h3><ul><li>Человеческое знание ограничено, поэтому полезно учиться и признавать, чего мы пока не знаем.</li><li>Возражения Мусы показывают, насколько серьёзно воспринимается вред людям; неизвестность причин сама по себе не оправдывает вреда.</li><li>Исключительное событие этого повествования нельзя превращать в разрешение действовать вопреки общим нравственным и правовым обязанностям.</li></ul></section>
+<h3>Подумай и обсуди</h3>
+<details><summary>Почему Муса спрашивал о действиях спутника?</summary><p>Он видел поступки, которые казались опасными или несправедливыми, и не знал их объяснения. См. 18:71 и 18:74.</p></details>
+<details><summary>Что оказалось под восстановленной стеной?</summary><p>Сокровище, принадлежавшее двум сиротам; об этом говорится в 18:82.</p></details>
+<div class="sources"><strong>Источники: только Коран.</strong><ul>
+<li><a href="https://quran.com/18/60" target="_blank" rel="noopener noreferrer">18:60 — путь Мусы</a></li>
+<li><a href="https://quran.com/18/65" target="_blank" rel="noopener noreferrer">18:65 — раб Аллаха с особым знанием</a></li>
+<li><a href="https://quran.com/18/66" target="_blank" rel="noopener noreferrer">18:66 — просьба обучаться</a></li>
+<li><a href="https://quran.com/18/70" target="_blank" rel="noopener noreferrer">18:70 — условие путешествия</a></li>
+<li><a href="https://quran.com/18/71" target="_blank" rel="noopener noreferrer">18:71 — судно и возражение Мусы</a></li>
+<li><a href="https://quran.com/18/74" target="_blank" rel="noopener noreferrer">18:74 — гибель отрока и возражение Мусы</a></li>
+<li><a href="https://quran.com/18/77" target="_blank" rel="noopener noreferrer">18:77 — восстановление стены</a></li>
+<li><a href="https://quran.com/18/79" target="_blank" rel="noopener noreferrer">18:79 — объяснение о судне</a></li>
+<li><a href="https://quran.com/18/80" target="_blank" rel="noopener noreferrer">18:80 — объяснение об отроке</a></li>
+<li><a href="https://quran.com/18/81" target="_blank" rel="noopener noreferrer">18:81 — продолжение объяснения</a></li>
+<li><a href="https://quran.com/18/82" target="_blank" rel="noopener noreferrer">18:82 — сокровище сирот и границы самостоятельных действий</a></li>
+</ul></div>
+<p class="small">Статус: кораническая основа сопоставлена редакционно; независимая экспертная рецензия не проводилась. Для детей младше 14 лет рекомендуется предварительное объяснение взрослого.</p>
+</article>
+
 <p class="empty" id="story-empty" hidden>По такому запросу историй пока нет. Попробуйте другую тему или сбросьте фильтр.</p>
-<section class="notice"><strong>Редакционное примечание.</strong> Возрастные пометки — ориентиры для семейного чтения, а не религиозные постановления. Ссылки на внешние источники требуют подключения к интернету; тексты пятнадцати историй доступны без сети в подготовленной проверяемой PWA-версии. Автоматическое чтение русских пересказов поддерживается браузером; по умолчанию установлен более спокойный темп и сниженная высота голоса. Мужской тембр зависит от доступных системных голосов и не гарантируется. Арабские аяты не озвучиваются синтезатором.</section>
+<section class="notice"><strong>Редакционное примечание.</strong> Возрастные пометки — ориентиры для семейного чтения, а не религиозные постановления. Ссылки на внешние источники требуют подключения к интернету; тексты восемнадцати историй доступны без сети в подготовленной проверяемой PWA-версии. Автоматическое чтение русских пересказов поддерживается браузером; по умолчанию установлен более спокойный темп и сниженная высота голоса. Мужской тембр зависит от доступных системных голосов и не гарантируется. Арабские аяты не озвучиваются синтезатором.</section>
 </main><footer>Талаб аль-Хакк · Поучительные истории · Источники: Коран и хадисы · <a href="./">Вернуться к знаниям</a></footer>
 <script>
 (function(){
@@ -574,9 +648,12 @@ body.audio-open main{padding-bottom:190px}
     try{synth.speak(utterance)}
     catch(e){stopReading('Браузер не смог запустить голос. Проверьте настройки озвучивания.')}
   }
-  function startReading(stories){
+  function pauseStudio(){
     const studio=document.getElementById('audio-studio-track');
     if(studio&&!studio.paused)studio.pause();
+  }
+  function startReading(stories){
+    pauseStudio();
     stopReading();
     queue=stories.flatMap(contentFor);
     if(!queue.length){status('В выбранном разделе нет текста для озвучивания.');return}
@@ -610,7 +687,8 @@ body.audio-open main{padding-bottom:190px}
     }
   });
   preview.addEventListener('click',()=>{
-    // Cancel an existing story session before previewing, to avoid overlap.
+    // Cancel either playback mode before previewing.
+    pauseStudio();
     stopReading();
     player.hidden=false;
     document.body.classList.add('audio-open');
@@ -623,22 +701,28 @@ body.audio-open main{padding-bottom:190px}
   });
   stop.addEventListener('click',()=>stopReading('Чтение остановлено.'));
   window.addEventListener('talab-studio-audio-play',()=>stopReading('Воспроизводится готовая аудиозапись.'));
-  window.addEventListener('pagehide',()=>stopReading());
+  window.addEventListener('pagehide',()=>{pauseStudio();stopReading()});
 })();
 </script>
 <script>
-/* The prepared MP3 is optional. Never show an empty or broken player. */
+/* Enable only after human review of the actual MP3 and publication approval. */
 (function(){
   'use strict';
   const audio=document.getElementById('audio-studio-track');
   const panel=document.getElementById('audio-studio');
   if(!audio||!panel)return;
+  const reviewedRecordingPublished=false;
   audio.addEventListener('loadedmetadata',()=>{
-    if(Number.isFinite(audio.duration)&&audio.duration>=3)panel.hidden=false;
+    if(reviewedRecordingPublished&&Number.isFinite(audio.duration)&&audio.duration>=3)panel.hidden=false;
   });
   audio.addEventListener('error',()=>{panel.hidden=true});
   audio.addEventListener('play',()=>window.dispatchEvent(new Event('talab-studio-audio-play')));
-  audio.load();
+  if(reviewedRecordingPublished){
+    audio.preload='metadata';
+    audio.src=audio.dataset.src;
+    audio.load();
+  }
 })();
 </script>
+<script src="i18n.js" defer></script>
 </body></html>
