@@ -81,7 +81,7 @@
     try { const v = JSON.parse(localStorage.getItem(KEY)); return LOCALES.includes(v) ? v : 'ru'; }
     catch (_) { return 'ru'; }
   }
-  const pairedLessons = ['five-pillars','pillar-shahada','pillar-salah','pillar-zakat','pillar-sawm','pillar-hajj'];
+  const pairedLessons = ['five-pillars','pillar-shahada','pillar-salah','pillar-zakat','pillar-sawm','pillar-hajj','wudu-steps','salah-steps','arabic-reading-signs'];
   function pageKind() {
     const name = location.pathname.split('/').pop();
     if (name === 'about.html' || name === 'about-tg.html') return 'about';

@@ -98,9 +98,9 @@ assert(index.includes('<a href="stories.html">'),'No-JS fallback link must remai
 const releaseMatch=sw.match(/^const RELEASE = (\{[^\r\n]+\});/m);
 assert(releaseMatch,'Offline PWA release must be prepared');
 const release=JSON.parse(releaseMatch[1]);
-assert.equal(Object.keys(release.resources).length,47,'47 offline assets expected');
+assert.equal(Object.keys(release.resources).length,50,'50 offline assets expected');
 for(const p of ['stories.html','app.js','index.html']){
  assert(/^[0-9a-f]{64}$/.test(release.resources[p]||''),'Missing SHA-256 for '+p);
 }
-console.log('PASS: eighteen source-grounded stories, Quran/hadith distinction, source URLs, filters, navigation and 47-asset PWA');
+console.log('PASS: eighteen source-grounded stories, Quran/hadith distinction, source URLs, filters, navigation and 50-asset PWA');
 console.log('NOT CERTIFIED: independent exegetical, isnad, Arabic, translation or theological review');

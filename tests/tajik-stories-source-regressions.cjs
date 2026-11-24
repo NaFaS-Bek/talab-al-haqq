@@ -50,3 +50,14 @@ for(const stem of ['five-pillars','pillar-shahada','pillar-salah','pillar-zakat'
  assert(m.resources[stem+'-tg.html'],stem+' not in offline manifest');
 }
 console.log('PASS: five pillars overview and five lessons, Arabic and source parity');
+
+for(const stem of ['wudu-steps','salah-steps','arabic-reading-signs']){
+ const r=fs.readFileSync(stem+'.html','utf8'),g=fs.readFileSync(stem+'-tg.html','utf8');
+ const urls=s=>[...s.matchAll(/href="(https?:\/\/[^"]+)"/g)].map(x=>x[1]);
+ const arabic=s=>[...s.matchAll(/<[^>]*lang="ar"[^>]*>([\s\S]*?)<\/[^>]+>/g)].map(x=>x[1]);
+ assert.deepEqual(urls(r),urls(g),stem+' sources changed');
+ assert.deepEqual(arabic(r),arabic(g),stem+' Arabic changed');
+ assert.equal((r.match(/class="step"/g)||[]).length,(g.match(/class="step"/g)||[]).length,stem+' steps changed');
+ assert.equal((r.match(/<details>/g)||[]).length,(g.match(/<details>/g)||[]).length,stem+' FAQs changed');
+ assert(g.includes('бозбинии мустақили'));
+}

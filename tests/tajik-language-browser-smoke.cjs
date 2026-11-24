@@ -97,6 +97,24 @@ const assert=require('node:assert/strict');
         await page.locator('#talab-lang-switch [data-language="ru"]').click();
         await page.waitForURL('**/pillar-'+id+'.html');
       }
+      await page.goto('http://127.0.0.1:8765/wudu-steps-tg.html#jafari');
+      assert.equal(await page.locator('#sunni .step').count(),6);
+      assert.equal(await page.locator('#jafari .step').count(),5);
+      await page.locator('#talab-lang-switch [data-language="ru"]').click();
+      await page.waitForURL('**/wudu-steps.html#jafari');
+      await page.goto('http://127.0.0.1:8765/salah-steps-tg.html');
+      assert.equal(await page.locator('#first-rakah .step').count(),6);
+      assert.equal(await page.locator('#second-rakah .step').count(),5);
+      await page.goto('http://127.0.0.1:8765/arabic-reading-signs-tg.html');
+      const alphabet=['ا','ب','ت','ث','ج','ح','خ','د','ذ','ر','ز','س','ش','ص','ض','ط','ظ','ع','غ','ف','ق','ك','ل','م','ن','ه','و','ي'];
+      for(const v of ['a','i','u']){
+       await page.locator('[data-vowel="'+v+'"]').click();
+       const glyphs=alphabet.map((x,i)=>(i===0?(v==='i'?'إ':'أ'):x)+({a:'َ',i:'ِ',u:'ُ'}[v]));
+       assert.deepEqual(await page.locator('#alphabetGrid .letter').allTextContents(),glyphs);
+      }
+      await page.locator('#alphabetAnswers button').nth(1).click();
+      assert.match(await page.locator('#alphabetFeedback').innerText(),/Дуруст/);
+      assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2),true,'No Arabic lesson overflow');
       assert.deepEqual(errors,[],'Browser errors during locale switch');
       await page.close();
     }
