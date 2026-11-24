@@ -61,6 +61,16 @@ const assert=require('node:assert/strict');
         if(id==='h_muslim_2727a') assert.match(await page.locator('#detail').innerText(),/34 бор[\s\S]*33 бор[\s\S]*33 бор/);
         await page.keyboard.press('Escape');
       }
+      await page.locator('[data-back="dua"]').click();
+      await page.locator('[data-dua-group="prophets"]').click();
+      assert.equal(await page.locator('[data-open^="dua:"]').count(),13);
+      for(const id of ['q_7_23','q_71_28','q_14_40_41','q_2_127_128','q_26_169','q_12_101','q_21_83','q_7_89','q_20_25_28','q_21_87','q_21_89','q_27_19','q_5_114']){
+        await page.locator('[data-open="dua:'+id+'"]').click();
+        assert.equal(await page.locator('#detail [data-tg-meaning-status]').count(),1,id);
+        assert.equal(await page.locator('#detail [data-tg-meaning]').count(),id==='q_20_25_28'?4:['q_14_40_41','q_2_127_128'].includes(id)?2:1,id);
+        if(['q_7_23','q_21_87','q_20_25_28','q_27_19','q_5_114'].includes(id)) assert.equal(await page.locator('#detail [data-narrative-boundary]').count(),1);
+        await page.keyboard.press('Escape');
+      }
       await page.locator('#nav [data-tab="home"]').click();
       const aboutLink=page.locator('#screen a[href$="about-tg.html"]');
       assert.equal(await aboutLink.count(),1);

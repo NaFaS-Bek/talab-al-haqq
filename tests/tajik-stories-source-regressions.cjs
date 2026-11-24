@@ -67,7 +67,9 @@ const catalog=JSON.parse(fs.readFileSync('data/content.json','utf8'));
 const duaRecords=[...catalog.catalog.entries,...catalog.catalog_additions.entries];
 const meanings=JSON.parse(fs.readFileSync('app.js','utf8').match(/const tajikDuaMeanings = Object\.freeze\((\{[\s\S]*?\})\);/)[1]);
 const dailyIds=[...new Set(catalog.library.collections.filter(c=>['morning','evening','daily'].includes(c.id)).flatMap(c=>c.entryIds))].sort();
-assert.deepEqual(Object.keys(meanings).sort(),dailyIds);
+const prophetIds=duaRecords.filter(x=>x.categoryIds.includes('prophets')||['q_7_23','q_27_19'].includes(x.id)).map(x=>x.id);
+assert.equal(prophetIds.length,13);
+assert.deepEqual(Object.keys(meanings).sort(),[...new Set([...dailyIds,...prophetIds])].sort());
 for(const [id,m] of Object.entries(meanings)){
  const e=duaRecords.find(x=>x.id===id);
  assert.equal(m.arabicText,e.arabicText);
@@ -78,7 +80,7 @@ for(const [id,m] of Object.entries(meanings)){
   for(const s of e.segments) assert.equal(m.segments[s.id].arabicText,s.arabicText);
  }
 }
-console.log('PASS: 18 Tajik morning/evening/daily meanings, exact Arabic and source guards, 15 verse translations');
+console.log('PASS: 31 Tajik meanings including 13 prophetic Quran records, exact Arabic and source guards');
 
 assert.equal(dailyIds.length,18);
 assert.equal(catalog.library.collections.find(c=>c.id==='daily').entryIds.length,10);
