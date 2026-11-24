@@ -23,6 +23,7 @@
     'Для кого сайт, источники и границы образовательных материалов':
       'Мақсади сомона, сарчашмаҳо ва ҳудуди маводи омӯзишӣ',
     'Муж и жена: права и обязанности': 'Зану шавҳар: ҳуқуқ ва уҳдадориҳо',
+    'Взаимные права и примеры': 'Ҳуқуқи мутақобил ва мисолҳо',
     'Коран, хадисы и жизненные примеры': 'Қуръон, ҳадисҳо ва мисолҳои зиндагӣ',
     'С чего начать': 'Аз куҷо оғоз кунем', 'Основы ислама': 'Асосҳои ислом',
     'Вера, поклонение и повседневная практика': 'Имон, ибодат ва амалҳои рӯзмарра',
@@ -107,7 +108,7 @@
     try { const v = JSON.parse(localStorage.getItem(KEY)); return LOCALES.includes(v) ? v : 'ru'; }
     catch (_) { return 'ru'; }
   }
-  const pairedLessons = ['five-pillars','pillar-shahada','pillar-salah','pillar-zakat','pillar-sawm','pillar-hajj','wudu-steps','salah-steps','arabic-reading-signs'];
+  const pairedLessons = ['five-pillars','pillar-shahada','pillar-salah','pillar-zakat','pillar-sawm','pillar-hajj','wudu-steps','salah-steps','arabic-reading-signs','family-rights'];
   function pageKind() {
     const name = location.pathname.split('/').pop();
     if (name === 'about.html' || name === 'about-tg.html') return 'about';
