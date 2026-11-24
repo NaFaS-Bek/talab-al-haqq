@@ -2,6 +2,7 @@
 // Source and attribution regressions; not independent fiqh, tafsir or isnad certification.
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
+const {execFileSync}=require('node:child_process');
 const page=fs.readFileSync('stories.html','utf8');
 const app=fs.readFileSync('app.js','utf8');
 const index=fs.readFileSync('index.html','utf8');
@@ -48,6 +49,17 @@ assert(page.includes('SpeechSynthesisUtterance')&&page.includes('speechSynthesis
 for(const id of ['audio-preview','audio-pitch'])assert(page.includes('id="'+id+'"'),'Missing tone/preview '+id);
 assert(page.includes('function likelyMale(voice)'),'Expected automatic Russian male preference');
 assert(page.includes('utterance.pitch='),'Pitch tuning missing');
+assert(page.includes('id="audio-studio-track"')&&page.includes('id="audio-studio"'),'Recorded audio pilot missing');
+assert(page.includes('reviewedRecordingPublished=false'),'Unreviewed MP3 must stay disabled');
+assert(page.includes('talab-studio-audio-play'),'Competing audio protection missing');
+const previewText=execFileSync('python3',['tool/generate_story_audio.py','--story','yusuf','--preview-text'],{encoding:'utf8'});
+assert(previewText.includes('Юсуф')&&previewText.includes('Чему учит история'),'Narrate editorial story');
+assert(!previewText.includes('quran.com')&&!previewText.includes('Подумай и обсуди'),'Exclude links and questions');
+const previewLines=previewText.split('\n');
+assert.equal(previewLines.shift(),'SOURCE_STORIES_SHA256='+require('node:crypto').createHash('sha256').update(fs.readFileSync('stories.html')).digest('hex'),'Narration preview must identify exact source');
+assert.equal(previewLines.join('\n'),fs.readFileSync('docs/yusuf-narration-preview-ru.txt','utf8'),'Narration changed: regenerate and review exact script before audio release');
+const previewSsml=execFileSync('python3',['tool/generate_story_audio.py','--story','yusuf','--preview-ssml'],{encoding:'utf8'});
+assert.equal(previewSsml,fs.readFileSync('docs/yusuf-dmitry-ru.ssml','utf8'),'Studio import must match exact generated SSML');
 assert(page.includes('h2, .narrative h3, .narrative p, .lesson h3, .lesson li'),'Must read narrative and lessons only');
 assert(page.includes('\\u0600-\\u06FF'),'Arabic-script exclusion required');
 

@@ -42,6 +42,11 @@ footer{padding-bottom:54px;color:var(--muted);font-size:.9rem}
 .audio-player .audio-controls button{min-height:42px;padding:7px 12px;font-size:.9rem}
 .audio-player .audio-controls #audio-preview{flex:1 1 135px}
 .audio-tools #audio-settings{margin-top:10px}
+.audio-studio{margin:18px 0;padding:16px 18px;background:var(--paper);border:1px solid var(--accent);border-radius:18px}
+.audio-studio[hidden]{display:none}
+.audio-studio h2{font-size:1.1rem;margin:0 0 8px}
+.audio-studio audio{width:100%;margin-top:7px}
+.audio-studio p{margin:6px 0;color:var(--muted);font-size:.88rem}
 .audio-active{background:var(--card);outline:2px solid var(--accent);outline-offset:4px;border-radius:5px}
 body.audio-open main{padding-bottom:190px}
 @media(max-width:600px){.audio-player{padding:10px 12px}.audio-player .audio-controls{gap:6px}.audio-player .audio-controls label{flex-basis:115px}}
@@ -58,6 +63,11 @@ body.audio-open main{padding-bottom:190px}
 <section class="audio-tools" aria-label="Аудиочтение историй">
 <button type="button" id="audio-play-visible">▶ Слушать показанные истории</button>
 <p class="small" id="audio-feedback" role="status" aria-live="polite">Спокойный низкий голос выбран по умолчанию. Мужской голос используется, если такой установлен в браузере. Арабские аяты не озвучиваются.</p>
+</section>
+<section class="audio-studio" id="audio-studio" hidden aria-label="Готовая запись истории Юсуфа">
+<h2>История Юсуфа · запись мужским голосом</h2>
+<p>Синтезированный голос: русский редакционный пересказ и нравственные уроки, а не чтение Корана.</p>
+<audio id="audio-studio-track" controls preload="none" aria-label="Прослушать историю Юсуфа" data-src="./audio/stories/yusuf.mp3"></audio>
 </section>
 <div class="audio-player" id="audio-player" hidden aria-label="Управление аудиочтением">
 <strong id="audio-now">Чтение истории</strong>
@@ -645,7 +655,12 @@ body.audio-open main{padding-bottom:190px}
     try{synth.speak(utterance)}
     catch(e){stopReading('Браузер не смог запустить голос. Проверьте настройки озвучивания.')}
   }
+  function pauseStudio(){
+    const studio=document.getElementById('audio-studio-track');
+    if(studio&&!studio.paused)studio.pause();
+  }
   function startReading(stories){
+    pauseStudio();
     stopReading();
     queue=stories.flatMap(contentFor);
     if(!queue.length){status('В выбранном разделе нет текста для озвучивания.');return}
@@ -679,7 +694,8 @@ body.audio-open main{padding-bottom:190px}
     }
   });
   preview.addEventListener('click',()=>{
-    // Cancel an existing story session before previewing, to avoid overlap.
+    // Cancel either playback mode before previewing.
+    pauseStudio();
     stopReading();
     player.hidden=false;
     document.body.classList.add('audio-open');
@@ -691,7 +707,28 @@ body.audio-open main{padding-bottom:190px}
     try{synth.speak(sample)}catch(e){status('Голосовой движок недоступен. Проверьте настройки устройства.')}
   });
   stop.addEventListener('click',()=>stopReading('Чтение остановлено.'));
-  window.addEventListener('pagehide',()=>stopReading());
+  window.addEventListener('talab-studio-audio-play',()=>stopReading('Воспроизводится готовая аудиозапись.'));
+  window.addEventListener('pagehide',()=>{pauseStudio();stopReading()});
+})();
+</script>
+<script>
+/* Enable only after human review of the actual MP3 and publication approval. */
+(function(){
+  'use strict';
+  const audio=document.getElementById('audio-studio-track');
+  const panel=document.getElementById('audio-studio');
+  if(!audio||!panel)return;
+  const reviewedRecordingPublished=false;
+  audio.addEventListener('loadedmetadata',()=>{
+    if(reviewedRecordingPublished&&Number.isFinite(audio.duration)&&audio.duration>=3)panel.hidden=false;
+  });
+  audio.addEventListener('error',()=>{panel.hidden=true});
+  audio.addEventListener('play',()=>window.dispatchEvent(new Event('talab-studio-audio-play')));
+  if(reviewedRecordingPublished){
+    audio.preload='metadata';
+    audio.src=audio.dataset.src;
+    audio.load();
+  }
 })();
 </script>
 <script src="i18n.js" defer></script>

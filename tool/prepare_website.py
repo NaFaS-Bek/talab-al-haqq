@@ -22,7 +22,7 @@ REQUIRED = [
     "data/content.json", "data/caliph_history.json",
     "TANZIL-LICENSE.txt",
 ]
-ASSET_DIRS = ("fonts", "icons")
+ASSET_DIRS = ("fonts", "icons", "audio")
 MAX_ASSET_COUNT = 120
 
 

@@ -59,6 +59,17 @@ const assert=require('node:assert/strict');
    await page.locator('#story-abubakr details summary').first().click();
    assert(await page.locator('#story-abubakr details').first().evaluate(e=>e.open),'Question accordion broken');
 
+   // Unapproved or absent MP3 must not trigger a request or expose a player.
+   assert.equal(await page.locator('#audio-studio-track').count(),1);
+   assert(await page.locator('#audio-studio').isHidden());
+   assert.equal(await page.locator('#audio-studio-track').getAttribute('src'),null);
+   await page.evaluate(()=>{
+     const audio=document.getElementById('audio-studio-track');
+     Object.defineProperty(audio,'duration',{configurable:true,value:60});
+     audio.dispatchEvent(new Event('loadedmetadata'));
+   });
+   assert(await page.locator('#audio-studio').isHidden(),'Metadata is not editorial approval');
+
    // Voice API is mocked: tests UI orchestration, not the quality of a real voice.
    assert.equal(await page.locator('.story-listen').count(),18);
    await page.locator('#story-yusuf .story-listen').click();
@@ -90,6 +101,21 @@ const assert=require('node:assert/strict');
    await page.locator('#audio-stop').click();
    assert(await page.locator('#audio-player').isHidden(),'Stop closes player');
    assert.equal(await page.locator('.audio-active').count(),0,'Stop clears highlights');
+   await page.locator('#story-yusuf .story-listen').click();
+   await page.evaluate(()=>document.getElementById('audio-studio-track').dispatchEvent(new Event('play')));
+   assert(await page.locator('#audio-player').isHidden(),'Recorded playback stops browser TTS');
+   await page.evaluate(()=>{
+     const audio=document.getElementById('audio-studio-track');
+     window.__studioPauses=0;
+     Object.defineProperty(audio,'paused',{configurable:true,value:false});
+     audio.pause=()=>window.__studioPauses++;
+   });
+   await page.locator('#story-yusuf .story-listen').click();
+   assert(await page.evaluate(()=>window.__studioPauses)>0,'Story reading stops recorded playback');
+   await page.evaluate(()=>window.__studioPauses=0);
+   await page.locator('#audio-preview').click();
+   assert(await page.evaluate(()=>window.__studioPauses)>0,'Preview stops recorded playback');
+   await page.locator('#audio-stop').click();
    await page.locator('#story-category').selectOption('kindness');
    await page.locator('#audio-play-visible').click();
    spoken=await page.evaluate(()=>window.__spokenChunks);
