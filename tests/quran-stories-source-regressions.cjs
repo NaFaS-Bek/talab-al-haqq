@@ -16,12 +16,12 @@ const expectStories=[
  {id:'story-nuh',topic:'family',quran:["11/42","11/43","11/45","11/46","11/47"],hadith:[]},
  {id:'story-ayyub',topic:'trust',quran:["21/83","21/84"],hadith:[]},
  {id:'story-yunus',topic:'forgiveness',quran:["37/139","37/142","21/87","21/88"],hadith:[]},
- {id:'story-zakariya',topic:'family',quran:["19/2","19/3","19/4","19/5","19/7","19/9"],hadith:[]},
+ {id:'story-zakariya',topic:'family',quran:["19/2","19/3","19/4","19/5","19/6","19/7","19/8","19/9"],hadith:[]},
  {id:'story-ibrahim-father',topic:'family',quran:["19/41","19/42","19/43","19/44","19/45","19/46","19/47","19/48"],hadith:[]},
  {id:'story-musa-well',topic:'kindness',quran:["28/22","28/23","28/24","28/25","28/26","28/27","28/28"],hadith:[]},
  {id:'story-sulayman-ant',topic:'wisdom',quran:["27/17","27/18","27/19"],hadith:[]},
  {id:'story-saba-queen',topic:'wisdom',quran:["27/29","27/30","27/32","27/35","27/44"],hadith:[]},
- {id:'story-musa-harun',topic:'family',quran:["20/25","20/27","20/29","20/30","20/32","20/36","20/42","20/44","20/46"],hadith:[]},
+ {id:'story-musa-harun',topic:'family',quran:["20/25","20/26","20/27","20/28","20/29","20/30","20/31","20/32","20/36","20/42","20/43","20/44","20/45","20/46"],hadith:[]},
  {id:'story-cave-youths',topic:'trust',quran:["18/10","18/11","18/13","18/14","18/16","18/19","18/21","18/22"],hadith:[]},
  {id:'story-talut-jalut',topic:'trust',quran:["2/246","2/247","2/248","2/249","2/250","2/251"],hadith:[]},
  {id:'story-musa-servant',topic:'wisdom',quran:["18/60","18/65","18/66","18/70","18/71","18/74","18/77","18/79","18/80","18/81","18/82"],hadith:[]},
@@ -98,9 +98,10 @@ assert(index.includes('<a href="stories.html">'),'No-JS fallback link must remai
 const releaseMatch=sw.match(/^const RELEASE = (\{[^\r\n]+\});/m);
 assert(releaseMatch,'Offline PWA release must be prepared');
 const release=JSON.parse(releaseMatch[1]);
-assert.equal(Object.keys(release.resources).length,41,'41 offline assets expected');
+assert.equal(Object.keys(release.resources).length,54,'54 offline assets expected');
+for(const p of ['family-rights-tg.html','family-nikah-tg.html','family-mahr-tg.html','family-children-tg.html']) assert(/^[0-9a-f]{64}$/.test(release.resources[p]||''),'Missing family translation SHA-256: '+p);
 for(const p of ['stories.html','app.js','index.html']){
  assert(/^[0-9a-f]{64}$/.test(release.resources[p]||''),'Missing SHA-256 for '+p);
 }
-console.log('PASS: eighteen source-grounded stories, Quran/hadith distinction, source URLs, filters, navigation and 41-asset PWA');
+console.log('PASS: eighteen source-grounded stories, Quran/hadith distinction, source URLs, filters, navigation and 54-asset PWA');
 console.log('NOT CERTIFIED: independent exegetical, isnad, Arabic, translation or theological review');
