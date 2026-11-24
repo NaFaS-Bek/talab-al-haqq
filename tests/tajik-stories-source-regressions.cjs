@@ -117,7 +117,7 @@ assert.match(nameMeanings.name_099.basis,/шумораи такрор/);
  assert(g.includes('Ин дарс фатво нест'));
  assert(g.includes('Ҳангоми таҳдид ё зӯроварӣ амният'));
  assert(g.includes('data-tg-family-pending'));
- assert.equal((g.match(/href="family-[^"]+\.html" hreflang="ru"><strong>/g)||[]).length,9);
+ assert.equal((g.match(/href="family-[^"]+\.html" hreflang="ru"><strong>/g)||[]).length,8);
  assert(r.includes('href="family-rights-tg.html"'));
  assert(g.includes('href="family-rights.html"'));
  const m=JSON.parse(fs.readFileSync('sw.js','utf8').match(/^const RELEASE = (\{[^\r\n]+\});/m)[1]);
@@ -145,4 +145,26 @@ assert.match(nameMeanings.name_099.basis,/шумораи такрор/);
  const m=JSON.parse(fs.readFileSync('sw.js','utf8').match(/^const RELEASE = (\{[^\r\n]+\});/m)[1]);
  assert(m.resources['family-nikah-tg.html']);
  console.log('PASS: Tajik nikah lesson, exact source and anchor parity, consent and legal caveats');
+}
+
+{
+ const r=fs.readFileSync('family-mahr.html','utf8'),g=fs.readFileSync('family-mahr-tg.html','utf8');
+ const urls=s=>[...s.matchAll(/href="(https?:\/\/[^"]+)"/g)].map(x=>x[1]);
+ const ids=s=>[...s.matchAll(/\bid="([^"]+)"/g)].map(x=>x[1]);
+ assert.deepEqual(urls(g),urls(r));
+ assert.equal(urls(g).length,8);
+ assert.deepEqual(ids(g),ids(r));
+ assert.equal((g.match(/<details>/g)||[]).length,3);
+ assert.equal((g.match(/<li>/g)||[]).length,4);
+ assert.match(g,/<html lang="tg">/);
+ assert(g.includes('бо хоҳиши худ гузашт кунад, на зери фишор'));
+ assert(g.includes('Қоидаи нисфи маҳри муқарраршударо ба ҳар гуна талоқ пеш аз наздикӣ татбиқ кардан мумкин нест'));
+ assert(g.includes('андозаи маҳр ҳанӯз муайян нашуда буд'));
+ assert(g.includes('Ин меъёри ягона барои ҳама нест'));
+ assert(g.includes('Бозбинии мустақили забонӣ ва динӣ ҳанӯз анҷом наёфтааст'));
+ assert(r.includes('href="family-mahr-tg.html"'));
+ for(const p of ['family-rights-tg.html','family-nikah-tg.html']) assert(fs.readFileSync(p,'utf8').includes('href="family-mahr-tg.html" hreflang="tg"'));
+ const m=JSON.parse(fs.readFileSync('sw.js','utf8').match(/^const RELEASE = (\{[^\r\n]+\});/m)[1]);
+ assert(m.resources['family-mahr-tg.html']);
+ console.log('PASS: Tajik mahr, source and anchor parity, voluntary waiver and distinct divorce cases');
 }
