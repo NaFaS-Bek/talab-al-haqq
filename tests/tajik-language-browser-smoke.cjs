@@ -5,7 +5,7 @@ const assert=require('node:assert/strict');
 (async () => {
   const browser=await chromium.launch({headless:true});
   try {
-    for (const width of [390, 1280]) {
+    for (const width of [320, 390, 1280]) {
       const page=await browser.newPage({viewport:{width,height:840},serviceWorkers:'block'});
       const errors=[];
       page.on('pageerror',e=>errors.push(e.message));
@@ -22,26 +22,98 @@ const assert=require('node:assert/strict');
       await page.locator('#nav [data-tab="dua"]').click();
       assert.equal(await page.locator('#screen h2').first().innerText(),'Дуоҳо ва зикрҳо');
       await page.locator('[data-dua-group="morning"]').click();
+      assert.equal(await page.locator('[data-open^="dua:"]').count(),7);
+      await page.locator('[data-open="dua:q_surah_112"]').click();
+      assert.equal(await page.locator('#detail [data-tg-meaning]').count(),4);
+      assert.equal(await page.locator('#detail [data-tg-meaning-status]').count(),1);
+      await page.keyboard.press('Escape');
+      await page.locator('#search').fill('Ихлос');
+      assert.equal(await page.locator('[data-open="dua:q_surah_112"]').count(),1);
+      await page.locator('#search').fill('');
       await page.locator('[data-open^="dua:"]').first().click();
       const recordKey=await page.locator('#detail [data-fav]').first().getAttribute('data-fav');
       const before=await page.locator('#detail .arabic').first().innerText();
       assert(before.length>5,'Arabic record not visible');
+      assert.equal(await page.locator('#detail [data-tg-meaning]').count(),1);
+      assert.equal(await page.locator('#detail [data-tg-meaning-status]').count(),1);
       await page.keyboard.press('Escape');
       await page.locator('#talab-lang-switch [data-language="ru"]').click();
       await page.locator('[data-open="'+recordKey+'"]').click();
       const after=await page.locator('#detail .arabic').first().innerText();
       assert.equal(after,before,'Never alter Quran/hadith Arabic on locale changes');
+      assert.equal(await page.locator('#detail [data-tg-meaning]').count(),0);
+      assert.equal(await page.locator('#detail [data-tg-meaning-status]').count(),0);
       assert.equal(await page.locator('#nav [data-tab="home"] span').innerText(),'Главная');
       assert.equal(await page.locator('#talab-translation-notice').count(),0);
       await page.keyboard.press('Escape');
-      await page.locator('#nav [data-tab="home"]').click();
+      await page.locator('#nav [data-tab="dua"]').click();
       await page.locator('#talab-lang-switch [data-language="tg"]').click();
+      await page.locator('[data-dua-group="daily"]').click();
+      assert.equal(await page.locator('[data-open^="dua:"]').count(),10);
+      for(const id of ['h_bukhari_6324_waking','h_tirmidhi_1858_before','h_tirmidhi_1858_forgot','h_tirmidhi_3458','h_abudawud_5095','h_muslim_2018a','h_muslim_1342','h_muslim_2708a','h_bukhari_6324_sleep','h_muslim_2727a']){
+        await page.locator('[data-open="dua:'+id+'"]').click();
+        assert.equal(await page.locator('#detail [data-tg-meaning]').count(),1,id);
+        assert.equal(await page.locator('#detail [data-tg-meaning-status]').count(),1,id);
+        if(['h_muslim_2018a','h_muslim_2727a'].includes(id)){
+          assert.equal(await page.locator('#detail [data-instruction-not-formula]').count(),1);
+          assert.equal(await page.locator('#detail .counter').count(),0);
+        }
+        if(id==='h_muslim_2727a') assert.match(await page.locator('#detail').innerText(),/34 бор[\s\S]*33 бор[\s\S]*33 бор/);
+        await page.keyboard.press('Escape');
+      }
+      await page.locator('[data-back="dua"]').click();
+      await page.locator('[data-dua-group="prophets"]').click();
+      assert.equal(await page.locator('[data-open^="dua:"]').count(),13);
+      for(const id of ['q_7_23','q_71_28','q_14_40_41','q_2_127_128','q_26_169','q_12_101','q_21_83','q_7_89','q_20_25_28','q_21_87','q_21_89','q_27_19','q_5_114']){
+        await page.locator('[data-open="dua:'+id+'"]').click();
+        assert.equal(await page.locator('#detail [data-tg-meaning-status]').count(),1,id);
+        assert.equal(await page.locator('#detail [data-tg-meaning]').count(),id==='q_20_25_28'?4:['q_14_40_41','q_2_127_128'].includes(id)?2:1,id);
+        if(['q_7_23','q_21_87','q_20_25_28','q_27_19','q_5_114'].includes(id)) assert.equal(await page.locator('#detail [data-narrative-boundary]').count(),1);
+        await page.keyboard.press('Escape');
+      }
+      await page.locator('[data-back="dua"]').click();
+      for(const [id,category,count] of [['h_muslim_2202','health',1],['h_bukhari_6369','anxiety',1],['h_bukhari_3282','anxiety',1],['h_bukhari_5743','health',1],['h_muslim_918b','loss',1],['h_muslim_2725a','gratitude',1],['q_17_24','family',1],['q_2_250','hardship',1],['q_surah_1','surahs',7],['q_surah_103','surahs',3],['q_surah_108','surahs',3],['q_surah_109','surahs',6]]){
+        await page.locator('[data-dua-group="'+category+'"]').click();
+        await page.locator('[data-open="dua:'+id+'"]').click();
+        assert.equal(await page.locator('#detail [data-tg-meaning-status]').count(),1,id);
+        assert.equal(await page.locator('#detail [data-tg-meaning]').count(),count,id);
+        if(id==='h_muslim_2202') assert.match(await page.locator('#detail').innerText(),/Ба номи Аллоҳ: 3 бор[\s\S]*Дуои паноҳҷӯӣ: 7 бор/);
+        await page.keyboard.press('Escape');
+        await page.locator('[data-back="dua"]').click();
+      }
+      await page.locator('#nav [data-tab="names"]').click();
+      assert.match(await page.locator('[data-tg-names-progress]').innerText(),/99 аз 99/);
+      assert.equal(await page.locator('[data-open^="name:"]').count(),99);
+      for(const id of Array.from({length:20},(_,i)=>'name_'+String(i+1).padStart(3,'0'))){
+        await page.locator('[data-open="name:'+id+'"]').click();
+        assert.equal(await page.locator('#detail [data-tg-name]').count(),1);
+        assert.equal(await page.locator('#detail [data-tg-name-dua]').count(),1);
+        assert.equal(await page.locator('#detail [data-personal-dua]').count(),1);
+        if(id==='name_018') assert.match(await page.locator('#detail [data-tg-name]').innerText(),/шубҳа/);
+        await page.keyboard.press('Escape');
+      }
+      for(let n=21;n<=99;n++){
+        const id='name_'+String(n).padStart(3,'0');
+        await page.locator('[data-open="name:'+id+'"]').click();
+        assert.equal(await page.locator('#detail [data-tg-name]').count(),1,id);
+        assert.equal(await page.locator('#detail [data-tg-name-dua]').count(),1,id);
+        assert.equal(await page.locator('#detail [data-personal-dua]').count(),1,id);
+        assert.equal(await page.locator('#detail .counter').count(),0,id);
+        await page.keyboard.press('Escape');
+      }
+      for(const [id,warning] of [['name_083',/заиф/],['name_096',/шубҳа/]]){
+        await page.locator('[data-open="name:'+id+'"]').click();
+        assert.match(await page.locator('#detail [data-tg-name]').innerText(),warning,id);
+        await page.keyboard.press('Escape');
+      }
+      await page.locator('#nav [data-tab="home"]').click();
       const aboutLink=page.locator('#screen a[href$="about-tg.html"]');
       assert.equal(await aboutLink.count(),1);
       await aboutLink.click();
       assert(page.url().endsWith('/about-tg.html'),'Tajik locale must link to Tajik About page');
       assert.equal(await page.locator('html').getAttribute('lang'),'tg');
       assert(await page.locator('section[aria-labelledby="limits"]').innerText().then(s=>s.includes('Ҳанӯз тамоми муҳтавои сомона')));
+      assert.equal(await page.locator('main a[href="stories-tg.html"]').count(),1,'Tajik About should point to Tajik stories');
       await page.locator('#talab-lang-switch [data-language="ru"]').click();
       await page.waitForURL('**/about.html');
       assert.equal(await page.locator('html').getAttribute('lang'),'ru');
@@ -53,13 +125,117 @@ const assert=require('node:assert/strict');
       await page.locator('#talab-lang-switch [data-language="tg"]').click();
       await page.locator('#screen a[href="stories-tg.html"]').click();
       await page.waitForURL('**/stories-tg.html');
-      assert.equal(await page.locator('article.story').count(),3);
+      assert.equal(await page.locator('article.story').count(),18);
+      assert.equal(await page.locator('a[href="#story-abubakr"]').count(),1);
+      assert.equal(await page.locator('a[href="#story-musa-servant"]').count(),1);
+      assert.equal(await page.locator('a[href="#story-cave-youths"]').count(),1);
+      assert.equal(await page.locator('a[href="#story-sulayman-ant"]').count(),1);
+      assert.equal(await page.locator('a[href="#story-zakariya"]').count(),1);
+      assert.equal(await page.locator('a[href="#story-luqman"]').count(),1);
+      assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2),true,'No Tajik page overflow');
       assert.equal(await page.locator('html').getAttribute('lang'),'tg');
+      assert.equal(await page.locator('article.story .meta span').filter({hasText:'Барои муҳокима дар оила:'}).count(),18);
+      await page.locator('a[href="#story-abubakr"]').click();
+      await page.waitForURL('**/stories-tg.html#story-abubakr');
+      await page.locator('#story-abubakr details summary').first().click();
+      assert.equal(await page.locator('#story-abubakr details').first().evaluate(el=>el.open),true,'Tajik discussion can be expanded');
       await page.locator('#talab-lang-switch [data-language="ru"]').click();
-      await page.waitForURL('**/stories.html');
+      await page.waitForURL('**/stories.html#story-abubakr');
+      assert.equal(await page.locator('#story-abubakr').count(),1,'Preserve matching story on language switch');
       assert.equal(await page.locator('article.story').count(),18);
       assert.equal(await page.locator('html').getAttribute('lang'),'ru');
       assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2),true,'No horizontal overflow');
+      await page.locator('#talab-lang-switch [data-language="tg"]').click();
+      await page.waitForURL('**/stories-tg.html#story-abubakr');
+      assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('nfs_lang'))),'tg');
+      await page.goto('http://127.0.0.1:8765/five-pillars-tg.html#salah',{waitUntil:'load'});
+      assert.equal(await page.locator('article.card').count(),5);
+      assert.equal(await page.locator('html').getAttribute('lang'),'tg');
+      assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2),true,'No pillars overflow');
+      for(const [i,a] of [0,1,2,0,1].entries()) await page.locator('[data-question="'+i+'"] [data-answer="'+a+'"]').click();
+      assert((await page.locator('#quizProgress').innerText()).includes('Ҷавобҳои дуруст: 5 аз 5'));
+      await page.locator('#resetQuiz').click();
+      assert((await page.locator('#quizProgress').innerText()).includes('0 аз 5'));
+      assert.equal(await page.locator('.question button[data-answer][aria-pressed="true"]').count(),0);
+      assert.equal(await page.locator('#talab-lang-switch [data-language="tg"][aria-pressed="true"]').count(),1);
+      await page.locator('#talab-lang-switch [data-language="ru"]').click();
+      await page.waitForURL('**/five-pillars.html#salah');
+      await page.locator('#talab-lang-switch [data-language="tg"]').click();
+      await page.waitForURL('**/five-pillars-tg.html#salah');
+      for(const id of ['shahada','salah','zakat','sawm','hajj']){
+        await page.goto('http://127.0.0.1:8765/pillar-'+id+'-tg.html',{waitUntil:'load'});
+        assert.equal(await page.locator('html').getAttribute('lang'),'tg');
+        assert.equal(await page.locator('h1').count(),1);
+        assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2),true,'No lesson overflow: '+id);
+        await page.locator('#talab-lang-switch [data-language="ru"]').click();
+        await page.waitForURL('**/pillar-'+id+'.html');
+      }
+      await page.goto('http://127.0.0.1:8765/wudu-steps-tg.html#jafari');
+      assert.equal(await page.locator('#sunni .step').count(),6);
+      assert.equal(await page.locator('#jafari .step').count(),5);
+      await page.locator('#talab-lang-switch [data-language="ru"]').click();
+      await page.waitForURL('**/wudu-steps.html#jafari');
+      await page.goto('http://127.0.0.1:8765/salah-steps-tg.html');
+      assert.equal(await page.locator('#first-rakah .step').count(),6);
+      assert.equal(await page.locator('#second-rakah .step').count(),5);
+      await page.goto('http://127.0.0.1:8765/arabic-reading-signs-tg.html');
+      const alphabet=['ا','ب','ت','ث','ج','ح','خ','د','ذ','ر','ز','س','ش','ص','ض','ط','ظ','ع','غ','ف','ق','ك','ل','م','ن','ه','و','ي'];
+      for(const v of ['a','i','u']){
+       await page.locator('[data-vowel="'+v+'"]').click();
+       const glyphs=alphabet.map((x,i)=>(i===0?(v==='i'?'إ':'أ'):x)+({a:'َ',i:'ِ',u:'ُ'}[v]));
+       assert.deepEqual(await page.locator('#alphabetGrid .letter').allTextContents(),glyphs);
+      }
+      await page.locator('#alphabetAnswers button').nth(1).click();
+      assert.match(await page.locator('#alphabetFeedback').innerText(),/Дуруст/);
+      assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2),true,'No Arabic lesson overflow');
+      await page.goto('http://127.0.0.1:8765/family-rights-tg.html#disagreements',{waitUntil:'load'});
+      assert.equal(await page.locator('html').getAttribute('lang'),'tg');
+      assert.equal(await page.locator('#family-curriculum li').count(),10);
+      assert.equal(await page.locator('[data-tg-family-pending]').count(),1);
+      assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2),true,'No family overview overflow');
+      await page.locator('#talab-lang-switch [data-language="ru"]').click();
+      await page.waitForURL('**/family-rights.html#disagreements');
+      assert.equal(await page.locator('html').getAttribute('lang'),'ru');
+      await page.locator('#talab-lang-switch [data-language="tg"]').click();
+      await page.waitForURL('**/family-rights-tg.html#disagreements');
+      await page.locator('#family-curriculum a[href="family-nikah-tg.html"]').click();
+      await page.waitForURL('**/family-nikah-tg.html');
+      assert.equal(await page.locator('html').getAttribute('lang'),'tg');
+      assert.equal(await page.locator('#section-4 details').count(),2);
+      assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2),true,'No nikah overflow');
+      await page.locator('#section-4 details summary').first().click();
+      assert.equal(await page.locator('#section-4 details').first().evaluate(el=>el.open),true);
+      await page.locator('a[href="#section-4"]').click();
+      await page.waitForURL('**/family-nikah-tg.html#section-4');
+      await page.locator('#talab-lang-switch [data-language="ru"]').click();
+      await page.waitForURL('**/family-nikah.html#section-4');
+      await page.locator('#talab-lang-switch [data-language="tg"]').click();
+      await page.waitForURL('**/family-nikah-tg.html#section-4');
+      await page.locator('#related a[href="family-mahr-tg.html"]').click();
+      await page.waitForURL('**/family-mahr-tg.html');
+      assert.equal(await page.locator('html').getAttribute('lang'),'tg');
+      assert.equal(await page.locator('#section-4 details').count(),3);
+      assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2),true,'No mahr overflow');
+      await page.locator('a[href="#section-4"]').click();
+      await page.waitForURL('**/family-mahr-tg.html#section-4');
+      await page.locator('#section-4 details summary').last().click();
+      assert.equal(await page.locator('#section-4 details').last().evaluate(el=>el.open),true);
+      await page.locator('#talab-lang-switch [data-language="ru"]').click();
+      await page.waitForURL('**/family-mahr.html#section-4');
+      await page.locator('#talab-lang-switch [data-language="tg"]').click();
+      await page.waitForURL('**/family-mahr-tg.html#section-4');
+      await page.locator('#related a[href="family-children-tg.html"]').click();
+      await page.waitForURL('**/family-children-tg.html');
+      assert.equal(await page.locator('html').getAttribute('lang'),'tg');
+      assert.equal(await page.locator('.age-stage').count(),3);
+      assert.equal(await page.locator('#section-8 details').count(),6);
+      assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2),true,'No child upbringing overflow');
+      await page.locator('a[href="#age-teen"]').click();
+      await page.waitForURL('**/family-children-tg.html#age-teen');
+      await page.locator('#talab-lang-switch [data-language="ru"]').click();
+      await page.waitForURL('**/family-children.html#age-teen');
+      await page.locator('#talab-lang-switch [data-language="tg"]').click();
+      await page.waitForURL('**/family-children-tg.html#age-teen');
       assert.deepEqual(errors,[],'Browser errors during locale switch');
       await page.close();
     }

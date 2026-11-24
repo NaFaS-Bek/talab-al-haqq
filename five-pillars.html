@@ -43,9 +43,9 @@ footer{color:var(--muted);font-size:.91rem;padding-bottom:45px}
 @media(max-width:500px){header{padding:15px}main{padding:15px}.quick-nav a{font-size:.87rem}.answers{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 </style>
-</head>
+<style>header{flex-wrap:wrap}</style></head>
 <body>
-<header><strong>Талаб аль-Хакк</strong><a href="./">← На главную</a></header>
+<header><strong>Талаб аль-Хакк</strong><a href="./">← На главную</a><noscript><a href="five-pillars-tg.html" lang="tg">Тоҷикӣ</a></noscript></header>
 <main>
 <p class="eyebrow">Обучение исламу · Для начинающих · Урок 1</p>
 <h1>Пять столпов ислама</h1>
@@ -79,8 +79,8 @@ footer{color:var(--muted);font-size:.91rem;padding-bottom:45px}
 </article>
 <article class="card" id="sawm">
 <div class="card-head"><span class="number" aria-hidden="true">4</span><div><h2>Пост в Рамадан</h2><span class="ar-name" lang="ar" dir="rtl">صوم رمضان</span></div></div>
-<p><strong>Простыми словами:</strong> в месяц Рамадан соблюдают пост от рассвета до заката, воздерживаясь от еды, питья и других действий, нарушающих пост.</p>
-<details><summary>А если человек болен или в пути?</summary><p>Коран прямо упоминает облегчения для больного и путешественника. Подробные условия и способы восполнения поста изучаются отдельно, с учётом обстоятельств человека.</p><p class="cite">Коран: <a href="https://quran.com/2:183" target="_blank" rel="noopener noreferrer">2:183</a> и <a href="https://quran.com/2:185" target="_blank" rel="noopener noreferrer">2:185</a>.</p></details>
+<p><strong>Простыми словами:</strong> в месяц Рамадан соблюдают пост от истинного рассвета до установленного времени разговения, воздерживаясь от еды, питья и других действий, нарушающих пост.</p>
+<details><summary>А если человек болен или в пути?</summary><p>Коран прямо упоминает облегчения для больного и путешественника. Подробные условия, время разговения и способы восполнения поста изучаются отдельно, с учётом обстоятельств человека и его традиции.</p><p class="cite">Коран: <a href="https://quran.com/2:183" target="_blank" rel="noopener noreferrer">2:183</a> и <a href="https://quran.com/2:185" target="_blank" rel="noopener noreferrer">2:185</a>.</p></details>
 <p><a class="lesson-link" href="pillar-sawm.html">Один день поста по шагам →</a></p>
 </article>
 <article class="card" id="hajj">
@@ -137,5 +137,5 @@ document.getElementById('resetQuiz').addEventListener('click',()=>{
   updateProgress();
 });
 </script>
-</body>
+<script src="i18n.js" defer></script></body>
 </html>
