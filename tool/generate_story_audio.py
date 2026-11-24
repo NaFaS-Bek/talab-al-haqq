@@ -135,9 +135,15 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--story", default="yusuf", choices=["yusuf"])
     parser.add_argument("--voice", choices=ALLOWED_VOICES, default=ALLOWED_VOICES[0])
-    parser.add_argument("--preview-text", action="store_true", help="Print exact narration source without using credentials or an API")
+    previews = parser.add_mutually_exclusive_group()
+    previews.add_argument("--preview-ssml", action="store_true", help="Print importable SSML without API access")
+    previews.add_argument("--preview-text", action="store_true", help="Print exact narration source without using credentials or an API")
     parser.add_argument("--overwrite", action="store_true")
     args = parser.parse_args()
+    if args.preview_ssml:
+        parts, _ = read_story(args.story)
+        print(make_ssml(parts, args.voice))
+        return 0
     if args.preview_text:
         parts, source_hash = read_story(args.story)
         print("SOURCE_STORIES_SHA256=" + source_hash)

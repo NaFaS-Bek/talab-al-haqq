@@ -58,6 +58,8 @@ assert(!previewText.includes('quran.com')&&!previewText.includes('Подумай
 const previewLines=previewText.split('\n');
 assert.equal(previewLines.shift(),'SOURCE_STORIES_SHA256='+require('node:crypto').createHash('sha256').update(fs.readFileSync('stories.html')).digest('hex'),'Narration preview must identify exact source');
 assert.equal(previewLines.join('\n'),fs.readFileSync('docs/yusuf-narration-preview-ru.txt','utf8'),'Narration changed: regenerate and review exact script before audio release');
+const previewSsml=execFileSync('python3',['tool/generate_story_audio.py','--story','yusuf','--preview-ssml'],{encoding:'utf8'});
+assert.equal(previewSsml,fs.readFileSync('docs/yusuf-dmitry-ru.ssml','utf8'),'Studio import must match exact generated SSML');
 assert(page.includes('h2, .narrative h3, .narrative p, .lesson h3, .lesson li'),'Must read narrative and lessons only');
 assert(page.includes('\\u0600-\\u06FF'),'Arabic-script exclusion required');
 
