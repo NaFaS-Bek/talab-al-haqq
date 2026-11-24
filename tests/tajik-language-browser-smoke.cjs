@@ -82,7 +82,7 @@ const assert=require('node:assert/strict');
         await page.locator('[data-back="dua"]').click();
       }
       await page.locator('#nav [data-tab="names"]').click();
-      assert.match(await page.locator('[data-tg-names-progress]').innerText(),/20 аз 99/);
+      assert.match(await page.locator('[data-tg-names-progress]').innerText(),/40 аз 99/);
       assert.equal(await page.locator('[data-open^="name:"]').count(),99);
       for(const id of Array.from({length:20},(_,i)=>'name_'+String(i+1).padStart(3,'0'))){
         await page.locator('[data-open="name:'+id+'"]').click();
@@ -92,7 +92,16 @@ const assert=require('node:assert/strict');
         if(id==='name_018') assert.match(await page.locator('#detail [data-tg-name]').innerText(),/шубҳа/);
         await page.keyboard.press('Escape');
       }
-      await page.locator('[data-open="name:name_021"]').click();
+      for(let n=21;n<=40;n++){
+        const id='name_'+String(n).padStart(3,'0');
+        await page.locator('[data-open="name:'+id+'"]').click();
+        assert.equal(await page.locator('#detail [data-tg-name]').count(),1,id);
+        assert.equal(await page.locator('#detail [data-tg-name-dua]').count(),1,id);
+        assert.equal(await page.locator('#detail [data-personal-dua]').count(),1,id);
+        assert.equal(await page.locator('#detail .counter').count(),0,id);
+        await page.keyboard.press('Escape');
+      }
+      await page.locator('[data-open="name:name_041"]').click();
       assert.equal(await page.locator('#detail [data-tg-name]').count(),0);
       assert.match(await page.locator('#detail').innerText(),/Тарҷумаи тоҷикӣ ҳанӯз омода нест/);
       await page.keyboard.press('Escape');
