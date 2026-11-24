@@ -117,10 +117,32 @@ assert.match(nameMeanings.name_099.basis,/шумораи такрор/);
  assert(g.includes('Ин дарс фатво нест'));
  assert(g.includes('Ҳангоми таҳдид ё зӯроварӣ амният'));
  assert(g.includes('data-tg-family-pending'));
- assert.equal((g.match(/href="family-[^"]+\.html" hreflang="ru"><strong>/g)||[]).length,10);
+ assert.equal((g.match(/href="family-[^"]+\.html" hreflang="ru"><strong>/g)||[]).length,9);
  assert(r.includes('href="family-rights-tg.html"'));
  assert(g.includes('href="family-rights.html"'));
  const m=JSON.parse(fs.readFileSync('sw.js','utf8').match(/^const RELEASE = (\{[^\r\n]+\});/m)[1]);
  assert(m.resources['family-rights-tg.html']);
  console.log('PASS: family overview source and anchor parity, safety and translation disclosures');
  }
+
+{
+ const r=fs.readFileSync('family-nikah.html','utf8'),g=fs.readFileSync('family-nikah-tg.html','utf8');
+ const urls=s=>[...s.matchAll(/href="(https?:\/\/[^"]+)"/g)].map(x=>x[1]);
+ const ids=s=>[...s.matchAll(/\bid="([^"]+)"/g)].map(x=>x[1]);
+ assert.deepEqual(urls(g),urls(r));
+ assert.equal(urls(g).length,5);
+ assert.deepEqual(ids(g),ids(r));
+ assert.equal((g.match(/<details>/g)||[]).length,2);
+ assert.equal((g.match(/<li>/g)||[]).length,4);
+ assert.match(g,/<html lang="tg">/);
+ assert(g.includes('Розигии ихтиёрии ҳар ду тараф'));
+ assert(g.includes('тарс, фишор ё таҳдид'));
+ assert(g.includes('мазҳаби фиқҳӣ ва қонуни маҳаллӣ'));
+ assert(g.includes('Бозбинии мустақили забонӣ ва динӣ ҳанӯз анҷом наёфтааст'));
+ assert(g.includes('href="family-rights-tg.html"'));
+ assert(r.includes('href="family-nikah-tg.html"'));
+ assert(fs.readFileSync('family-rights-tg.html','utf8').includes('href="family-nikah-tg.html" hreflang="tg"'));
+ const m=JSON.parse(fs.readFileSync('sw.js','utf8').match(/^const RELEASE = (\{[^\r\n]+\});/m)[1]);
+ assert(m.resources['family-nikah-tg.html']);
+ console.log('PASS: Tajik nikah lesson, exact source and anchor parity, consent and legal caveats');
+}
