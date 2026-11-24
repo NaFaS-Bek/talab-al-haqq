@@ -71,6 +71,16 @@ const assert=require('node:assert/strict');
         if(['q_7_23','q_21_87','q_20_25_28','q_27_19','q_5_114'].includes(id)) assert.equal(await page.locator('#detail [data-narrative-boundary]').count(),1);
         await page.keyboard.press('Escape');
       }
+      await page.locator('[data-back="dua"]').click();
+      for(const [id,category,count] of [['h_muslim_2202','health',1],['h_bukhari_6369','anxiety',1],['h_bukhari_3282','anxiety',1],['h_bukhari_5743','health',1],['h_muslim_918b','loss',1],['h_muslim_2725a','gratitude',1],['q_17_24','family',1],['q_2_250','hardship',1],['q_surah_1','surahs',7],['q_surah_103','surahs',3],['q_surah_108','surahs',3],['q_surah_109','surahs',6]]){
+        await page.locator('[data-dua-group="'+category+'"]').click();
+        await page.locator('[data-open="dua:'+id+'"]').click();
+        assert.equal(await page.locator('#detail [data-tg-meaning-status]').count(),1,id);
+        assert.equal(await page.locator('#detail [data-tg-meaning]').count(),count,id);
+        if(id==='h_muslim_2202') assert.match(await page.locator('#detail').innerText(),/Ба номи Аллоҳ: 3 бор[\s\S]*Дуои паноҳҷӯӣ: 7 бор/);
+        await page.keyboard.press('Escape');
+        await page.locator('[data-back="dua"]').click();
+      }
       await page.locator('#nav [data-tab="home"]').click();
       const aboutLink=page.locator('#screen a[href$="about-tg.html"]');
       assert.equal(await aboutLink.count(),1);
