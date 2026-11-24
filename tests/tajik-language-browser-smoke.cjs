@@ -224,6 +224,18 @@ const assert=require('node:assert/strict');
       await page.waitForURL('**/family-mahr.html#section-4');
       await page.locator('#talab-lang-switch [data-language="tg"]').click();
       await page.waitForURL('**/family-mahr-tg.html#section-4');
+      await page.locator('#related a[href="family-children-tg.html"]').click();
+      await page.waitForURL('**/family-children-tg.html');
+      assert.equal(await page.locator('html').getAttribute('lang'),'tg');
+      assert.equal(await page.locator('.age-stage').count(),3);
+      assert.equal(await page.locator('#section-8 details').count(),6);
+      assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2),true,'No child upbringing overflow');
+      await page.locator('a[href="#age-teen"]').click();
+      await page.waitForURL('**/family-children-tg.html#age-teen');
+      await page.locator('#talab-lang-switch [data-language="ru"]').click();
+      await page.waitForURL('**/family-children.html#age-teen');
+      await page.locator('#talab-lang-switch [data-language="tg"]').click();
+      await page.waitForURL('**/family-children-tg.html#age-teen');
       assert.deepEqual(errors,[],'Browser errors during locale switch');
       await page.close();
     }
