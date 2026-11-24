@@ -85,6 +85,8 @@ const assert=require('node:assert/strict');
       assert((await page.locator('#quizProgress').innerText()).includes('Ҷавобҳои дуруст: 5 аз 5'));
       await page.locator('#resetQuiz').click();
       assert((await page.locator('#quizProgress').innerText()).includes('0 аз 5'));
+      assert.equal(await page.locator('.question button[data-answer][aria-pressed="true"]').count(),0);
+      assert.equal(await page.locator('#talab-lang-switch [data-language="tg"][aria-pressed="true"]').count(),1);
       await page.locator('#talab-lang-switch [data-language="ru"]').click();
       await page.waitForURL('**/five-pillars.html#salah');
       await page.locator('#talab-lang-switch [data-language="tg"]').click();
