@@ -5,7 +5,7 @@ const assert=require('node:assert/strict');
 (async () => {
   const browser=await chromium.launch({headless:true});
   try {
-    for (const width of [390, 1280]) {
+    for (const width of [320, 390, 1280]) {
       const page=await browser.newPage({viewport:{width,height:840},serviceWorkers:'block'});
       const errors=[];
       page.on('pageerror',e=>errors.push(e.message));
@@ -62,11 +62,20 @@ const assert=require('node:assert/strict');
       assert.equal(await page.locator('a[href="#story-luqman"]').count(),1);
       assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2),true,'No Tajik page overflow');
       assert.equal(await page.locator('html').getAttribute('lang'),'tg');
+      assert.equal(await page.locator('article.story .meta span').filter({hasText:'Барои муҳокима дар оила:'}).count(),18);
+      await page.locator('a[href="#story-abubakr"]').click();
+      await page.waitForURL('**/stories-tg.html#story-abubakr');
+      await page.locator('#story-abubakr details summary').first().click();
+      assert.equal(await page.locator('#story-abubakr details').first().evaluate(el=>el.open),true,'Tajik discussion can be expanded');
       await page.locator('#talab-lang-switch [data-language="ru"]').click();
-      await page.waitForURL('**/stories.html');
+      await page.waitForURL('**/stories.html#story-abubakr');
+      assert.equal(await page.locator('#story-abubakr').count(),1,'Preserve matching story on language switch');
       assert.equal(await page.locator('article.story').count(),18);
       assert.equal(await page.locator('html').getAttribute('lang'),'ru');
       assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2),true,'No horizontal overflow');
+      await page.locator('#talab-lang-switch [data-language="tg"]').click();
+      await page.waitForURL('**/stories-tg.html#story-abubakr');
+      assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('nfs_lang'))),'tg');
       assert.deepEqual(errors,[],'Browser errors during locale switch');
       await page.close();
     }

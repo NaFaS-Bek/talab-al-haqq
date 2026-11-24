@@ -13,9 +13,13 @@ assert.match(source,/Ҳамаи 18 қисса ба тоҷикӣ дастраса
 assert.match(source,/бозгӯии мустақили маънои оятҳо/);
 assert.match(source,/ташхиси мустақили коршиносон анҷом наёфтааст/);
 assert(source.includes('href="stories.html"'));
+assert(source.includes('hreflang="ru"'));
 const refs=(html,pattern)=>[...new Set([...html.matchAll(pattern)].map(x=>x[1]))].sort();
 for(const [i,[html,id]] of translated.entries()){
  const base=original[i][0];
+ const age=base.match(/Для семейного обсуждения: от (\d+) лет/)[1];
+ assert(html.includes('Барои муҳокима дар оила: аз '+age+'-солагӣ'),id+' editorial age recommendation missing');
+ assert.equal((html.match(/<details>/g)||[]).length,(base.match(/<details>/g)||[]).length,id+' discussion questions mismatch');
  assert(html.includes('Хулосаҳои таҳрирӣ'),id+' missing editorial lessons');
  assert(html.includes('Мақом: бозгӯӣ дар сатҳи таҳрирӣ'),id+' missing status');
  assert(source.includes('href="#'+id+'"'),id+' missing navigation');

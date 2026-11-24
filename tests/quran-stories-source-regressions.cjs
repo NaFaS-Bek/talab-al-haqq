@@ -21,7 +21,7 @@ const expectStories=[
  {id:'story-musa-well',topic:'kindness',quran:["28/22","28/23","28/24","28/25","28/26","28/27","28/28"],hadith:[]},
  {id:'story-sulayman-ant',topic:'wisdom',quran:["27/17","27/18","27/19"],hadith:[]},
  {id:'story-saba-queen',topic:'wisdom',quran:["27/29","27/30","27/32","27/35","27/44"],hadith:[]},
- {id:'story-musa-harun',topic:'family',quran:["20/25","20/27","20/29","20/30","20/32","20/36","20/42","20/44","20/46"],hadith:[]},
+ {id:'story-musa-harun',topic:'family',quran:["20/25","20/26","20/27","20/28","20/29","20/30","20/31","20/32","20/36","20/42","20/43","20/44","20/45","20/46"],hadith:[]},
  {id:'story-cave-youths',topic:'trust',quran:["18/10","18/11","18/13","18/14","18/16","18/19","18/21","18/22"],hadith:[]},
  {id:'story-talut-jalut',topic:'trust',quran:["2/246","2/247","2/248","2/249","2/250","2/251"],hadith:[]},
  {id:'story-musa-servant',topic:'wisdom',quran:["18/60","18/65","18/66","18/70","18/71","18/74","18/77","18/79","18/80","18/81","18/82"],hadith:[]},
