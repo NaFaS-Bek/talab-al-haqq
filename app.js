@@ -181,6 +181,97 @@ const tajikDuaMeanings = Object.freeze({
         "meaning": "аз ҷинҳо ва мардум."
       }
     }
+  },
+  "h_bukhari_6324_waking": {
+    "title": "Пас аз бедор шудан",
+    "arabicText": "الْحَمْدُ لِلَّهِ الَّذِي أَحْيَانَا بَعْدَ مَا أَمَاتَنَا، وَإِلَيْهِ النُّشُورُ",
+    "meaning": "Ситоиш аз они Аллоҳ аст, ки моро пас аз миронданамон зинда гардонд ва барангехта шудан ба сӯи Ӯст.",
+    "context": "Ҳангоми бедор шудан аз хоб. Дар ин ривояти Бухорӣ 6324 шумораи муайяни такрор зикр нашудааст.",
+    "sourceUrls": [
+      "https://sunnah.com/bukhari:6324"
+    ]
+  },
+  "h_tirmidhi_1858_before": {
+    "title": "Пеш аз хӯрок — ба номи Аллоҳ",
+    "arabicText": "بِسْمِ اللَّهِ",
+    "meaning": "Ба номи Аллоҳ.",
+    "context": "Дар оғози хӯрок. Ривояти Тирмизӣ 1858 барои ҳолати фаромӯш кардани номи Аллоҳ низ ибораи ҷудогона дорад.",
+    "sourceUrls": [
+      "https://sunnah.com/tirmidhi:1858"
+    ]
+  },
+  "h_tirmidhi_1858_forgot": {
+    "title": "Агар пеш аз хӯрок номи Аллоҳро фаромӯш кардед",
+    "arabicText": "بِسْمِ اللَّهِ فِي أَوَّلِهِ وَآخِرِهِ",
+    "meaning": "Ба номи Аллоҳ дар оғоз ва анҷоми ин хӯрок.",
+    "context": "Агар хӯрданро бе зикри номи Аллоҳ оғоз карда бошед. Ин ибораи шартӣ аст, на дуои дуюми ҳатмӣ баъд аз «Бисмиллоҳ».",
+    "sourceUrls": [
+      "https://sunnah.com/tirmidhi:1858"
+    ]
+  },
+  "h_tirmidhi_3458": {
+    "title": "Пас аз хӯрок — шукр барои ризқ",
+    "arabicText": "الْحَمْدُ لِلَّهِ الَّذِي أَطْعَمَنِي هَذَا وَرَزَقَنِيهِ مِنْ غَيْرِ حَوْلٍ مِنِّي وَلاَ قُوَّةٍ",
+    "meaning": "Ситоиш аз они Аллоҳ аст, ки маро бо ин ғизо сер кард ва онро бе тавону нерӯи ман ризқи ман гардонд.",
+    "context": "Пас аз хӯрок, тибқи Тирмизӣ 3458. Дар ривоят шумораи муайяни такрор барои ин дуо зикр нашудааст.",
+    "sourceUrls": [
+      "https://sunnah.com/tirmidhi:3458"
+    ]
+  },
+  "h_abudawud_5095": {
+    "title": "Ҳангоми аз хона баромадан",
+    "arabicText": "بِسْمِ اللَّهِ تَوَكَّلْتُ عَلَى اللَّهِ لاَ حَوْلَ وَلاَ قُوَّةَ إِلاَّ بِاللَّهِ",
+    "meaning": "Ба номи Аллоҳ. Ба Аллоҳ таваккал кардам. Ҳеҷ тавону нерӯе ҷуз ба ёрии Аллоҳ нест.",
+    "context": "Ҳангоми аз хона баромадан, тибқи Абӯдовуд 5095. Ин дуо ҷойи чораҳои зарурии бехатариро намегирад.",
+    "sourceUrls": [
+      "https://sunnah.com/abudawud:5095"
+    ]
+  },
+  "h_muslim_2018a": {
+    "title": "Ҳангоми ба хона даромадан — ёд кардани Аллоҳ",
+    "arabicText": "إِذَا دَخَلَ الرَّجُلُ بَيْتَهُ فَذَكَرَ اللَّهَ عِنْدَ دُخُولِهِ وَعِنْدَ طَعَامِهِ قَالَ الشَّيْطَانُ لاَ مَبِيتَ لَكُمْ وَلاَ عَشَاءَ",
+    "meaning": "Вақте шахс ба хонааш дарояд ва ҳангоми даромадан ва хӯрок хӯрдан Аллоҳро ёд кунад, шайтон мегӯяд: «Бароятон на ҷойи шабгузаронӣ ҳаст ва на хӯроки шом».",
+    "context": "Ин порчаи наставиши ҳадиси Муслим 2018a аст, на матни дуое барои такрори айнӣ. Дар он ибораи муайяни алоҳида ва шумораи такрор муқаррар нашудааст.",
+    "sourceUrls": [
+      "https://sunnah.com/muslim:2018a"
+    ]
+  },
+  "h_muslim_1342": {
+    "title": "Дар оғози сафар",
+    "arabicText": "سُبْحَانَ الَّذِي سَخَّرَ لَنَا هَذَا وَمَا كُنَّا لَهُ مُقْرِنِينَ وَإِنَّا إِلَى رَبِّنَا لَمُنْقَلِبُونَ اللَّهُمَّ إِنَّا نَسْأَلُكَ فِي سَفَرِنَا هَذَا الْبِرَّ وَالتَّقْوَى وَمِنَ الْعَمَلِ مَا تَرْضَى اللَّهُمَّ هَوِّنْ عَلَيْنَا سَفَرَنَا هَذَا وَاطْوِ عَنَّا بُعْدَهُ اللَّهُمَّ أَنْتَ الصَّاحِبُ فِي السَّفَرِ وَالْخَلِيفَةُ فِي الأَهْلِ اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنْ وَعْثَاءِ السَّفَرِ وَكَآبَةِ الْمَنْظَرِ وَسُوءِ الْمُنْقَلَبِ فِي الْمَالِ وَالأَهْلِ",
+    "meaning": "Пок аст Он ки инро ба мо ром гардонд, вагарна мо тавони ром кардани онро надоштем. Ва ҳамоно мо ба сӯи Парвардигорамон бозмегардем. Эй Аллоҳ! Дар ин сафарамон аз Ту некӯкорӣ, тақво ва амалеро мехоҳем, ки аз он розӣ бошӣ. Эй Аллоҳ! Ин сафарамонро бар мо осон гардон ва дурии роҳашро бар мо кӯтоҳ кун. Эй Аллоҳ! Ту ҳамроҳи мо дар сафар ва нигаҳбони хонаводаи мо ҳастӣ. Эй Аллоҳ! Аз машаққати сафар, манзараи андӯҳовар ва бозгашти ногувор ба молу хонаводаам ба Ту паноҳ мебарам.",
+    "context": "Дар ҳадиси Муслим 1342 пеш аз ин дуо се такбир зикр шудааст. Ин маънои се бор такрор кардани тамоми дуоро надорад. Ибораи иловагии бозгашт дар ин порча нест.",
+    "sourceUrls": [
+      "https://sunnah.com/muslim:1342",
+      "https://quran.com/43/13-14"
+    ]
+  },
+  "h_muslim_2708a": {
+    "title": "Ҳангоми таваққуф дар ҷойе",
+    "arabicText": "أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ",
+    "meaning": "Аз бадии он чи Аллоҳ офаридааст, ба калимаҳои комили Ӯ паноҳ мебарам.",
+    "context": "Ҳангоми таваққуф дар ҷойе, тибқи Муслим 2708a. Барои ин ривоят вақти махсуси субҳ ё шом ва шумораи муайяни такрор муқаррар нашудааст.",
+    "sourceUrls": [
+      "https://sunnah.com/muslim:2708a"
+    ]
+  },
+  "h_bukhari_6324_sleep": {
+    "title": "Пеш аз хоб",
+    "arabicText": "بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا",
+    "meaning": "Ба номи Ту, эй Аллоҳ, мемирам ва зинда мешавам.",
+    "context": "Ҳангоми ба хоб рафтан, тибқи Бухорӣ 6324. Шумораи муайяни такрор зикр нашудааст.",
+    "sourceUrls": [
+      "https://sunnah.com/bukhari:6324"
+    ]
+  },
+  "h_muslim_2727a": {
+    "title": "Зикр пеш аз хоб — се марҳила",
+    "arabicText": "أَنْ تُكَبِّرَا اللَّهَ أَرْبَعًا وَثَلاَثِينَ وَتُسَبِّحَاهُ ثَلاَثًا وَثَلاَثِينَ وَتَحْمَدَاهُ ثَلاَثًا وَثَلاَثِينَ",
+    "meaning": "Аллоҳро сию чор бор бузург шуморед, Ӯро сию се бор тасбеҳ гӯед ва сию се бор ҳамд гӯед.",
+    "context": "Ин порчаи наставиши Паёмбар ﷺ ба Алӣ ва Фотима дар ҳадиси Муслим 2727a аст. Матни арабии боло худи ибораҳои зикр нест. Се шумора ба се зикри алоҳида дахл доранд, на ба такрори тамоми порча.",
+    "sourceUrls": [
+      "https://sunnah.com/muslim:2727a"
+    ]
   }
 });
 const isTajik = () => window.TalabI18n?.language() === 'tg';
@@ -196,8 +287,8 @@ function tajikMeaningStatus() {
   return '<p class="attribution" lang="tg" data-tg-meaning-status="draft">Тарҷумаи таҳририи маъно ба тоҷикӣ; санҷиши мустақили забонӣ ва динӣ ҳанӯз анҷом наёфтааст. Матни аслӣ тағйир наёфтааст.</p>';
 }
 function duaCategoryEntries(id) {
-  // Morning/evening membership also includes the three surahs, via the existing curated collections.
-  const collection = ['morning','evening'].includes(id) && db.library?.collections?.find(c=>c.id===id);
+  // Curated morning/evening/daily collections include linked records from other categories.
+  const collection = ['morning','evening','daily'].includes(id) && db.library?.collections?.find(c=>c.id===id);
   return collection ? collection.entryIds.map(key=>entries.find(x=>x.id===key)).filter(Boolean) : entries.filter(x=>(x.categoryIds||[]).includes(id));
 }
 function initData(d, c) {
@@ -695,7 +786,7 @@ function details(r) {
   let html = `<h2 class="detailtitle">${clean(title(x,kind))}</h2><div class="meta material-type">${clean(kind === 'dua' ? materialType(x) : kindTitle[kind])}</div>`;
   if (kind === 'dua') {
     if (narrativeQuranEntries.has(x.id)) html += `<p class="reading-note">Этот аят или отрывок включает повествование, которое не является словами самой мольбы. Полный текст сохранён без сокращений.</p>`;
-    if (x.excerptKind === 'dhikr_instruction') html += `<p class="reading-note">Это наставление из хадиса для изучения, а не установленная формула для дословного повторения.</p>`;
+    if (x.excerptKind === 'dhikr_instruction') html += '<p class="reading-note" data-instruction-not-formula="1">'+(localizedDua(x) ? 'Ин наставиш аз ҳадис аст, на ибораи муқарраршуда барои такрори айнӣ.' : 'Это наставление из хадиса для изучения, а не установленная формула для дословного повторения.')+'</p>';
     html += readingTimingNote(x);
     const excerptContext=excerptContextExplanation(x);
     if(excerptContext) html += `<p class="reading-note" data-supplication-excerpt-context="1"><strong>Границы цитаты:</strong> ${clean(excerptContext)}</p>`;
@@ -716,7 +807,12 @@ function details(r) {
     }
     const stages = x.repetitionRule?.stages; const goal = stages?.length === 1 ? stages[0].count : null;
     if (x.excerptKind !== 'dhikr_instruction') html += `<div class="counter"><button data-count="minus" aria-label="Уменьшить">−</button><strong id="countValue">${counts[key] || 0}</strong><button data-count="plus" aria-label="Увеличить">+</button></div><p class="lead" style="text-align:center">${goal ? `Счётчик повторений · ${goal} по указанному источнику` : 'Учебный счётчик: число повторений здесь не предписано'}</p><button class="action" data-count="reset">Сбросить счётчик</button>`;
-    if(stages?.length > 1) html += para('Порядок повторений',stages.map(s => `${s.labelRu}: ${s.count} раз`).join('\n'));
+    if(stages?.length > 1) {
+      const stageLabels={takbir:'Такбир — бузург шуморидани Аллоҳ',tasbih:'Тасбеҳ — пок донистани Аллоҳ',tahmid:'Ҳамд — ситоиши Аллоҳ'};
+      html += t && x.id==='h_muslim_2727a'
+        ? para('Тартиби такрор',stages.map(s=>stageLabels[s.id]+': '+s.count+' бор').join('\n'))
+        : para('Порядок повторений',stages.map(s => `${s.labelRu}: ${s.count} раз`).join('\n'));
+    }
   }
   if (kind === 'name') {
     html += arabic(x.arabic) + para('Значение',x.meaningRu) + para('Пояснение',x.explanationRu);

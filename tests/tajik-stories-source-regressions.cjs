@@ -66,7 +66,7 @@ for(const stem of ['wudu-steps','salah-steps','arabic-reading-signs']){
 const catalog=JSON.parse(fs.readFileSync('data/content.json','utf8'));
 const duaRecords=[...catalog.catalog.entries,...catalog.catalog_additions.entries];
 const meanings=JSON.parse(fs.readFileSync('app.js','utf8').match(/const tajikDuaMeanings = Object\.freeze\((\{[\s\S]*?\})\);/)[1]);
-const dailyIds=[...new Set(catalog.library.collections.filter(c=>['morning','evening'].includes(c.id)).flatMap(c=>c.entryIds))].sort();
+const dailyIds=[...new Set(catalog.library.collections.filter(c=>['morning','evening','daily'].includes(c.id)).flatMap(c=>c.entryIds))].sort();
 assert.deepEqual(Object.keys(meanings).sort(),dailyIds);
 for(const [id,m] of Object.entries(meanings)){
  const e=duaRecords.find(x=>x.id===id);
@@ -78,4 +78,8 @@ for(const [id,m] of Object.entries(meanings)){
   for(const s of e.segments) assert.equal(m.segments[s.id].arabicText,s.arabicText);
  }
 }
-console.log('PASS: 8 Tajik morning/evening meanings, exact Arabic and source guards, 15 verse translations');
+console.log('PASS: 18 Tajik morning/evening/daily meanings, exact Arabic and source guards, 15 verse translations');
+
+assert.equal(dailyIds.length,18);
+assert.equal(catalog.library.collections.find(c=>c.id==='daily').entryIds.length,10);
+assert.deepEqual(duaRecords.find(e=>e.id==='h_muslim_2727a').repetitionRule.stages.map(s=>s.count),[34,33,33]);

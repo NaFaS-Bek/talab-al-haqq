@@ -46,8 +46,22 @@ const assert=require('node:assert/strict');
       assert.equal(await page.locator('#nav [data-tab="home"] span').innerText(),'Главная');
       assert.equal(await page.locator('#talab-translation-notice').count(),0);
       await page.keyboard.press('Escape');
-      await page.locator('#nav [data-tab="home"]').click();
+      await page.locator('#nav [data-tab="dua"]').click();
       await page.locator('#talab-lang-switch [data-language="tg"]').click();
+      await page.locator('[data-dua-group="daily"]').click();
+      assert.equal(await page.locator('[data-open^="dua:"]').count(),10);
+      for(const id of ['h_bukhari_6324_waking','h_tirmidhi_1858_before','h_tirmidhi_1858_forgot','h_tirmidhi_3458','h_abudawud_5095','h_muslim_2018a','h_muslim_1342','h_muslim_2708a','h_bukhari_6324_sleep','h_muslim_2727a']){
+        await page.locator('[data-open="dua:'+id+'"]').click();
+        assert.equal(await page.locator('#detail [data-tg-meaning]').count(),1,id);
+        assert.equal(await page.locator('#detail [data-tg-meaning-status]').count(),1,id);
+        if(['h_muslim_2018a','h_muslim_2727a'].includes(id)){
+          assert.equal(await page.locator('#detail [data-instruction-not-formula]').count(),1);
+          assert.equal(await page.locator('#detail .counter').count(),0);
+        }
+        if(id==='h_muslim_2727a') assert.match(await page.locator('#detail').innerText(),/34 бор[\s\S]*33 бор[\s\S]*33 бор/);
+        await page.keyboard.press('Escape');
+      }
+      await page.locator('#nav [data-tab="home"]').click();
       const aboutLink=page.locator('#screen a[href$="about-tg.html"]');
       assert.equal(await aboutLink.count(),1);
       await aboutLink.click();
