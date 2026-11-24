@@ -35,3 +35,18 @@ assert.deepEqual(refs(abu,/href="https:\/\/sunnah\.com\/([^"]+)"/g),['bukhari:36
 assert(translated.find(x=>x[1]==='story-musa-servant')[0].includes('ба одамони одӣ ҳуқуқ намедиҳад'));
 console.log('PASS: 18 Tajik stories, matching order, Quran and hadith sources, navigation and editorial disclosures');
 console.log('NOT CERTIFIED: independent literary Tajik and theological proofreading');
+
+// Bilingual five-pillar lessons: source links and Arabic text must remain unchanged.
+for(const stem of ['five-pillars','pillar-shahada','pillar-salah','pillar-zakat','pillar-sawm','pillar-hajj']){
+ const r=fs.readFileSync(stem+'.html','utf8'),g=fs.readFileSync(stem+'-tg.html','utf8');
+ const urls=s=>[...new Set([...s.matchAll(/href="(https?:\/\/[^"]+)"/g)].map(x=>x[1]))].sort();
+ const arabic=s=>[...s.matchAll(/<[^>]*lang="ar"[^>]*>([\s\S]*?)<\/[^>]+>/g)].map(x=>x[1]);
+ assert.match(g,/<html lang="tg">/);
+ assert.deepEqual(urls(r),urls(g),stem+' source link mismatch');
+ assert.deepEqual(arabic(r),arabic(g),stem+' Arabic changed');
+ assert(g.includes('Бозбинии мустақили'));
+ assert(g.includes('i18n.js'));
+ const m=JSON.parse(fs.readFileSync('sw.js','utf8').match(/^const RELEASE = (\{[^\r\n]+\});/m)[1]);
+ assert(m.resources[stem+'-tg.html'],stem+' not in offline manifest');
+}
+console.log('PASS: five pillars overview and five lessons, Arabic and source parity');

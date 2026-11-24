@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="tg"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#101a17"><meta name="description" content="Панҷ рукни ислом: шаҳодат, намоз, закот, рӯза ва ҳаҷ."><title>Панҷ рукни ислом — Талаб ал-Ҳаққ</title><style>
+:root{color-scheme:dark;--bg:#101a17;--panel:#1b2923;--line:#35483e;--ink:#f1f5ed;--muted:#bdc9bf;--accent:#c3ddae}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 system-ui,-apple-system,Segoe UI,sans-serif}
+header,main,footer{max-width:880px;margin:auto;padding:20px}
+header{display:flex;align-items:center;justify-content:space-between;gap:15px}
+h1{font-size:clamp(1.7rem,4.5vw,2.7rem);line-height:1.22;margin:8px 0 15px}
+h2{font-size:1.5rem;line-height:1.3}
+h3{font-size:1.14rem;margin:0}
+p{margin:9px 0 14px}a{color:var(--accent)}a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.eyebrow{color:var(--accent);font-weight:700;font-size:.83rem;letter-spacing:.05em;text-transform:uppercase}
+.lead{font-size:1.11rem;color:var(--muted);max-width:70ch}
+.source-note,.card,.quiz{background:var(--panel);border:1px solid var(--line);border-radius:17px;padding:clamp(15px,3vw,23px)}
+.source-note{border-left:4px solid var(--accent);margin:20px 0}
+.quick-nav{display:flex;gap:8px;flex-wrap:wrap;margin:22px 0 28px}
+.quick-nav a{border:1px solid var(--line);border-radius:99px;text-decoration:none;padding:8px 13px;font-size:.94rem}
+.pillars{display:grid;gap:15px}
+.card{scroll-margin-top:24px}
+.card-head{display:flex;align-items:center;gap:14px}
+.number{display:grid;place-items:center;flex:0 0 40px;width:40px;height:40px;border-radius:13px;background:var(--accent);color:var(--bg);font-weight:800}
+.ar-name{display:block;font-size:1.12rem;color:var(--accent);font-family:"Noto Naskh Arabic","Amiri",serif}
+.card details{margin-top:12px;border-top:1px solid var(--line);padding-top:9px}.lesson-link{display:inline-flex;margin-top:14px;border:1px solid var(--accent);border-radius:12px;padding:11px 15px;text-decoration:none;font-weight:750}.lesson-link:hover{background:var(--accent);color:var(--bg)}
+summary{cursor:pointer;font-weight:650;padding:5px 0}
+.card ul{padding-left:22px}
+.cite{margin-top:12px;color:var(--muted);font-size:.94rem}
+.quiz{margin-top:25px}
+.question{border:0;border-top:1px solid var(--line);margin:15px 0 0;padding:17px 0 0}
+.question legend{font-weight:700;padding:0 0 10px}
+.answers{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:9px}
+.answers button{display:block;width:100%;text-align:left;background:#27382f;color:var(--ink);border:1px solid #536b59;border-radius:10px;padding:12px;font:inherit;cursor:pointer}
+.answers button[aria-pressed="true"]{background:var(--accent);color:var(--bg)}
+.feedback{margin:9px 0 0;min-height:1.5em}
+.score{font-weight:700;margin-top:17px}
+footer{color:var(--muted);font-size:.91rem;padding-bottom:45px}
+@media(max-width:500px){header{padding:15px}main{padding:15px}.quick-nav a{font-size:.87rem}.answers{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style><style>header{flex-wrap:wrap}a{overflow-wrap:anywhere}</style></head>
+<body><header><strong>Талаб ал-Ҳаққ</strong><a href="./">← Ба саҳифаи асосӣ</a><noscript><a href="five-pillars.html" lang="ru">Русский</a></noscript></header><main><p class="eyebrow">Омӯзиши ислом · Барои навомӯзон · Дарси 1</p><h1>Панҷ рукни ислом</h1><p class="lead">Дар ҳадиси машҳур панҷ асоси имону ибодат номбар шудааст. Онҳоро бо забони сода меомӯзем.</p><div class="source-note"><strong>Ин рӯйхат аз куҷост?</strong><p>Дар ҳадис аз Паёмбар Муҳаммад ﷺ омадааст, ки ислом бар панҷ асос бино шудааст: шаҳодат, намоз, закот, ҳаҷ ва рӯзаи Рамазон. <a target="_blank" rel="noopener noreferrer" href="https://sunnah.com/bukhari/2/1">Саҳеҳи Бухорӣ № 8</a>; <a target="_blank" rel="noopener noreferrer" href="https://sunnah.com/muslim:16">Саҳеҳи Муслим № 16</a>.</p><p><small>Ин тасниф махсусан дар анъанаи таълимии суннӣ маъмул аст. Дар дигар равияҳои мусулмонӣ асосҳои эътиқод ва уҳдадориҳои динӣ метавонанд ба тарзи дигар тасниф шаванд. Ин дарс ҳадиси муайянро шарҳ медиҳад ва дигар таснифҳоро инкор намекунад.</small></p></div><nav class="quick-nav" aria-label="Интихоби рукн"><a href="#shahada">1. Шаҳодат</a><a href="#salah">2. Намоз</a><a href="#zakat">3. Закот</a><a href="#sawm">4. Рӯзаи Рамазон</a><a href="#hajj">5. Ҳаҷ</a></nav><div class="pillars"><article class="card" id="shahada"><div class="card-head"><span class="number" aria-hidden="true">1</span><div><h2>Шаҳодат — гувоҳии имон</h2><span class="ar-name" lang="ar" dir="rtl">الشهادتان</span></div></div><p><strong>Бо суханони сода:</strong> Эътирофи он ки ҳеҷ маъбуди барҳақ ҷуз Аллоҳ нест ва Муҳаммад фиристодаи Ӯст.</p><details><summary>Чаро ин муҳим аст?</summary><p>Шаҳодат асоси тавҳид ва эътирофи рисолатро ифода мекунад. Фаҳмидани маъно муҳим аст.</p><p class="cite"><a target="_blank" rel="noopener noreferrer" href="https://quran.com/47:19">Қуръон 47:19</a>; <a target="_blank" rel="noopener noreferrer" href="https://sunnah.com/bukhari/2/1">Бухорӣ № 8</a></p></details><p><a class="lesson-link" href="pillar-shahada-tg.html">Дарси муфассал →</a></p></article>
+<article class="card" id="salah"><div class="card-head"><span class="number" aria-hidden="true">2</span><div><h2>Намоз — ибодати фарз</h2><span class="ar-name" lang="ar" dir="rtl">الصلاة</span></div></div><p><strong>Бо суханони сода:</strong> Ибодати Аллоҳ дар вақтҳои муқарраршуда. Дар амалияи маъмули намоз панҷ намози фарз дар шабонарӯз адо мешавад.</p><details><summary>Баъд чиро омӯзем?</summary><p>Таҳорат, вақти намоз, ҳаракатҳо ва қироатро омӯзед. Ҷузъиёти амал дар дарси ҷудогона баррасӣ мешавад.</p><p class="cite"><a target="_blank" rel="noopener noreferrer" href="https://quran.com/2:43">Қуръон 2:43</a></p></details><p><a class="lesson-link" href="pillar-salah-tg.html">Дарси муфассал →</a></p></article>
+<article class="card" id="zakat"><div class="card-head"><span class="number" aria-hidden="true">3</span><div><h2>Закот — пардохти ҳатмӣ</h2><span class="ar-name" lang="ar" dir="rtl">الزكاة</span></div></div><p><strong>Бо суханони сода:</strong> Ҳангоми иҷрои шартҳо қисми муайяни дороӣ ба ниёзмандон ва дигар гирандагони муқарраршуда дода мешавад.</p><details><summary>Оё ҳама бояд закот диҳанд?</summary><p>Не. Ин ба навъ ва миқдори дороӣ ва шартҳои дигар вобаста аст. Закот аз садақаи ихтиёрӣ фарқ мекунад.</p><p class="cite"><a target="_blank" rel="noopener noreferrer" href="https://quran.com/2:43">Қуръон 2:43</a>; <a target="_blank" rel="noopener noreferrer" href="https://quran.com/9:60">Қуръон 9:60</a></p></details><p><a class="lesson-link" href="pillar-zakat-tg.html">Дарси муфассал →</a></p></article>
+<article class="card" id="sawm"><div class="card-head"><span class="number" aria-hidden="true">4</span><div><h2>Рӯза дар Рамазон</h2><span class="ar-name" lang="ar" dir="rtl">صوم رمضان</span></div></div><p><strong>Бо суханони сода:</strong> Аз субҳи содиқ то вақти муқарраршудаи ифтор аз хӯрдан, нӯшидан ва амалҳои ботилкунандаи рӯза худдорӣ мекунанд.</p><details><summary>Агар шахс бемор ё мусофир бошад?</summary><p>Қуръон сабукиҳоро зикр мекунад. Шартҳо, қазои рӯза ва вақти ифторро мувофиқи шароит ва анъанаи динӣ омӯзед.</p><p class="cite"><a target="_blank" rel="noopener noreferrer" href="https://quran.com/2:183">Қуръон 2:183</a>; <a target="_blank" rel="noopener noreferrer" href="https://quran.com/2:185">Қуръон 2:185</a></p></details><p><a class="lesson-link" href="pillar-sawm-tg.html">Дарси муфассал →</a></p></article>
+<article class="card" id="hajj"><div class="card-head"><span class="number" aria-hidden="true">5</span><div><h2>Ҳаҷ — зиёрати Макка</h2><span class="ar-name" lang="ar" dir="rtl">الحج</span></div></div><p><strong>Бо суханони сода:</strong> Зиёрати Каъба дар вақти муайян. Барои шахси дорои шартҳо ва тавоноӣ як бор дар умр фарз аст.</p><details><summary>Агар саломатӣ ё имконият набошад?</summary><p>Қуръон фарз будани ҳаҷро ба тавоноии сафар вобаста мекунад. Ҳолатҳои шахсӣ шарҳи алоҳида мехоҳанд.</p><p class="cite"><a target="_blank" rel="noopener noreferrer" href="https://quran.com/3:97">Қуръон 3:97</a></p></details><p><a class="lesson-link" href="pillar-hajj-tg.html">Дарси муфассал →</a></p></article></div><section class="source-note"><strong>Муҳим:</strong> панҷ рукн тамоми эътиқод ва ахлоқи исломро фаро намегиранд. Омӯзиши Қуръон, меҳрубонӣ, адолат, ният ва эҳтироми инсонҳо низ муҳиманд.</section>
+<section class="quiz" id="check" aria-labelledby="quiz-title"><h2 id="quiz-title">Худро бисанҷед</h2><p>Ба ҳар савол ҷавоб интихоб кунед. Ин машқ аст, на имтиҳон.</p><fieldset class="question" data-question="0"><legend>1. Гувоҳии имон чӣ ном дорад?</legend><div class="answers"><button type="button" data-answer="0">Шаҳодат</button><button type="button" data-answer="1">Закот</button><button type="button" data-answer="2">Ҳаҷ</button></div><p class="feedback" aria-live="polite"></p></fieldset>
+<fieldset class="question" data-question="1"><legend>2. Кадом ибодат ҳар рӯз анҷом дода мешавад?</legend><div class="answers"><button type="button" data-answer="0">Ҳаҷ</button><button type="button" data-answer="1">Намоз</button><button type="button" data-answer="2">Рӯзаи Рамазон</button></div><p class="feedback" aria-live="polite"></p></fieldset>
+<fieldset class="question" data-question="2"><legend>3. Закот чист?</legend><div class="answers"><button type="button" data-answer="0">Ҳар гуна орзуи нек</button><button type="button" data-answer="1">Номи намози шом</button><button type="button" data-answer="2">Пардохти ҳатмӣ ҳангоми иҷрои шартҳо</button></div><p class="feedback" aria-live="polite"></p></fieldset>
+<fieldset class="question" data-question="3"><legend>4. Рӯзаи фарз дар кадом моҳ аст?</legend><div class="answers"><button type="button" data-answer="0">Рамазон</button><button type="button" data-answer="1">Муҳаррам</button><button type="button" data-answer="2">Шаввол</button></div><p class="feedback" aria-live="polite"></p></fieldset>
+<fieldset class="question" data-question="4"><legend>5. Ҳаҷ барои кӣ фарз аст?</legend><div class="answers"><button type="button" data-answer="0">Барои ҳама ҳар сол</button><button type="button" data-answer="1">Барои шахси дорои шартҳо ва тавоноӣ</button><button type="button" data-answer="2">Танҳо барои сокинони Макка</button></div><p class="feedback" aria-live="polite"></p></fieldset><p class="score" role="status" aria-live="polite" id="quizProgress">Ҷавоб дода шуд: 0 аз 5</p><button type="button" id="resetQuiz" style="border:1px solid var(--line);border-radius:10px;padding:11px 15px;background:#28392f;color:var(--ink);font:inherit;cursor:pointer">Аз нав оғоз кунед</button></section><section class="source-note" id="sources"><strong>Сарчашмаҳои асосӣ</strong><p><a target="_blank" rel="noopener noreferrer" href="https://sunnah.com/bukhari/2/1">Саҳеҳи Бухорӣ № 8</a>; <a target="_blank" rel="noopener noreferrer" href="https://sunnah.com/muslim:16">Саҳеҳи Муслим № 16</a>. Пайвандҳо ба оятҳо дар ҳар бахш оварда шудаанд.</p><small>Мақом: маводи муқаддимавии таҳрирӣ. Бозбинии мустақили омӯзгори динӣ ва муҳаррири соҳибзабон ҳанӯз анҷом наёфтааст. Барои дастури дақиқ ба мутахассиси соҳибихтисоси анъанаи худ муроҷиат кунед. Ин фатво нест.</small></section><p><a href="five-pillars.html" lang="ru" hreflang="ru">Русская версия</a></p></main><script>
+'use strict';
+const correctAnswers = [0,1,2,0,1];
+const selectedAnswers = new Map();
+const questions = document.querySelectorAll('.question');
+function updateProgress(){
+  const score=[...selectedAnswers].filter(([q,a])=>correctAnswers[q]===a).length;
+  const progress=document.getElementById('quizProgress');
+  progress.textContent = 'Ҷавоб дода шуд: '+selectedAnswers.size+' аз 5'+(selectedAnswers.size===5 ? ' · Ҷавобҳои дуруст: '+score+' аз 5' : '');
+}
+for(const fieldset of questions){
+  fieldset.addEventListener('click',event=>{
+    const button=event.target.closest('button[data-answer]');
+    if(!button)return;
+    const q=Number(fieldset.dataset.question),a=Number(button.dataset.answer);
+    selectedAnswers.set(q,a);
+    for(const b of fieldset.querySelectorAll('button[data-answer]'))b.setAttribute('aria-pressed',String(b===button));
+    const good=correctAnswers[q]===a;
+    fieldset.querySelector('.feedback').textContent=good?'Дуруст!':'Ҳанӯз нодуруст. Бори дигар кӯшиш кунед: ҷавоб дар маводи боло ҳаст.';
+    updateProgress();
+  });
+}
+document.getElementById('resetQuiz').addEventListener('click',()=>{
+  selectedAnswers.clear();
+  for(const fieldset of questions){
+    for(const b of fieldset.querySelectorAll('button[data-answer]'))b.removeAttribute('aria-pressed');
+    fieldset.querySelector('.feedback').textContent='';
+  }
+  updateProgress();
+});
+</script><footer>Талаб ал-Ҳаққ · Бо диққат омӯзед, сарчашмаҳоро санҷед, ба фарқиятҳо эҳтиром гузоред</footer><script src="i18n.js" defer></script></body></html>

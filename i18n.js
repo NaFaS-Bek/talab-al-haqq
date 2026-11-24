@@ -50,6 +50,9 @@
     'Выберите направление. Все учебные материалы собраны в разделе «Обучение исламу».':
       'Самтро интихоб кунед. Ҳамаи маводи дарсӣ дар бахши «Омӯзиши ислом» ҷамъ шудаанд.',
     'Пять столпов ислама': 'Панҷ рукни ислом',
+    'Открыть урок: пять столпов ислама': 'Дарсро кушоед: панҷ рукни ислом',
+    'Простое введение, источники и проверка знаний': 'Шиносоӣ, сарчашмаҳо ва санҷиши дониш',
+    '← К урокам': '← Ба дарсҳо',
     'Первый шаг: шахада, намаз, закят, пост и хадж':
       'Қадами аввал: шаҳодат, намоз, закот, рӯза ва ҳаҷ',
     'Намаз и омовение (тахарат)': 'Намоз ва таҳорат',
@@ -78,19 +81,22 @@
     try { const v = JSON.parse(localStorage.getItem(KEY)); return LOCALES.includes(v) ? v : 'ru'; }
     catch (_) { return 'ru'; }
   }
+  const pairedLessons = ['five-pillars','pillar-shahada','pillar-salah','pillar-zakat','pillar-sawm','pillar-hajj'];
   function pageKind() {
     const name = location.pathname.split('/').pop();
     if (name === 'about.html' || name === 'about-tg.html') return 'about';
     if (name === 'stories.html' || name === 'stories-tg.html') return 'stories';
+    const stem = name.replace(/(?:-tg)?\.html$/, '');
+    if (pairedLessons.includes(stem)) return stem;
     return 'other';
   }
   function setLanguage(lang) {
     if (!LOCALES.includes(lang)) return;
     try { localStorage.setItem(KEY, JSON.stringify(lang)); } catch (_) {}
-    if (pageKind() === 'about' || pageKind() === 'stories') {
+    if (pageKind() !== 'other') {
       const destination = pageKind() === 'about'
         ? (lang === 'tg' ? 'about-tg.html' : 'about.html')
-        : (lang === 'tg' ? 'stories-tg.html' : 'stories.html');
+        : (lang === 'tg' ? pageKind()+'-tg.html' : pageKind()+'.html');
       if (location.pathname.split('/').pop() !== destination) {
         location.assign(destination + location.search + location.hash);
         return;
@@ -175,6 +181,7 @@
       if (screen) {
         screen.querySelectorAll('a[href="about.html"]').forEach(a => a.href='about-tg.html');
         screen.querySelectorAll('a[href="stories.html"]').forEach(a => a.href='stories-tg.html');
+        for (const stem of pairedLessons) screen.querySelectorAll('a[href="'+stem+'.html"]').forEach(a => a.href=stem+'-tg.html');
       }
      } else {
       if (msg) msg.remove();

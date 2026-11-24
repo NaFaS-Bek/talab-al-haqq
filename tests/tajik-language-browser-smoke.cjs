@@ -77,6 +77,26 @@ const assert=require('node:assert/strict');
       await page.locator('#talab-lang-switch [data-language="tg"]').click();
       await page.waitForURL('**/stories-tg.html#story-abubakr');
       assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('nfs_lang'))),'tg');
+      await page.goto('http://127.0.0.1:8765/five-pillars-tg.html#salah',{waitUntil:'load'});
+      assert.equal(await page.locator('article.card').count(),5);
+      assert.equal(await page.locator('html').getAttribute('lang'),'tg');
+      assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2),true,'No pillars overflow');
+      for(const [i,a] of [0,1,2,0,1].entries()) await page.locator('[data-question="'+i+'"] [data-answer="'+a+'"]').click();
+      assert((await page.locator('#quizProgress').innerText()).includes('Ҷавобҳои дуруст: 5 аз 5'));
+      await page.locator('#resetQuiz').click();
+      assert((await page.locator('#quizProgress').innerText()).includes('0 аз 5'));
+      await page.locator('#talab-lang-switch [data-language="ru"]').click();
+      await page.waitForURL('**/five-pillars.html#salah');
+      await page.locator('#talab-lang-switch [data-language="tg"]').click();
+      await page.waitForURL('**/five-pillars-tg.html#salah');
+      for(const id of ['shahada','salah','zakat','sawm','hajj']){
+        await page.goto('http://127.0.0.1:8765/pillar-'+id+'-tg.html',{waitUntil:'load'});
+        assert.equal(await page.locator('html').getAttribute('lang'),'tg');
+        assert.equal(await page.locator('h1').count(),1);
+        assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2),true,'No lesson overflow: '+id);
+        await page.locator('#talab-lang-switch [data-language="ru"]').click();
+        await page.waitForURL('**/pillar-'+id+'.html');
+      }
       assert.deepEqual(errors,[],'Browser errors during locale switch');
       await page.close();
     }
