@@ -16,7 +16,7 @@ const expectStories=[
  {id:'story-nuh',topic:'family',quran:["11/42","11/43","11/45","11/46","11/47"],hadith:[]},
  {id:'story-ayyub',topic:'trust',quran:["21/83","21/84"],hadith:[]},
  {id:'story-yunus',topic:'forgiveness',quran:["37/139","37/142","21/87","21/88"],hadith:[]},
- {id:'story-zakariya',topic:'family',quran:["19/2","19/3","19/4","19/5","19/7","19/9"],hadith:[]},
+ {id:'story-zakariya',topic:'family',quran:["19/2","19/3","19/4","19/5","19/6","19/7","19/8","19/9"],hadith:[]},
  {id:'story-ibrahim-father',topic:'family',quran:["19/41","19/42","19/43","19/44","19/45","19/46","19/47","19/48"],hadith:[]},
  {id:'story-musa-well',topic:'kindness',quran:["28/22","28/23","28/24","28/25","28/26","28/27","28/28"],hadith:[]},
  {id:'story-sulayman-ant',topic:'wisdom',quran:["27/17","27/18","27/19"],hadith:[]},
