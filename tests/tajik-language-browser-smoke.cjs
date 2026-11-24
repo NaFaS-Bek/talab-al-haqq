@@ -188,6 +188,16 @@ const assert=require('node:assert/strict');
       await page.locator('#alphabetAnswers button').nth(1).click();
       assert.match(await page.locator('#alphabetFeedback').innerText(),/Дуруст/);
       assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2),true,'No Arabic lesson overflow');
+      await page.goto('http://127.0.0.1:8765/family-rights-tg.html#disagreements',{waitUntil:'load'});
+      assert.equal(await page.locator('html').getAttribute('lang'),'tg');
+      assert.equal(await page.locator('#family-curriculum li').count(),10);
+      assert.equal(await page.locator('[data-tg-family-pending]').count(),1);
+      assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2),true,'No family overview overflow');
+      await page.locator('#talab-lang-switch [data-language="ru"]').click();
+      await page.waitForURL('**/family-rights.html#disagreements');
+      assert.equal(await page.locator('html').getAttribute('lang'),'ru');
+      await page.locator('#talab-lang-switch [data-language="tg"]').click();
+      await page.waitForURL('**/family-rights-tg.html#disagreements');
       assert.deepEqual(errors,[],'Browser errors during locale switch');
       await page.close();
     }
