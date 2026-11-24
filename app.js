@@ -39,7 +39,167 @@ $('#reviewBtn').innerHTML = uiIcon('info');
 const navIcons = {home:'home',dua:'dua',names:'names',library:'library',favorites:'heart'};
 document.querySelectorAll('.bottom button').forEach(b => b.querySelector('i').innerHTML = uiIcon(navIcons[b.dataset.tab]));
 const kindTitle = {dua:'Дуа и азкары',name:'Имя Аллаха',lib:'Исламские знания',history:'История ислама',caliph:'История халифов'};
-const title = (x, kind) => kind === 'name' ? x.transliterationRu : x.titleRu;
+// Editorial Tajik meanings: never overwrite Arabic, Russian text, source records or review status.
+const tajikDuaMeanings = Object.freeze({
+  "h_tirmidhi_3391_morning": {
+    "title": "Дуо ҳангоми фаро расидани субҳ",
+    "arabicText": "اللَّهُمَّ بِكَ أَصْبَحْنَا وَبِكَ أَمْسَيْنَا وَبِكَ نَحْيَا وَبِكَ نَمُوتُ وَإِلَيْكَ الْمَصِيرُ",
+    "meaning": "Эй Аллоҳ! Ба қудрати Ту субҳро пешвоз гирифтем ва ба қудрати Ту шомро пешвоз мегирем. Ба қудрати Ту зинда ҳастем ва ба қудрати Ту мемирем. Бозгашт ба сӯи Туст.",
+    "context": "Ривояти Тирмизӣ 3391: дуои субҳ; дар ин ривоят анҷоми он бозгашт ба сӯи Аллоҳ аст.",
+    "sourceUrls": [
+      "https://sunnah.com/tirmidhi:3391"
+    ]
+  },
+  "h_tirmidhi_3391_evening": {
+    "title": "Дуо ҳангоми фаро расидани шом",
+    "arabicText": "اللَّهُمَّ بِكَ أَمْسَيْنَا وَبِكَ أَصْبَحْنَا وَبِكَ نَحْيَا وَبِكَ نَمُوتُ وَإِلَيْكَ النُّشُورُ",
+    "meaning": "Эй Аллоҳ! Ба қудрати Ту шомро пешвоз гирифтем ва ба қудрати Ту субҳро пешвоз мегирем. Ба қудрати Ту зинда ҳастем ва ба қудрати Ту мемирем. Барангехта шудан ба сӯи Туст.",
+    "context": "Ривояти Тирмизӣ 3391: дуои шом; анҷоми он ба барангехта шудан ишора мекунад.",
+    "sourceUrls": [
+      "https://sunnah.com/tirmidhi:3391"
+    ]
+  },
+  "h_bukhari_6306": {
+    "title": "Саййидул истиғфор — дуои талаби омурзиш",
+    "arabicText": "اللَّهُمَّ أَنْتَ رَبِّي، لاَ إِلَهَ إِلاَّ أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ، أَعُوذُ بِكَ مِنْ شَرِّ مَا صَنَعْتُ، أَبُوءُ لَكَ بِنِعْمَتِكَ عَلَىَّ وَأَبُوءُ لَكَ بِذَنْبِي، فَاغْفِرْ لِي، فَإِنَّهُ لاَ يَغْفِرُ الذُّنُوبَ إِلاَّ أَنْتَ",
+    "meaning": "Эй Аллоҳ! Ту Парвардигори ман ҳастӣ. Ҳеҷ маъбуди барҳақ ҷуз Ту нест. Маро офаридӣ ва ман бандаи Ту ҳастам. То ҷое ки тавонам, ба аҳду ваъдаи Ту вафодорам. Аз бадии он чи кардаам, ба Ту паноҳ мебарам. Неъматеро, ки ба ман додаӣ, эътироф мекунам ва ба гуноҳи худ иқрор мешавам. Пас маро биёмурз, зеро ҷуз Ту касе гуноҳҳоро намеомурзад.",
+    "context": "Ҳадиси Бухорӣ 6306 ба гуфтани ин истиғфор бо яқин дар рӯз ё шаб ишора мекунад. Шумораи муайяни такрор дар ин ривоят зикр нашудааст.",
+    "sourceUrls": [
+      "https://sunnah.com/bukhari:6306"
+    ]
+  },
+  "h_muslim_2692": {
+    "title": "Субҳоналлоҳи ва биҳамдиҳи — субҳу шом",
+    "arabicText": "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ",
+    "meaning": "Аллоҳ аз ҳар нуқсон пок аст ва ситоиш аз они Ӯст.",
+    "context": "Дар ривояти Муслим 2692 сад бор гуфтани ин зикр ҳангоми субҳ ва шом зикр шудааст. Талаффузро бо матни арабӣ ва омӯзгор санҷед.",
+    "sourceUrls": [
+      "https://sunnah.com/muslim:2692"
+    ]
+  },
+  "h_abudawud_5088": {
+    "title": "Ба номи Аллоҳ — зикри субҳу шом",
+    "arabicText": "بِسْمِ اللَّهِ الَّذِي لاَ يَضُرُّ مَعَ اسْمِهِ شَىْءٌ فِي الأَرْضِ وَلاَ فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ",
+    "meaning": "Ба номи Аллоҳ, ки бо номи Ӯ ҳеҷ чиз на дар замин ва на дар осмон зарар намерасонад. Ӯ Шунавову Доност.",
+    "context": "Дар ривояти Абӯдовуд 5088 се бор гуфтани ин зикр субҳу шом зикр шудааст. Ин дуо ҷойи чораҳои зарурии амният ё табобатро намегирад.",
+    "sourceUrls": [
+      "https://sunnah.com/abudawud:5088"
+    ]
+  },
+  "q_surah_112": {
+    "title": "Сураи 112 · Ихлос",
+    "arabicText": "قُلْ هُوَ ٱللَّهُ أَحَدٌ ٱللَّهُ ٱلصَّمَدُ لَمْ يَلِدْ وَلَمْ يُولَدْ وَلَمْ يَكُن لَّهُۥ كُفُوًا أَحَدٌۢ",
+    "meaning": "Бигӯ: Ӯ Аллоҳ, Ягона аст. Аллоҳ Бениёз аст, ҳама ба Ӯ ниёз доранд. На фарзанд овардааст ва на зода шудааст. Ва ҳеҷ кас ҳамтои Ӯ нест.",
+    "context": "Дар ривояти Абӯдовуд 5082 хондани сураи Ихлос ва ду сураи паноҳҷӯӣ се бор субҳу шом зикр шудааст.",
+    "sourceUrls": [
+      "https://quran.com/112/1",
+      "https://sunnah.com/abudawud:5082"
+    ],
+    "segments": {
+      "q_surah_112_a1": {
+        "arabicText": "قُلْ هُوَ ٱللَّهُ أَحَدٌ",
+        "meaning": "Бигӯ: Ӯ Аллоҳ, Ягона аст."
+      },
+      "q_surah_112_a2": {
+        "arabicText": "ٱللَّهُ ٱلصَّمَدُ",
+        "meaning": "Аллоҳ Бениёз аст, ҳама ба Ӯ ниёз доранд."
+      },
+      "q_surah_112_a3": {
+        "arabicText": "لَمْ يَلِدْ وَلَمْ يُولَدْ",
+        "meaning": "На фарзанд овардааст ва на зода шудааст."
+      },
+      "q_surah_112_a4": {
+        "arabicText": "وَلَمْ يَكُن لَّهُۥ كُفُوًا أَحَدٌۢ",
+        "meaning": "Ва ҳеҷ кас ҳамтои Ӯ нест."
+      }
+    }
+  },
+  "q_surah_113": {
+    "title": "Сураи 113 · Фалақ",
+    "arabicText": "قُلْ أَعُوذُ بِرَبِّ ٱلْفَلَقِ مِن شَرِّ مَا خَلَقَ وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ وَمِن شَرِّ ٱلنَّفَّٰثَٰتِ فِى ٱلْعُقَدِ وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ",
+    "meaning": "Бигӯ: Ба Парвардигори субҳидам паноҳ мебарам, аз бадии он чи Ӯ офаридааст, ва аз бадии торикӣ, вақте фаро мерасад, ва аз бадии дамандагон бар гиреҳҳо, ва аз бадии ҳасуд, вақте ҳасад меварзад.",
+    "context": "Дар ривояти Абӯдовуд 5082 ин сура ҳамроҳ бо Ихлос ва Нос се бор субҳу шом хонда мешавад.",
+    "sourceUrls": [
+      "https://quran.com/113/1",
+      "https://sunnah.com/abudawud:5082"
+    ],
+    "segments": {
+      "q_surah_113_a1": {
+        "arabicText": "قُلْ أَعُوذُ بِرَبِّ ٱلْفَلَقِ",
+        "meaning": "Бигӯ: Ба Парвардигори субҳидам паноҳ мебарам,"
+      },
+      "q_surah_113_a2": {
+        "arabicText": "مِن شَرِّ مَا خَلَقَ",
+        "meaning": "аз бадии он чи Ӯ офаридааст,"
+      },
+      "q_surah_113_a3": {
+        "arabicText": "وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ",
+        "meaning": "ва аз бадии торикӣ, вақте фаро мерасад,"
+      },
+      "q_surah_113_a4": {
+        "arabicText": "وَمِن شَرِّ ٱلنَّفَّٰثَٰتِ فِى ٱلْعُقَدِ",
+        "meaning": "ва аз бадии дамандагон бар гиреҳҳо,"
+      },
+      "q_surah_113_a5": {
+        "arabicText": "وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ",
+        "meaning": "ва аз бадии ҳасуд, вақте ҳасад меварзад."
+      }
+    }
+  },
+  "q_surah_114": {
+    "title": "Сураи 114 · Нос",
+    "arabicText": "قُلْ أَعُوذُ بِرَبِّ ٱلنَّاسِ مَلِكِ ٱلنَّاسِ إِلَٰهِ ٱلنَّاسِ مِن شَرِّ ٱلْوَسْوَاسِ ٱلْخَنَّاسِ ٱلَّذِى يُوَسْوِسُ فِى صُدُورِ ٱلنَّاسِ مِنَ ٱلْجِنَّةِ وَٱلنَّاسِ",
+    "meaning": "Бигӯ: Ба Парвардигори мардум паноҳ мебарам, Подшоҳи мардум, Маъбуди мардум, аз бадии васвасакунандаи пинҳоншаванда, ки дар синаҳои мардум васваса меандозад, аз ҷинҳо ва мардум.",
+    "context": "Дар ривояти Абӯдовуд 5082 ин сура ҳамроҳ бо Ихлос ва Фалақ се бор субҳу шом хонда мешавад.",
+    "sourceUrls": [
+      "https://quran.com/114/1",
+      "https://sunnah.com/abudawud:5082"
+    ],
+    "segments": {
+      "q_surah_114_a1": {
+        "arabicText": "قُلْ أَعُوذُ بِرَبِّ ٱلنَّاسِ",
+        "meaning": "Бигӯ: Ба Парвардигори мардум паноҳ мебарам,"
+      },
+      "q_surah_114_a2": {
+        "arabicText": "مَلِكِ ٱلنَّاسِ",
+        "meaning": "Подшоҳи мардум,"
+      },
+      "q_surah_114_a3": {
+        "arabicText": "إِلَٰهِ ٱلنَّاسِ",
+        "meaning": "Маъбуди мардум,"
+      },
+      "q_surah_114_a4": {
+        "arabicText": "مِن شَرِّ ٱلْوَسْوَاسِ ٱلْخَنَّاسِ",
+        "meaning": "аз бадии васвасакунандаи пинҳоншаванда,"
+      },
+      "q_surah_114_a5": {
+        "arabicText": "ٱلَّذِى يُوَسْوِسُ فِى صُدُورِ ٱلنَّاسِ",
+        "meaning": "ки дар синаҳои мардум васваса меандозад,"
+      },
+      "q_surah_114_a6": {
+        "arabicText": "مِنَ ٱلْجِنَّةِ وَٱلنَّاسِ",
+        "meaning": "аз ҷинҳо ва мардум."
+      }
+    }
+  }
+});
+const isTajik = () => window.TalabI18n?.language() === 'tg';
+function tajikMeaning(x) {
+  const t = Object.prototype.hasOwnProperty.call(tajikDuaMeanings,x.id) ? tajikDuaMeanings[x.id] : null;
+  if (!t || t.arabicText !== x.arabicText || JSON.stringify(t.sourceUrls) !== JSON.stringify((x.sourceRefs||[]).map(s=>s.url))) return null;
+  if (t.segments && (!Array.isArray(x.segments) || Object.keys(t.segments).length !== x.segments.length || !x.segments.every(s=>t.segments[s.id]?.arabicText===s.arabicText))) return null;
+  return t;
+}
+const localizedDua = x => isTajik() ? tajikMeaning(x) : null;
+const title = (x, kind) => kind === 'name' ? x.transliterationRu : kind === 'dua' ? (localizedDua(x)?.title || x.titleRu) : x.titleRu;
+function tajikMeaningStatus() {
+  return '<p class="attribution" lang="tg" data-tg-meaning-status="draft">Тарҷумаи таҳририи маъно ба тоҷикӣ; санҷиши мустақили забонӣ ва динӣ ҳанӯз анҷом наёфтааст. Матни аслӣ тағйир наёфтааст.</p>';
+}
+function duaCategoryEntries(id) {
+  // Morning/evening membership also includes the three surahs, via the existing curated collections.
+  const collection = ['morning','evening'].includes(id) && db.library?.collections?.find(c=>c.id===id);
+  return collection ? collection.entryIds.map(key=>entries.find(x=>x.id===key)).filter(Boolean) : entries.filter(x=>(x.categoryIds||[]).includes(id));
+}
 function initData(d, c) {
   db = d; caliphs = c;
   entries = [...new Map([...d.catalog.entries, ...d.catalog_additions.entries].map(x => [x.id, x])).values()];
@@ -60,13 +220,14 @@ function toggleReview() {
   requestAnimationFrame(() => window.scrollTo(0, previous.scrollY));
 }
 function textSearch(x) {
-  const words = [x.titleRu,x.transliterationRu,x.translationRu,x.meaningRu,x.summaryRu,x.arabicText,x.arabicName,...(x.tagsRu || []),...(x.aliasesRu || []),...(x.searchTerms || []),...(x.sections || []).map(s => s.textRu)];
+  const t = tajikMeaning(x);
+  const words = [t?.title,t?.meaning,x.titleRu,x.transliterationRu,x.translationRu,x.meaningRu,x.summaryRu,x.arabicText,x.arabicName,...(x.tagsRu || []),...(x.aliasesRu || []),...(x.searchTerms || []),...(x.sections || []).map(s => s.textRu)];
   return words.join(' ').toLocaleLowerCase('ru').includes(query.toLocaleLowerCase('ru'));
 }
 function item(x, kind, about = false) {
   const subtitle = about
     ? `${statusName(x.reviewStatus || x.status)} · Экспертная проверка: ${x.expertReview ? 'см. сведения' : 'не отмечена'}`
-    : kind === 'name' ? x.meaningRu : kind === 'dua' ? x.translationRu : x.summaryRu;
+    : kind === 'name' ? x.meaningRu : kind === 'dua' ? (localizedDua(x)?.meaning || x.translationRu) : x.summaryRu;
   return `<button class="item" ${about ? 'data-about' : 'data-open'}="${kind}:${clean(x.id)}">${kind === 'name' ? `<span class="number">${x.number}</span>` : ''}<span class="itembody"><strong>${clean(title(x, kind))}</strong><small>${clean((subtitle || '').slice(0, 140))}${(subtitle || '').length > 140 ? '…' : ''}</small></span>${kind === 'name' ? `<span class="arabicMini" lang="ar" dir="rtl">${clean(x.arabic)}</span>` : '<span class="arrow" aria-hidden="true">›</span>'}</button>`;
 }
 function search() { return `<label class="search"><span aria-hidden="true">⌕</span><input id="search" type="search" aria-label="Найти материал" placeholder="Найти материал…" value="${clean(query)}" autocomplete="off"></label>`; }
@@ -79,9 +240,9 @@ function home() {
 function dua() {
   let cats = [{id:'morning',title:'Утренние азкары'},{id:'evening',title:'Вечерние азкары'},...db.catalog.categories,...db.catalog_additions.categories];
   cats = [...new Map(cats.map(c => [c.id,c])).values()];
-  if (!duaGroup) return `${section('Дуа и азкары')}<p class="lead">Выберите тему. Материалы появятся только внутри выбранного раздела.</p>${search()}${query ? entries.filter(textSearch).map(x=>item(x,'dua')).join('') || empty() : cats.map(c => groupButton(c.id === 'surahs' ? 'Суры для чтения' : (c.titleRu || c.title),'Открыть материалы раздела','data-dua-group',c.id,entries.filter(x=>(x.categoryIds || []).includes(c.id)).length)).join('')}${footer()}`;
+  if (!duaGroup) return `${section('Дуа и азкары')}<p class="lead">Выберите тему. Материалы появятся только внутри выбранного раздела.</p>${search()}${query ? entries.filter(textSearch).map(x=>item(x,'dua')).join('') || empty() : cats.map(c => groupButton(c.id === 'surahs' ? 'Суры для чтения' : (c.titleRu || c.title),'Открыть материалы раздела','data-dua-group',c.id,duaCategoryEntries(c.id).length)).join('')}${footer()}`;
   const category = cats.find(c=>c.id===duaGroup);
-  const a = entries.filter(x => (x.categoryIds || []).includes(duaGroup) && textSearch(x));
+  const a = duaCategoryEntries(duaGroup).filter(textSearch);
   return `${backButton('dua')}${section(duaGroup === 'surahs' ? 'Суры для чтения' : (category?.titleRu || category?.title || 'Дуа'))}${search()}<p class="lead">Материалов: ${a.length}</p>${a.map(x => item(x,'dua')).join('') || empty()}${footer()}`;
 }
 function empty() { return '<p class="empty">Подходящих материалов нет. Попробуйте другой запрос или откройте каталог тем.</p>'; }
@@ -191,9 +352,10 @@ function verseReading(x) {
   const sourceNumber = x.sourceRefs?.find(r => r.collection === 'Коран')?.number || '';
   const surahNumber = x.surahNumber || Number(sourceNumber.split(':')[0]);
   if (!surahNumber || !x.segments.every(s => /_a\d+$/.test(s.id || '') && s.arabicText && s.translationRu)) return '';
+  const t = localizedDua(x);
   const rows = x.segments.map(s => {
     const verseNumber = Number(s.id.match(/_a(\d+)$/)[1]);
-    return `<section class="verse-card" aria-label="Аят ${surahNumber}:${verseNumber}"><div class="verse-heading">Аят ${surahNumber}:${verseNumber}</div><div class="arabic verse-arabic" lang="ar" dir="rtl">${clean(s.arabicText)}</div><p class="verse-translation">${clean(s.translationRu)}</p></section>`;
+    return `<section class="verse-card" aria-label="Аят ${surahNumber}:${verseNumber}"><div class="verse-heading">Аят ${surahNumber}:${verseNumber}</div><div class="arabic verse-arabic" lang="ar" dir="rtl">${clean(s.arabicText)}</div><p class="verse-translation"${t ? ' lang="tg" data-tg-meaning="1"' : ''}>${clean(t?.segments?.[s.id]?.meaning || s.translationRu)}</p>${t ? '<details><summary lang="ru">Русский перевод</summary><p class="verse-translation" lang="ru">'+clean(s.translationRu)+'</p></details>' : ''}</section>`;
   }).join('');
   return `<div class="verse-reader" aria-label="Чтение по аятам"><p class="verse-intro">Текст разделён по аятам для удобного чтения. Перевод передаёт смысл.</p>${rows}</div>`;
 }
@@ -537,13 +699,21 @@ function details(r) {
     html += readingTimingNote(x);
     const excerptContext=excerptContextExplanation(x);
     if(excerptContext) html += `<p class="reading-note" data-supplication-excerpt-context="1"><strong>Границы цитаты:</strong> ${clean(excerptContext)}</p>`;
+    const t = localizedDua(x);
     const verses = verseReading(x);
     html += verses || arabic(x.arabicText);
     html += quranPauseComparison(x);
-    if(x.transliterationRu) { const note = pronunciationExplanation(x); const quranReading = x.transliterationNoteRu ? null : linkedQuranReadingNote(x); html += `<details class="source-inline" open><summary>Транскрипция</summary>${para('',x.transliterationRu)}${note ? `<p class="bodycopy" data-pronunciation-note><strong>Как читать:</strong> ${clean(note)}</p>` : ''}${quranReading ? `<p class="attribution" data-pronunciation-source><a href="${clean(quranReading.referenceUrl)}" target="_blank" rel="noopener noreferrer">${clean(quranReading.referenceLabel || 'Разбор слова: Quranic Arabic Corpus')}</a></p>` : ''}${quranReading?.pauseGuideUrl ? `<p class="attribution" data-pause-source><a href="${clean(quranReading.pauseGuideUrl)}" target="_blank" rel="noopener noreferrer">Общие правила остановки: About Tajweed</a></p>` : ''}</details>`; }
-    if (!verses) html += para('Перевод смысла',x.translationRu);
-    if (x.translationAttribution) html += `<p class="attribution">${clean(brandMetadata(x.translationAttribution).split(' · ')[0])}</p>`;
-    html += para('Контекст',x.contextRu) + para('Пояснение',x.explanationRu);
+    if(x.transliterationRu) { const note = pronunciationExplanation(x); const quranReading = x.transliterationNoteRu ? null : linkedQuranReadingNote(x); html += `<details class="source-inline" open><summary>${t ? 'Транскрипсия (ба русӣ)' : 'Транскрипция'}</summary>${para('',x.transliterationRu)}${note ? `<p class="bodycopy" data-pronunciation-note><strong>Как читать:</strong> ${clean(note)}</p>` : ''}${quranReading ? `<p class="attribution" data-pronunciation-source><a href="${clean(quranReading.referenceUrl)}" target="_blank" rel="noopener noreferrer">${clean(quranReading.referenceLabel || 'Разбор слова: Quranic Arabic Corpus')}</a></p>` : ''}${quranReading?.pauseGuideUrl ? `<p class="attribution" data-pause-source><a href="${clean(quranReading.pauseGuideUrl)}" target="_blank" rel="noopener noreferrer">Общие правила остановки: About Tajweed</a></p>` : ''}</details>`; }
+    if(t) {
+      if(!verses) html += '<h3 class="subheading" lang="tg">Тарҷумаи маъно</h3><p class="bodycopy" lang="tg" data-tg-meaning="1">'+clean(t.meaning)+'</p><details><summary lang="ru">Русский перевод</summary>'+para('',x.translationRu)+'</details>';
+      html += tajikMeaningStatus()+'<h3 class="subheading" lang="tg">Шарҳи кӯтоҳ</h3><p class="bodycopy" lang="tg">'+clean(t.context)+'</p>';
+      html += '<details lang="ru"><summary>Контекст, пояснение и атрибуция (на русском)</summary>'+para('Контекст',x.contextRu)+para('Пояснение',x.explanationRu)+para('Атрибуция русского перевода',brandMetadata(x.translationAttribution))+'</details>';
+    } else {
+      if (!verses) html += para('Перевод смысла',x.translationRu);
+      if (x.translationAttribution) html += `<p class="attribution">${clean(brandMetadata(x.translationAttribution).split(' · ')[0])}</p>`;
+      html += para('Контекст',x.contextRu) + para('Пояснение',x.explanationRu);
+      if(isTajik()) html += '<p class="attribution" lang="tg">Тарҷумаи тоҷикӣ ҳанӯз омода нест; матни русӣ нишон дода шудааст.</p>';
+    }
     const stages = x.repetitionRule?.stages; const goal = stages?.length === 1 ? stages[0].count : null;
     if (x.excerptKind !== 'dhikr_instruction') html += `<div class="counter"><button data-count="minus" aria-label="Уменьшить">−</button><strong id="countValue">${counts[key] || 0}</strong><button data-count="plus" aria-label="Увеличить">+</button></div><p class="lead" style="text-align:center">${goal ? `Счётчик повторений · ${goal} по указанному источнику` : 'Учебный счётчик: число повторений здесь не предписано'}</p><button class="action" data-count="reset">Сбросить счётчик</button>`;
     if(stages?.length > 1) html += para('Порядок повторений',stages.map(s => `${s.labelRu}: ${s.count} раз`).join('\n'));
@@ -605,7 +775,7 @@ document.addEventListener('click',async e => {
   if(b.dataset.open || b.dataset.about) { show(b.dataset.open || b.dataset.about,!!b.dataset.about); return; }
   if(b.dataset.fav) { const k = b.dataset.fav, next = favs.includes(k) ? favs.filter(v=>v!==k) : [...favs,k]; if(save('favs',next)) { favs=next; refreshDetail(); if(tab==='favorites') render(); } return; }
   if(b.dataset.count && active) { const k=active.key; const next={...counts,[k]:b.dataset.count==='reset'?0:Math.max(0,(counts[k]||0)+(b.dataset.count==='plus'?1:-1))}; if(save('counts',next)) {counts=next;$('#countValue').textContent=counts[k];} return; }
-  if(b.dataset.copy && active) { const x=active.data;const text=[title(x,active.kind),x.arabicText||x.arabic,x.transliterationRu,x.translationRu||x.meaningRu,x.summaryRu,...(x.sections||[]).map(s=>[s.titleRu,s.textRu].filter(Boolean).join('\n'))].filter(Boolean).join('\n\n');try{await navigator.clipboard.writeText(text);b.textContent='✓ Скопировано';}catch{b.textContent='Копирование недоступно';} }
+  if(b.dataset.copy && active) { const x=active.data;const text=[title(x,active.kind),x.arabicText||x.arabic,x.transliterationRu,(active.kind==='dua'&&localizedDua(x)?.meaning)||x.translationRu||x.meaningRu,x.summaryRu,...(x.sections||[]).map(s=>[s.titleRu,s.textRu].filter(Boolean).join('\n'))].filter(Boolean).join('\n\n');try{await navigator.clipboard.writeText(text);b.textContent='✓ Скопировано';}catch{b.textContent='Копирование недоступно';} }
 });
 document.addEventListener('input',e => { if(e.target.id==='search') { const start=e.target.selectionStart, end=e.target.selectionEnd; query=e.target.value; render(); const el=$('#search'); el.focus({preventScroll:true}); if(start!==null && end!==null) el.setSelectionRange(start,end); } });
 document.addEventListener('keydown',e => {

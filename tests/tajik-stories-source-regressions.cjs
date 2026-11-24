@@ -61,3 +61,21 @@ for(const stem of ['wudu-steps','salah-steps','arabic-reading-signs']){
  assert.equal((r.match(/<details>/g)||[]).length,(g.match(/<details>/g)||[]).length,stem+' FAQs changed');
  assert(g.includes('бозбинии мустақили'));
 }
+
+// Editorial meanings are bound to exact source text and source links.
+const catalog=JSON.parse(fs.readFileSync('data/content.json','utf8'));
+const duaRecords=[...catalog.catalog.entries,...catalog.catalog_additions.entries];
+const meanings=JSON.parse(fs.readFileSync('app.js','utf8').match(/const tajikDuaMeanings = Object\.freeze\((\{[\s\S]*?\})\);/)[1]);
+const dailyIds=[...new Set(catalog.library.collections.filter(c=>['morning','evening'].includes(c.id)).flatMap(c=>c.entryIds))].sort();
+assert.deepEqual(Object.keys(meanings).sort(),dailyIds);
+for(const [id,m] of Object.entries(meanings)){
+ const e=duaRecords.find(x=>x.id===id);
+ assert.equal(m.arabicText,e.arabicText);
+ assert.deepEqual(m.sourceUrls,e.sourceRefs.map(s=>s.url));
+ assert(m.title && m.meaning && m.context);
+ if(m.segments){
+  assert.deepEqual(Object.keys(m.segments),e.segments.map(s=>s.id));
+  for(const s of e.segments) assert.equal(m.segments[s.id].arabicText,s.arabicText);
+ }
+}
+console.log('PASS: 8 Tajik morning/evening meanings, exact Arabic and source guards, 15 verse translations');
