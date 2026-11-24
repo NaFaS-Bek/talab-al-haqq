@@ -3,43 +3,31 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const source=fs.readFileSync('stories-tg.html','utf8');
 const ru=fs.readFileSync('stories.html','utf8');
-const original=[...ru.matchAll(/<article class="story" id="([^"]+)" data-story="([^"]+)"/g)].map(x=>x[1]);
-const blocks=[...source.matchAll(/<article class="story" id="([^"]+)"[\s\S]*?<\/article>/g)];
+const blocks=s=>[...s.matchAll(/<article class="story" id="([^"]+)"[\s\S]*?<\/article>/g)];
+const original=blocks(ru),translated=blocks(source);
 assert.equal(original.length,18);
-assert.deepEqual(blocks.map(b=>b[1]),['story-yusuf','story-musa','story-ibrahim','story-maryam','story-luqman','story-nuh','story-ayyub','story-yunus','story-zakariya','story-ibrahim-father','story-musa-well','story-sulayman-ant','story-saba-queen','story-musa-harun','story-cave-youths'],'Tajik batch must map to fifteen original stories');
+assert.equal(translated.length,18);
+assert.deepEqual(translated.map(x=>x[1]),original.map(x=>x[1]),'All stories must map in original order');
 assert.match(source,/<html lang="tg">/);
-assert.match(source,/<h1>Қиссаҳои ибратомӯз<\/h1>/);
+assert.match(source,/Ҳамаи 18 қисса ба тоҷикӣ дастрасанд/);
 assert.match(source,/бозгӯии мустақили маънои оятҳо/);
 assert.match(source,/ташхиси мустақили коршиносон анҷом наёфтааст/);
-assert.match(source,/3 қиссаи дигар/);
-assert(source.includes('href="stories.html"'),'Tajik readers must be told how to reach remaining Russian originals');
-const sources={
- 'story-yusuf':['12/89','12/90','12/91','12/92'],
- 'story-musa':['28/7','28/8','28/9','28/10','28/11','28/12','28/13'],
- 'story-ibrahim':['2/125','2/127','2/128','2/129'],
- 'story-maryam':["3/35","3/36","3/37"],
- 'story-luqman':["31/12","31/13","31/14","31/15","31/16","31/17","31/18","31/19"],
- 'story-nuh':["11/42","11/43","11/45","11/46","11/47"],
- 'story-ayyub':["21/83","21/84"],
- 'story-yunus':["37/139","37/142","21/87","21/88"],
- 'story-zakariya':["19/2","19/3","19/4","19/5","19/6","19/7","19/8","19/9"],
- 'story-ibrahim-father':["19/41","19/42","19/43","19/44","19/45","19/46","19/47","19/48"],
- 'story-musa-well':["28/22","28/23","28/24","28/25","28/26","28/27","28/28"],
- 'story-sulayman-ant':["27/17","27/18","27/19"],
- 'story-saba-queen':["27/29","27/30","27/32","27/35","27/44"],
- 'story-musa-harun':["20/25","20/27","20/29","20/30","20/32","20/36","20/42","20/44","20/46"],
- 'story-cave-youths':["18/10","18/11","18/13","18/14","18/16","18/19","18/21","18/22"]
-};
-for(const [html,id] of blocks){
+assert(source.includes('href="stories.html"'));
+const refs=(html,pattern)=>[...new Set([...html.matchAll(pattern)].map(x=>x[1]))].sort();
+for(const [i,[html,id]] of translated.entries()){
+ const base=original[i][0];
  assert(html.includes('Хулосаҳои таҳрирӣ'),id+' missing editorial lessons');
  assert(html.includes('Мақом: бозгӯӣ дар сатҳи таҳрирӣ'),id+' missing status');
- const actual=[...new Set([...html.matchAll(/href="https:\/\/quran\.com\/(\d+\/\d+)"/g)].map(m=>m[1]))].sort();
- assert.deepEqual(actual,sources[id].slice().sort(),id+' Quran verses changed');
- const ruBlock=ru.match(new RegExp('<article class="story" id="'+id+'"[\\s\\S]*?</article>'))[0];
- const ruRefs=[...new Set([...ruBlock.matchAll(/href="https:\/\/quran\.com\/(\d+\/\d+)"/g)].map(m=>m[1]))].sort();
- assert.deepEqual(actual,ruRefs,id+' must preserve original Quran references');
  assert(source.includes('href="#'+id+'"'),id+' missing navigation');
- assert(!html.includes('https://sunnah.com/'),id+' Quran-only story must not import other narrations');
+ assert.equal((source.match(new RegExp('id="'+id+'"','g'))||[]).length,1,id+' duplicate ID');
+ assert.deepEqual(refs(html,/href="https:\/\/quran\.com\/(\d+\/\d+)"/g),refs(base,/href="https:\/\/quran\.com\/(\d+\/\d+)"/g),id+' Quran reference mismatch');
+ assert.deepEqual(refs(html,/href="https:\/\/sunnah\.com\/([^"]+)"/g),refs(base,/href="https:\/\/sunnah\.com\/([^"]+)"/g),id+' hadith reference mismatch');
+ if(id!=='story-abubakr')assert(html.includes('Сарчашмаҳо: танҳо Қуръон.'));
 }
-console.log('PASS: fifteen original Tajik Quran story retellings, same verse references and transparency');
+const abu=translated.find(x=>x[1]==='story-abubakr')[0];
+assert(abu.includes('Дар худи оят номи ҳамсафар зикр нашудааст.'));
+assert(abu.includes('арзёбии мустақили иснодро анҷом надодааст'));
+assert.deepEqual(refs(abu,/href="https:\/\/sunnah\.com\/([^"]+)"/g),['bukhari:3653']);
+assert(translated.find(x=>x[1]==='story-musa-servant')[0].includes('ба одамони одӣ ҳуқуқ намедиҳад'));
+console.log('PASS: 18 Tajik stories, matching order, Quran and hadith sources, navigation and editorial disclosures');
 console.log('NOT CERTIFIED: independent literary Tajik and theological proofreading');
