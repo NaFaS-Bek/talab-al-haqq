@@ -574,3 +574,12 @@ console.log('PASS: additional bilingual verse refinements');
   const e=entries.find(x=>x.id===id);assert.equal(e.segments.map(s=>tg[id].segments[s.id].meaning).join(' '),tg[id].meaning);
  }
 }
+
+// Targeted editorial corrections for connected reading and supplied narrative verbs.
+{
+ const entries=[...db.catalog.entries,...db.catalog_additions.entries];
+ for(const [id,field,before,after] of [["q_2_127_128","transliterationRu","умматан муслиматан ляк.","умматам-муслиматал-ляк."],["q_5_114","transliterationRu","‘идан ли-аввалина","‘идал-ли-аввалина"],["q_21_87","translationRu","И Зун-Нуна, когда","И [помяни] Зун-Нуна, когда"],["q_21_89","translationRu","И Закарию, когда","И [помяни] Закарию, когда"]]){
+  const e=entries.find(x=>x.id===id);assert(e,id);assert(e[field].includes(after),id);assert(!e[field].includes(before),id);
+  assert.equal(e.segments.map(s=>s[field]).join(' '),e[field],id);
+ }
+}
