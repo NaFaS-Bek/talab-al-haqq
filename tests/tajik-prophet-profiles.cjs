@@ -525,3 +525,11 @@ for (const item of [
  assert(ru.includes(item.ru),item.id+':'+item.verse+':ru');assert(tg.includes(item.tg),item.id+':'+item.verse+':tg');
 }
 console.log('PASS: additional bilingual verse refinements');
+
+// Hadith-specific bilingual editorial refinements.
+{
+ const p=prophets.find(p=>p.id==='prophet_muhammad'),tr=ctx.resolve(p);assert(tr);
+ for(const [id,ru,tg] of [["death","опираясь на неё","ба ӯ такя карда буд"],["dua","помощи придерживаться его","устувор мондан дар он"]]){
+  assert(p.sections.find(s=>s.id===id).textRu.includes(ru));assert(tr.sections.find(s=>s.id===id).text.includes(tg));
+ }
+}
