@@ -186,3 +186,68 @@ console.log('PASS site-wide static integrity; NOT CERTIFIED: external URLs, runt
  assert.equal(context.readingSchemeInfo({id:'__unknown__'}),'');
  console.log('PASS: 43 exact bilingual reading notes, Russian original, language switch and stale/missing translation fallback');
 }
+
+ // Tajik learning-card snapshot contract: foundations and existing prophets.
+{
+ const vm=require('node:vm');
+ const db=JSON.parse(fs.readFileSync('data/content.json','utf8'));
+ const dict=app.match(/const tajikLibraryProfiles = Object\.freeze\((\{[\s\S]*?\n\})\);/);
+ assert(dict,'Tajik library dictionary missing');
+ const profiles=JSON.parse(dict[1]);
+ const cards=db.library.items;
+ assert.equal(cards.filter(x=>x.kind==='family').length,18);
+ assert.equal(cards.filter(x=>x.kind==='prayer').length,20);
+ assert.equal(Object.keys(profiles).length,75);
+ assert.equal(cards.filter(x=>x.kind==='basics').length,5);
+ assert.equal(cards.filter(x=>x.kind==='prophet').length,25);
+ assert.equal(cards.filter(x=>x.kind==='surah').length,7);
+ assert.equal(cards.length,75);
+ const functions=app.slice(app.indexOf('function libraryProfileSnapshot(p)'),app.indexOf('const localizedLibrary='));
+ assert(functions.startsWith('function libraryProfileSnapshot(p)'));
+ const ctx=vm.createContext({});
+ vm.runInContext('const tajikLibraryProfiles = Object.freeze('+JSON.stringify(profiles)+');\n'+functions,ctx);
+ for(const card of cards){
+  const t=ctx.tajikLibraryProfile(card);
+  assert(t&&t.title.trim()&&t.summary.trim(),card.id+': missing translation');
+  assert.deepEqual(Array.from(t.sections,s=>s.id),card.sections.map(s=>s.id),card.id+': sections');
+  assert(t.sections.every(s=>s.title.trim()&&s.text.trim()),card.id+': empty section');
+  assert.equal(ctx.tajikLibraryProfile({...card,summaryRu:card.summaryRu+' [changed]'}),null,card.id+': stale original');
+  const sections=JSON.parse(JSON.stringify(card.sections));
+  sections[0].sourceRefs[0].url+='?changed=1';
+  assert.equal(ctx.tajikLibraryProfile({...card,sections}),null,card.id+': stale source');
+ }
+ assert.equal(ctx.tajikLibraryProfile({id:'__unknown__',sections:[]}),null);
+ console.log('PASS: 75 Tajik learning cards, all sections and stale source fallback; not an expert translation certification');
+}
+
+// Additional library fields must match the exact source and preserve Russian fallback.
+{
+ const vm=require('node:vm');
+ const db=JSON.parse(fs.readFileSync('data/content.json','utf8'));
+ const start=app.indexOf('const tajikLibraryExtras = Object.freeze(');
+ const end=app.indexOf('const localizedLibrary=',start);
+ assert(start>=0&&end>start);
+ const ctx=vm.createContext({});
+ vm.runInContext(app.slice(start,end),ctx);
+ let count=0;
+ for(const [file,key] of [['details','detailsRu'],['rulings','rulingRu'],['traditions','traditionRu']]){
+  const draft=JSON.parse(fs.readFileSync('docs/tajik-library-'+file+'-draft.json','utf8'));
+  for(const [id,sections] of Object.entries(draft)) for(const [sid,v] of Object.entries(sections)){
+   const p=db.library.items.find(x=>x.id===id);const s=p.sections.find(x=>x.id===sid);
+   assert.equal(s[key],v.original);assert.equal(ctx.libraryExtra(p,s,key,true),v.translation);assert.equal(ctx.libraryExtra(p,s,key,false),v.original);
+   assert.equal(ctx.libraryExtra(p,{...s,[key]:v.original+' changed'},key,true),v.original+' changed');count++;
+  }
+ }
+ assert.equal(count,350);console.log('PASS: 350 additional Tajik library fields and exact Russian fallback');
+}
+
+// Source UI localization preserves Arabic and exact destination.
+{
+ const vm=require('node:vm');const ctx={language:'tg',clean:s=>String(s),brandMetadata:s=>s};ctx.isTajik=()=>ctx.language==='tg';vm.createContext(ctx);
+ vm.runInContext(app.slice(app.indexOf('function arabic(v)'),app.indexOf('function sourceById(id)'))+app.slice(app.indexOf('function sourceCard(r)'),app.indexOf('function inlineSources(ids)')),ctx);
+ const source={reference:'Exact original',locationRu:'Русский оригинал',arabicText:'بِسْمِ اللَّهِ',url:'https://example.org/source'};
+ const tg=ctx.sourceCard(source);assert(tg.includes('Нашр')&&tg.includes('Ҷой дар сарчашма')&&tg.includes('Матни аслӣ дар сомонаи сарчашма'));
+ ctx.language='ru';const ru=ctx.sourceCard(source);assert(ru.includes('Издание')&&ru.includes('Оригинал на сайте источника'));
+ for(const h of [tg,ru]){assert(h.includes(source.reference)&&h.includes(source.locationRu)&&h.includes(source.arabicText)&&h.includes(source.url));assert(h.includes('lang="ar" dir="rtl"'));}
+ console.log('PASS: localized source labels, preserved Arabic and citation URL');
+}
