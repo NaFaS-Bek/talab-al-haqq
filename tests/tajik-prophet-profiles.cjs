@@ -6,12 +6,12 @@ assert(start>=0&&end>start);
 const ctx=vm.createContext({isTajik:()=>true});
 vm.runInContext(app.slice(start,end)+'\nthis.resolve=tajikLibraryProfile;this.localize=localizedLibrary;',ctx);
 const prophets=db.library.items.filter(p=>p.kind==='prophet');
-assert.equal(prophets.length,25);assert.equal(prophets.filter(ctx.resolve).length,12);
-for(const id of ["prophet_adam","prophet_idris","prophet_nuh","prophet_hud","prophet_salih","prophet_ibrahim","prophet_lut","prophet_ismail","prophet_ishaq","prophet_yaqub","prophet_yusuf","prophet_ayyub"]){const p=prophets.find(x=>x.id===id),t=ctx.resolve(p);assert(t);assert.equal(t.sections.length,p.sections.length);for(const [i,s] of p.sections.entries()){assert.equal(t.sections[i].id,s.id);assert(t.sections[i].title&&t.sections[i].text);}for(const mutate of [p=>p.summaryRu+='x',p=>p.sections[0].sourceRefs[0].url+='x',p=>p.sections.reverse(),p=>p.duaEntryIds.push('changed')]){const clone=JSON.parse(JSON.stringify(p));mutate(clone);assert.equal(ctx.resolve(clone),null);}}
+assert.equal(prophets.length,25);assert.equal(prophets.filter(ctx.resolve).length,15);
+for(const id of ["prophet_adam","prophet_idris","prophet_nuh","prophet_hud","prophet_salih","prophet_ibrahim","prophet_lut","prophet_ismail","prophet_ishaq","prophet_yaqub","prophet_yusuf","prophet_ayyub","prophet_shuayb","prophet_musa","prophet_harun"]){const p=prophets.find(x=>x.id===id),t=ctx.resolve(p);assert(t);assert.equal(t.sections.length,p.sections.length);for(const [i,s] of p.sections.entries()){assert.equal(t.sections[i].id,s.id);assert(t.sections[i].title&&t.sections[i].text);}for(const mutate of [p=>p.summaryRu+='x',p=>p.sections[0].sourceRefs[0].url+='x',p=>p.sections.reverse(),p=>p.duaEntryIds.push('changed')]){const clone=JSON.parse(JSON.stringify(p));mutate(clone);assert.equal(ctx.resolve(clone),null);}}
 assert(ctx.resolve(prophets.find(x=>x.id==='prophet_nuh')).sections[3].text.includes('ба давомнокии умумии муайяншудаи умр'));
 ctx.isTajik=()=>false;assert.equal(ctx.localize(prophets[0]),null);
 assert(app.includes('data-tg-prophet-progress'));assert(app.includes('data-tg-library-profile'));
-console.log('PASS: twelve guarded prophet biographies; original source references and order retained');
+console.log('PASS: fifteen guarded prophet biographies; original source references and order retained');
 
 ctx.isTajik=()=>true;
 const hud=ctx.resolve(prophets.find(p=>p.id==='prophet_hud')),salih=ctx.resolve(prophets.find(p=>p.id==='prophet_salih')),ibrahim=ctx.resolve(prophets.find(p=>p.id==='prophet_ibrahim'));
@@ -37,3 +37,10 @@ assert(yusuf.sections[4].text.includes('хоҳиши марги фаврӣ'));
 assert(ayyub.sections[2].text.includes('Ин тавсифи усули умумии худтабобаткунӣ'));
 assert(ayyub.sections[4].text.includes('ваъдаи шифо дар муҳлати муайян'));
 console.log('PASS: Yaqub, Yusuf, Ayyub and source boundaries');
+
+const shuayb=ctx.resolve(prophets.find(p=>p.id==='prophet_shuayb')),musa=ctx.resolve(prophets.find(p=>p.id==='prophet_musa')),harun=ctx.resolve(prophets.find(p=>p.id==='prophet_harun'));
+assert(shuayb.sections[3].text.includes('дар 28:23 номи ӯ оварда нашудааст'));
+assert(musa.sections[2].text.includes('ҳамчун ҳунари ҷодугарие тасвир намешаванд'));
+assert(harun.sections[1].text.includes('набояд ба айбдор кардани Ҳорун дар парастиши гӯсола'));
+assert(harun.sections[4].text.includes('Ин дуое нест, ки Ҳорун гуфта бошад'));
+console.log('PASS: Shuayb, Musa, Harun and source boundaries');
