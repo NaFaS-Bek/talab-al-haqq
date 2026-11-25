@@ -98,10 +98,10 @@ assert(index.includes('<a href="stories.html">'),'No-JS fallback link must remai
 const releaseMatch=sw.match(/^const RELEASE = (\{[^\r\n]+\});/m);
 assert(releaseMatch,'Offline PWA release must be prepared');
 const release=JSON.parse(releaseMatch[1]);
-assert.equal(Object.keys(release.resources).length,57,'57 offline assets expected');
-for(const p of ['family-rights-tg.html','family-nikah-tg.html','family-mahr-tg.html','family-children-tg.html','family-child-rights-tg.html','family-parent-duties-tg.html','family-custody-tg.html']) assert(/^[0-9a-f]{64}$/.test(release.resources[p]||''),'Missing family translation SHA-256: '+p);
+assert.equal(Object.keys(release.resources).length,58,'58 offline assets expected');
+for(const p of ['family-rights-tg.html','family-nikah-tg.html','family-mahr-tg.html','family-children-tg.html','family-child-rights-tg.html','family-parent-duties-tg.html','family-custody-tg.html','family-child-safety-tg.html']) assert(/^[0-9a-f]{64}$/.test(release.resources[p]||''),'Missing family translation SHA-256: '+p);
 for(const p of ['stories.html','app.js','index.html']){
  assert(/^[0-9a-f]{64}$/.test(release.resources[p]||''),'Missing SHA-256 for '+p);
 }
-console.log('PASS: eighteen source-grounded stories, Quran/hadith distinction, source URLs, filters, navigation and 57-asset PWA');
+console.log('PASS: eighteen source-grounded stories, Quran/hadith distinction, source URLs, filters, navigation and 58-asset PWA');
 console.log('NOT CERTIFIED: independent exegetical, isnad, Arabic, translation or theological review');
