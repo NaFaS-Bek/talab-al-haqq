@@ -592,3 +592,13 @@ console.log('PASS: additional bilingual verse refinements');
   assert.equal(e.segments.map(s=>s.transliterationRu).join(' '),e.transliterationRu,id);
  }
 }
+
+// Waqf/wasl guidance: punctuation is not a binding stop mark.
+{
+ const entries=[...db.catalog.entries,...db.catalog_additions.entries];
+ for(const [id,note] of [["q_2_127_128"," В 2:127 при слитном чтении после وَإِسْمَٰعِيلُ сохраняется окончание «у». В 2:128 подсказка «ляк» относится к остановке на لَّكَ; при продолжении — «ляка». Пунктуация русской подсказки не устанавливает места обязательной остановки."],["q_71_28"," После وَٱلْمُؤْمِنَٰتِ при остановке — «муъминат», при продолжении — «муъминати». В конце аята تَبَارًا при остановке произносится с долгим «а», без конечного «н»."],["h_bukhari_6369"," Подсказки «хазан», «касаль», «бухль», «риджаль» приведены для остановки. При слитном чтении соответствующие слова имеют окончание «и»: «хазани», «касали», «бухли», «риджали». Запятые обозначают деление для удобства чтения, а не обязательные паузы."],["q_12_101"," В слове ٱلْـَٔاخِرَةِ при остановке окончание ة произносится как мягкий придыхательный звук ه без гласной, при продолжении — «ти» (аль-ахирати). Кириллическая подсказка не передаёт все арабские звуки."]]){
+  const e=entries.find(x=>x.id===id);assert(e,id);assert(e.transliterationScheme.endsWith(note),id);
+  assert.equal(e.segments.map(s=>s.transliterationRu).join(' '),e.transliterationRu,id);
+ }
+ const e=entries.find(x=>x.id==='q_2_127_128');assert(e.transliterationRu.includes('ва Исма‘илу раббана'));assert(!e.transliterationRu.includes('ва Исма‘ил. Раббана'));
+}
