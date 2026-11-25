@@ -77,6 +77,26 @@ const assert=require('node:assert/strict');
         await source.locator('[data-tg-reading-note] details > summary').click();
         assert.match(await source.locator('[data-tg-reading-note] details .bodycopy').innerText(),/транскрипция/);
         await source.locator(':scope > summary').click();
+        if(id==='q_71_28'){
+          // Verify the actual Russian reader as well as the nested Russian original in Tajik mode.
+          const arabicBefore=await page.locator('#detail .arabic').allTextContents();
+          await page.keyboard.press('Escape');
+          await page.locator('#talab-lang-switch [data-language="ru"]').click();
+          await page.locator('[data-open="dua:'+id+'"]').click();
+          const ruSource=page.locator('#detail #materialSource');
+          await ruSource.locator(':scope > summary').click();
+          assert.equal(await ruSource.locator('[data-tg-reading-note]').count(),0,id);
+          assert.match(await ruSource.innerText(),/Муъминан ва/i,id);
+          assert.deepEqual(await page.locator('#detail .arabic').allTextContents(),arabicBefore,id+': Arabic unchanged');
+          await page.keyboard.press('Escape');
+          await page.locator('#talab-lang-switch [data-language="tg"]').click();
+          await page.locator('[data-open="dua:'+id+'"]').click();
+          const tgSource=page.locator('#detail #materialSource');
+          await tgSource.locator(':scope > summary').click();
+          assert.equal(await tgSource.locator('[data-tg-reading-note]').count(),1,id);
+          assert.deepEqual(await page.locator('#detail .arabic').allTextContents(),arabicBefore,id+': Arabic unchanged after round trip');
+          await tgSource.locator(':scope > summary').click();
+        }
         if(['q_7_23','q_21_87','q_20_25_28','q_27_19','q_5_114'].includes(id)) assert.equal(await page.locator('#detail [data-narrative-boundary]').count(),1);
         await page.keyboard.press('Escape');
       }
