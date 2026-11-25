@@ -314,6 +314,15 @@ const assert=require('node:assert/strict');
       await page.locator('#talab-lang-switch [data-language="tg"]').click();
       await page.waitForURL('**/family-prophetic-example-tg.html#section-5');
       assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2),true,'No prophetic example overflow');
+      await page.locator('#related a[href="family-difficult-passages-tg.html#difficult-4"]').click();
+      await page.waitForURL('**/family-difficult-passages-tg.html#difficult-4');
+      assert.equal(await page.locator('html').getAttribute('lang'),'tg');
+      assert.equal(await page.locator('#difficult-7 details').count(),5);
+      await page.locator('#talab-lang-switch [data-language="ru"]').click();
+      await page.waitForURL('**/family-difficult-passages.html#difficult-4');
+      await page.locator('#talab-lang-switch [data-language="tg"]').click();
+      await page.waitForURL('**/family-difficult-passages-tg.html#difficult-4');
+      assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2),true,'No difficult passages overflow');
       assert.deepEqual(errors,[],'Browser errors during locale switch');
       await page.close();
     }

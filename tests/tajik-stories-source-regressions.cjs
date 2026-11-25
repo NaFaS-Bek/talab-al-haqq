@@ -182,7 +182,7 @@ assert.match(nameMeanings.name_099.basis,/шумораи такрор/);
  assert.match(g,/<html lang="tg">/);
  for(const phrase of ['на идомаи сухани мустақими Луқмон','Ин дарс ҷазои ҷисмониро тавсия намедиҳад','на иҷмои собитшуда','Тавсияҳои тиббӣ ва тафсири динӣ-фиқҳии ҳадис ду навъи гуногуни сарчашмаанд','меъёри динӣ нестанд','Бозбинии мустақили забонӣ ва динӣ ҳанӯз анҷом наёфтааст']) assert(g.includes(phrase),phrase);
  assert(g.includes('href="family-child-safety-tg.html#safety-3" hreflang="tg"'));
- assert(g.includes('href="family-difficult-passages.html#difficult-5" hreflang="ru"'));
+ assert(g.includes('href="family-difficult-passages-tg.html#difficult-5" hreflang="tg"'));
  assert(r.includes('href="family-children-tg.html"'));
  for(const p of ['family-rights-tg.html','family-nikah-tg.html','family-mahr-tg.html','family-children-tg.html']) if(p!=='family-children-tg.html') assert(fs.readFileSync(p,'utf8').includes('href="family-children-tg.html" hreflang="tg"'));
  const m=JSON.parse(fs.readFileSync('sw.js','utf8').match(/^const RELEASE = (\{[^\r\n]+\});/m)[1]);
@@ -239,7 +239,7 @@ assert.match(nameMeanings.name_099.basis,/шумораи такрор/);
  for(const phrase of ['Махфияти мутлақро ваъда надиҳед','Ҳангоми таҳдиди бевосита ба ҳаёт ва саломатӣ','тасвирҳоро нафиристед, нашр накунед ва паҳн накунед','ҷойгузини ҳифзи касбӣ ё тафтишот нест','Ин сарчашмаи таърихию динӣ аст','Бозбинии мустақили забонӣ ва динӣ ҳанӯз анҷом наёфтааст']) assert(g.includes(phrase),phrase);
  for(const p of ['family-rights-tg.html','family-children-tg.html','family-child-rights-tg.html','family-parent-duties-tg.html','family-custody-tg.html']) assert(fs.readFileSync(p,'utf8').includes('href="family-child-safety-tg.html" hreflang="tg"'));
  assert(g.includes('href="family-children-tg.html#section-5" hreflang="tg"'));
- assert(g.includes('href="family-difficult-passages.html#difficult-5" hreflang="ru"'));
+ assert(g.includes('href="family-difficult-passages-tg.html#difficult-5" hreflang="tg"'));
  console.log('PASS: Tajik child safety, source/anchor parity, reporting, confidentiality and evidence boundaries');
 }
 
@@ -282,11 +282,23 @@ assert.match(nameMeanings.name_099.basis,/шумораи такрор/);
   assert(g.includes('Бозбинии мустақили забонӣ ва динӣ ҳанӯз анҷом наёфтааст'),stem);
   assert(g.includes('href="'+stem+'.html"'));assert(r.includes('href="'+stem+'-tg.html"'));
   assert(/^[0-9a-f]{64}$/.test(manifest.resources[stem+'-tg.html']||''),stem);
-  assert(!/href="family-[^"]+\.html(?:#[^"]+)?" hreflang="ru"/g.test(g.replace(/<header>[\s\S]*?<\/header>/,'' ).replace(/href="family-difficult-passages\.html(?:#[^"]+)?" hreflang="ru"/g,'')),stem+' translated lesson still linked in Russian');
+  assert(!/href="family-[^"]+\.html(?:#[^"]+)?" hreflang="ru"/g.test(g.replace(/<header>[\s\S]*?<\/header>/,'' )),stem+' translated lesson still linked in Russian');
  }
  const g=fs.readFileSync('family-prophetic-example-tg.html','utf8');
  assert.equal(urls(g).length,6);assert.equal((g.match(/<details>/g)||[]).length,2);
  assert(g.includes('на саҳнаи дақиқи таърихӣ'));
- assert(g.includes('href="family-difficult-passages.html#difficult-4" hreflang="ru"'));
+ assert(g.includes('href="family-difficult-passages-tg.html#difficult-4" hreflang="tg"'));
  console.log('PASS: eleven main family pages paired; sources, anchors, questions, navigation and review disclosure retained');
+}
+
+{
+ const r=fs.readFileSync('family-difficult-passages.html','utf8'),g=fs.readFileSync('family-difficult-passages-tg.html','utf8');
+ const urls=s=>[...s.matchAll(/href="(https?:\/\/[^"]+)"/g)].map(x=>x[1]);
+ const ids=s=>[...s.matchAll(/\bid="([^"]+)"/g)].map(x=>x[1]);
+ assert.deepEqual(urls(g),urls(r));assert.equal(urls(g).length,24);
+ assert.deepEqual(ids(g),ids(r));assert.equal((g.match(/<details>/g)||[]).length,5);
+ assert.equal((g.match(/<li>/g)||[]).length,4);
+ for(const phrase of ['на «мавқеи ҳамаи шиён»','«ҳасан саҳеҳ» аз ҷониби Албонӣ','саҳеҳии ривоятҳои дахлдорро зери суол мегузорад','СҶТ сарчашмаи тиббӣ аст, на муҳаддис ва на муфтӣ','на дарси ёздаҳум','Бозбинии мустақили забонӣ ва динӣ ҳанӯз анҷом наёфтааст']) assert(g.includes(phrase),phrase);
+ for(const p of ["family-rights-tg.html","family-children-tg.html","family-child-safety-tg.html","family-prophetic-example-tg.html"]) assert(fs.readFileSync(p,'utf8').includes('href="family-difficult-passages-tg.html#'));
+ console.log('PASS: Tajik difficult family passages supplement, attribution and evidence/safety boundaries');
 }
