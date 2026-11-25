@@ -11,9 +11,9 @@ for(const [i,s] of original.sections.entries()){assert.equal(t.sections[i].id,s.
 for(const mutate of [x=>x.summaryRu+='x',x=>x.sections[0].sourceIds.push('unknown'),x=>x.sections[5].views[0].tradition='unknown',x=>x.sections[6].views[0].textRu+='x',x=>x.sections.reverse()]){
  const changed=JSON.parse(JSON.stringify(original));mutate(changed);assert.equal(ctx.resolve(changed),null);
 }
-assert.equal(db.profiles.filter(ctx.resolve).length,4);ctx.isTajik=()=>false;assert.equal(ctx.localized(original),null);
+assert.equal(db.profiles.filter(ctx.resolve).length,5);ctx.isTajik=()=>false;assert.equal(ctx.localized(original),null);
 assert(app.includes('inlineSources(v.sourceIds)'));assert(app.includes('inlineSources(s.sourceIds)'));assert(app.includes('data-tg-caliph-profile'));
-console.log('PASS: four complete guarded Tajik biographies, section and attributed-view parity');
+console.log('PASS: five complete guarded Tajik biographies, section and attributed-view parity');
 
 ctx.isTajik=()=>true;
 const umar=db.profiles.find(x=>x.id==='person_umar'),ut=ctx.resolve(umar);
@@ -39,3 +39,13 @@ for(const mutate of [x=>x.sections[4].textRu+='x',x=>x.sections[4].views[2].sour
 assert(at.sections[4].uncertainty.includes('Муслим 2408a'));
 assert(at.sections[13].text.includes('довудии буҳра'));
 console.log('PASS: Ali biography, uncertainty, Ghadir attribution and imamate numbering');
+
+const hasan=db.profiles.find(x=>x.id==='person_hasan'),ht=ctx.resolve(hasan);
+assert(ht);assert.equal(ht.sections.length,14);assert.equal(ht.sections.flatMap(s=>s.views||[]).length,3);
+assert(ht.hasanStatusNote.includes('баъзан халифаи панҷуми рошид'));
+assert(ht.sections[7].text.includes('Абӯбакра дар ин ҷо саҳобии дигар аст'));
+assert(ht.sections[10].views[1].title.includes('низорӣ'));
+assert(ht.sections[10].views[2].title.includes('довудии буҳра'));
+for(const mutate of [x=>x.hasanStatusNoteRu+='x',x=>x.hasanStatusSourceIds.reverse(),x=>x.sections[10].views[2].sourceIds.push('unknown'),x=>x.sections[11].uncertaintyRu+='x']){const changed=JSON.parse(JSON.stringify(hasan));mutate(changed);assert.equal(ctx.resolve(changed),null);}
+for(const p of db.profiles){const t=ctx.resolve(p);assert(t,p.id);assert.equal(t.sections.length,p.sections.length);assert.equal(Boolean(t.hasanStatusNote),Boolean(p.hasanStatusNoteRu));for(const [i,s] of p.sections.entries()){assert.equal(t.sections[i].id,s.id);assert.equal(Boolean(t.sections[i].uncertainty),Boolean(s.uncertaintyRu));assert.equal((t.sections[i].views||[]).length,s.views.length);}for(const id of [...(p.hasanStatusSourceIds||[]),...p.sections.flatMap(s=>[...s.sourceIds,...s.views.flatMap(v=>v.sourceIds)])])assert(db.sources.some(s=>s.id===id),id);}
+console.log('PASS: all five biographies, source references, section and attributed-view parity');
