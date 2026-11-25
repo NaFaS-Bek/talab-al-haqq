@@ -1627,7 +1627,312 @@ function tajikName(x) {
   return t && t.arabic===x.arabic && t.sourceUrl===x.nameSource?.url && t.sourceBasis===x.nameSource?.basisNote && x.supplication?.kind==='personal' && t.duaArabic===x.supplication.arabic ? t : null;
 }
 const localizedName = x => isTajik() ? tajikName(x) : null;
-const title = (x, kind) => kind === 'name' ? x.transliterationRu : kind === 'dua' ? (localizedDua(x)?.title || x.titleRu) : x.titleRu;
+// Editorial biographies: exact snapshot guard; no change to historical data or status.
+const tajikCaliphProfiles = Object.freeze({
+  "person_abu_bakr": {
+    "original": {
+      "id": "person_abu_bakr",
+      "titleRu": "Абу Бакр ас-Сиддик",
+      "arabicName": "أبو بكر الصديق",
+      "reignRu": "632–634 гг.",
+      "summaryRu": "Один из первых последователей Пророка и его спутник при хиджре. После Сакифы возглавил Медину, войны ридды и начало внешних походов. Преемственность, Фадак и отношения с Ахль аль-Байт рассматриваются без подмены исторического рассказа одной богословской оценкой.",
+      "hasanStatusNoteRu": "",
+      "hasanStatusSourceIds": [],
+      "relatedEventIds": [
+        "event_hijra",
+        "event_death_saqifa",
+        "event_quran_transmission"
+      ],
+      "sections": [
+        {
+          "id": "identity",
+          "titleRu": "Имя, происхождение и семья",
+          "textRu": "Его личное имя — Абдаллах; отец известен как Абу Кухафа, Усман ибн Амир. Родовая принадлежность — курайшит из Бану Тайм. «Абу Бакр» является куньей, «ас-Сиддик» — почётным именованием. По традиционной биографической шкале он родился в Мекке примерно в 573 году, на два или три года позже Пророка. Его дочь Аиша стала супругой Пророка. Дети Абдаллах и Асма связаны с событиями переселения; семейное родство объясняет близость, но не заменяет отдельного обсуждения права на последующую власть.",
+          "uncertaintyRu": "Год рождения приблизителен; точное свидетельство о дне рождения не сохранилось.",
+          "sourceIds": [
+            "ch_tdv_abubakr"
+          ],
+          "views": []
+        },
+        {
+          "id": "youth",
+          "titleRu": "Детство и жизнь до ислама",
+          "textRu": "Подробной независимой картины детских лет нет. Биографическая традиция связывает его молодость с торговлей тканями, знанием родословных и отношениями внутри Курайша. Эти занятия объясняют общественные связи и финансовую самостоятельность. Поздние рассказы о предсказаниях, снах и разговорах до начала проповеди имеют иной характер свидетельства: они не включены как установленные события. Отсутствие документов не даёт основания дорисовывать ни идеальную, ни обвинительную историю каждого года его жизни.",
+          "uncertaintyRu": "",
+          "sourceIds": [
+            "ch_tdv_abubakr"
+          ],
+          "views": []
+        },
+        {
+          "id": "conversion",
+          "titleRu": "Принятие ислама и ранняя поддержка",
+          "textRu": "Абу Бакр принадлежал к ранним последователям Мухаммада. Первенство обращений передаётся по-разному: источники различают первых женщин, детей, свободных взрослых мужчин. Традиция рассказывает о его помощи преследуемым верующим и выкупе Биляля из рабства. Эти сведения характеризуют поддержку общины средствами и связями. Точные суммы и исчерпывающие списки освобождённых в пересказах расходятся; они не воспроизведены как бухгалтерская ведомость. Не утверждается, что все названные позднее сподвижники приняли ислам только через посредничество одного человека.",
+          "uncertaintyRu": "",
+          "sourceIds": [
+            "ch_tdv_abubakr"
+          ],
+          "views": []
+        },
+        {
+          "id": "hijra",
+          "titleRu": "Хиджра: спутник в опасном пути",
+          "textRu": "В 622 году Абу Бакр сопровождал Пророка при переселении из Мекки. Рассказ о пещере передан от него у аль-Бухари, 3653. Коранический аят 9:40 говорит о спутнике в пещере без имени, поэтому сам текст аята и идентификацию человека по передаче необходимо различать. Эпизод отражает опасность пути и близость спутника. При этом историческое участие в хиджре и вывод о специальном назначении на государственное руководство — разные утверждения: для второго требуется отдельная богословская аргументация.",
+          "uncertaintyRu": "",
+          "sourceIds": [
+            "ch_bukhari_cave"
+          ],
+          "views": []
+        },
+        {
+          "id": "character",
+          "titleRu": "Стойкость после смерти Пророка",
+          "textRu": "В передаче Аиши, аль-Бухари 3667–3668, Абу Бакр возвращается, убеждается в смерти Пророка и помогает людям признать тяжёлую утрату, напоминая о вере в Живого Аллаха. Рассказ связывает выступление с аятами 39:30 и 3:144. Здесь приводится содержание, а не вымышленная дословная русская речь. Эпизод показывает способность действовать в кризисе, но не позволяет оценивать веру скорбевших людей по их первой реакции. Умар и другие участники рассказа тоже переживали утрату, и различие реакций нельзя превращать в повод для унижения.",
+          "uncertaintyRu": "",
+          "sourceIds": [
+            "hs_one_bukhari_3667"
+          ],
+          "views": []
+        },
+        {
+          "id": "saqifa",
+          "titleRu": "Сакифа и установление руководства",
+          "textRu": "После смерти Пророка часть ансаров собралась в Сакифе Бану Саида. Абу Бакр, Умар и Абу Убайда участвовали в обсуждении; присяга Абу Бакру затем получила более широкое подтверждение. Поздняя речь Умара в передаче Ибн Аббаса, аль-Бухари 6830, сохраняет конкурирующие предложения, напряжение и срочность решения. Она не описывает всеобщее голосование по заранее принятому регламенту. Али и ряд близких семьи не участвовали в той встрече. Исторический итог — утверждение власти Абу Бакра; вопрос о том, какое руководство было должным, имеет разные религиозные ответы.",
+          "uncertaintyRu": "Нельзя сливать собрание, дальнейшие присяги и позиции всех мусульман в один момент единогласного выбора.",
+          "sourceIds": [
+            "hs_two_saqifa",
+            "hs_one_bukhari_3667"
+          ],
+          "views": [
+            {
+              "tradition": "sunni",
+              "titleRu": "Суннитская перспектива",
+              "textRu": "Обычная суннитская оценка признаёт присягу законным началом халифата. При этом передача Умара сама сохраняет спор и предупреждение против непродуманных присяг.",
+              "sourceIds": [
+                "hs_two_saqifa",
+                "ch_rashidun"
+              ]
+            },
+            {
+              "tradition": "twelver",
+              "titleRu": "Двунадесятническая перспектива",
+              "textRu": "В изложении Мухаммада Ризви назначение Али предшествует Сакифе и не зависит от выбора собравшихся. Установление власти Абу Бакра поэтому не равнозначно признанию его имамом.",
+              "sourceIds": [
+                "ch_rizvi_imamate"
+              ]
+            },
+            {
+              "tradition": "ismaili",
+              "titleRu": "Исмаилитская перспектива",
+              "textRu": "Основание имамата в изложении IIS связано с назначением Али, затем с преемством в семье Пророка. Оно отличается от политической процедуры собрания.",
+              "sourceIds": [
+                "ch_iis_imamate"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "fadak",
+          "titleRu": "Фадак, Фатима и присяга Али",
+          "textRu": "Спор касался имущества, связанного с Пророком: среди владений назван Фадак. По аль-Бухари 4240–4241 Абу Бакр отказал Фатиме в наследовании, сославшись на переданное им правило о пророческом имуществе. Та же передача сообщает о её недовольстве и о присяге Али после её смерти, примерно через шесть месяцев. Поэтому рассказ суннитского сборника не позволяет замолчать разрыв отношений. Требование наследства и довод о дарении Фадака при жизни отца — разные юридические основания. Их нельзя незаметно менять местами при изложении доводов сторон.",
+          "uncertaintyRu": "Иные рассказы о сроке присяги Али существуют. Здесь версия 4240–4241 названа прямо, а не объявлена бесспорной для всех.",
+          "sourceIds": [
+            "hs_one_bukhari_4240",
+            "ch_fadak_rizvi"
+          ],
+          "views": [
+            {
+              "tradition": "sunni",
+              "titleRu": "Суннитское объяснение решения",
+              "textRu": "В этом прочтении сообщение о пророческом имуществе объясняет отказ как применение особого правила, а не личное присвоение наследства. Недовольство Фатимы из той же передачи не устраняется.",
+              "sourceIds": [
+                "hs_one_bukhari_4240"
+              ]
+            },
+            {
+              "tradition": "twelver",
+              "titleRu": "Имамитское возражение",
+              "textRu": "Саид Ахтар Ризви защищает дарение Фадака Фатиме и оспаривает юридическое основание отказа. Его оценка подписана как аргументация этой стороны.",
+              "sourceIds": [
+                "ch_fadak_rizvi"
+              ]
+            },
+            {
+              "tradition": "ismaili",
+              "titleRu": "Граница сравнения",
+              "textRu": "Особое место Ахль аль-Байт представлено во введении. Отдельная сверка всех низаритских и таййибитских передач о Фадаке не выполнена; подмена их имамитским текстом не производится.",
+              "sourceIds": [
+                "ch_iis_imamate",
+                "ch_dawoodi_faith"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "ridda",
+          "titleRu": "Войны ридды и вопрос закята",
+          "textRu": "Кризис включал восстания, отказ от подчинения Медине и движения новых претендентов на пророчество. Общее название «ридда» не делает одинаковыми мотивы всех племён. Аль-Бухари 1399–1400 передаёт первоначальное возражение Умара против войны с частью людей, произносивших свидетельство веры, и довод Абу Бакра о недопустимости отделения закята от молитвы; затем Умар согласился. Передача сохраняет обсуждение, а не отсутствие вопросов. Исторический рассказ не даёт читателю права самостоятельно объявлять современных людей отступниками, собирать с них платежи силой или применять насилие.",
+          "uncertaintyRu": "",
+          "sourceIds": [
+            "ch_bukhari_ridda",
+            "ch_tdv_abubakr"
+          ],
+          "views": []
+        },
+        {
+          "id": "government",
+          "titleRu": "Управление и внешние походы",
+          "textRu": "Медина оставалась центром руководства; назначались военачальники, восстанавливался контроль над Аравией, затем начались действия на иракском и сирийском направлениях. Короткое правление Абу Бакра следует отличать от более поздних побед Умара: взятие многих крупных областей не было завершено к 634 году. Отправка отряда Усамы ибн Зайда в традиции отражает продолжение ранее принятого распоряжения несмотря на кризис. Политический центр пережил смерть Пророка, однако ещё не обладал всеми институтами последующей империи. Приписывать ему готовую позднейшую бюрократию было бы анахронизмом.",
+          "uncertaintyRu": "",
+          "sourceIds": [
+            "ch_tdv_abubakr",
+            "ch_rashidun"
+          ],
+          "views": []
+        },
+        {
+          "id": "quran",
+          "titleRu": "Собирание коранических записей",
+          "textRu": "По сообщению Зайда ибн Сабита у аль-Бухари, 4986, после тяжёлых потерь при Ямаме Умар предложил собрать коранические записи. Абу Бакр сначала сомневался в новом организационном действии, затем поручил работу Зайду. Передача описывает собирание уже известного откровения с использованием письменной и устной памяти. По ней листы оставались у Абу Бакра, затем у Умара, позднее у Хафсы. Этот этап нельзя смешивать с изготовлением согласованных экземпляров при Усмане. Другие реконструкции времени собирания существуют; спор о ходе работы не тождествен рассказу о сочинении нового религиозного текста.",
+          "uncertaintyRu": "",
+          "sourceIds": [
+            "hs_two_quran_abubakr",
+            "ch_khoei_quran"
+          ],
+          "views": []
+        },
+        {
+          "id": "death",
+          "titleRu": "Последние дни и выбор преемника",
+          "textRu": "Абу Бакр умер в Медине после болезни в 13 году хиджры, 634 году. Он рекомендовал Умара преемником; этот способ отличался от собрания в Сакифе и от шуры шести при смерти самого Умара. Наличие совещаний не означает существования одной неизменной конституционной процедуры. Биографическая традиция связывает его погребение с местом рядом с Пророком. Частные версии причины болезни и точные фразы последних дней не приведены как медицински установленные сведения или дословно записанное завещательное выступление.",
+          "uncertaintyRu": "",
+          "sourceIds": [
+            "ch_tdv_abubakr",
+            "ch_bukhari_umar_burial"
+          ],
+          "views": []
+        },
+        {
+          "id": "legacy",
+          "titleRu": "Наследие и пределы согласия",
+          "textRu": "Его правление сохранило управляемый центр после смерти Пророка и открыло новый этап политической истории. В суннитской памяти он — первый праведный халиф; шиитские учения об имамате применяют иной критерий законного преемства. Историческое значение решений 632–634 годов от этого не исчезает. Рассмотрение достижений не требует отрицать Фадак или разногласия о присяге, а признание разногласий не оправдывает оскорбления современных общин. Следующая биография показывает, как при Умаре изменились размеры государства, система доходов и потребность в новых учреждениях.",
+          "uncertaintyRu": "",
+          "sourceIds": [
+            "ch_rashidun",
+            "ch_rizvi_imamate",
+            "ch_madelung_book"
+          ],
+          "views": []
+        }
+      ]
+    },
+    "translation": {
+      "title": "Абӯбакри Сиддиқ",
+      "reign": "Солҳои 632–634",
+      "summary": "Яке аз аввалин пайравони Паёмбар ва ҳамсафари ӯ ҳангоми ҳиҷрат. Пас аз Сақифа роҳбарии Мадина, ҷангҳои ридда ва оғози лашкаркашиҳои хориҷиро ба уҳда гирифт. Масъалаҳои ҷонишинӣ, Фадак ва муносибат бо Аҳли байт бе иваз кардани нақли таърихӣ бо як арзёбии ақидавӣ баррасӣ мешаванд.",
+      "sections": [
+        {
+          "id": "identity",
+          "title": "Ном, насаб ва оила",
+          "text": "Номи шахсии ӯ Абдуллоҳ буд; падараш бо номи Абӯқуҳофа, Усмон ибни Омир, маъруф аст. Аз қабилаи Қурайш, аз хонадони Банӣ Тайм буд. «Абӯбакр» куня ва «ас-Сиддиқ» лақаби ифтихорист. Мувофиқи хронологияи маъмули тарҷумаи ҳолҳо ӯ тақрибан соли 573 дар Макка, ду ё се сол баъд аз Паёмбар, таваллуд шудааст. Духтараш Оиша ҳамсари Паёмбар шуд. Фарзандонаш Абдуллоҳ ва Асмо бо воқеаҳои ҳиҷрат алоқаманданд; хешутабории оилавӣ наздикиро шарҳ медиҳад, вале ҷойгузини баррасии ҷудогонаи ҳаққи ҳокимияти баъдӣ нест.",
+          "uncertainty": "Соли таваллуд тахминӣ аст; шаҳодати дақиқ дар бораи рӯзи таваллуд боқӣ намондааст."
+        },
+        {
+          "id": "youth",
+          "title": "Кӯдакӣ ва зиндагӣ пеш аз ислом",
+          "text": "Тасвири муфассалу мустақили солҳои кӯдакиаш вуҷуд надорад. Анъанаи тарҷумаи ҳол ҷавонии ӯро бо тиҷорати матоъ, донистани насабҳо ва муносибатҳо дар дохили Қурайш мепайвандад. Ин машғулиятҳо робитаҳои иҷтимоӣ ва мустақилияти молиявии ӯро шарҳ медиҳанд. Нақлҳои дертар дар бораи пешгӯиҳо, хобҳо ва суҳбатҳо пеш аз оғози даъват хусусияти дигари шаҳодат доранд: онҳо ҳамчун воқеаҳои собитшуда ворид нашудаанд. Набудани ҳуҷҷатҳо барои бофта пур кардани ҳар соли зиндагии ӯ, хоҳ ба сурати идеалӣ ва хоҳ айбдоркунанда, асос намедиҳад."
+        },
+        {
+          "id": "conversion",
+          "title": "Қабули ислом ва дастгирии аввалин",
+          "text": "Абӯбакр аз пайравони аввалини Муҳаммад буд. Аввалин будан дар қабули ислом ба тарзҳои гуногун нақл мешавад: сарчашмаҳо аввалин занон, кӯдакон ва мардони болиғи озодро аз ҳам фарқ мекунанд. Анъана дар бораи ёрии ӯ ба мӯъминони таҳти таъқиб ва аз ғуломӣ озод кардани Билол бо пардохти маблағ нақл мекунад. Ин маълумот дастгирии ҷомеаро бо молу воситаҳо ва робитаҳо нишон медиҳад. Маблағҳои дақиқ ва рӯйхати пурраи озодшудагон дар нақлҳо фарқ мекунанд; онҳоро ҳамчун дафтари ҳисобу китоб наовардаем. Иддао намешавад, ки ҳамаи саҳобиёни баъдтар номбаршуда танҳо ба воситаи як шахс ислом овардаанд."
+        },
+        {
+          "id": "hijra",
+          "title": "Ҳиҷрат: ҳамсафар дар роҳи хатарнок",
+          "text": "Соли 622 Абӯбакр ҳангоми ҳиҷрат аз Макка ҳамроҳи Паёмбар буд. Ривоят дар бораи ғор аз худи ӯ дар Бухорӣ 3653 нақл шудааст. Ояти Қуръон 9:40 аз ҳамсафар дар ғор бе зикри ном сухан мегӯяд, бинобар ин матни худи оятро аз муайян кардани шахс бар асоси ривоят бояд фарқ кард. Ин воқеа хатари сафар ва наздикии ҳамсафарро нишон медиҳад. Аммо иштироки таърихӣ дар ҳиҷрат ва хулоса дар бораи таъйини махсус ба роҳбарии давлатӣ ду иддаои гуногунанд: барои дуюм далели ҷудогонаи ақидавӣ лозим аст."
+        },
+        {
+          "id": "character",
+          "title": "Устуворӣ пас аз вафоти Паёмбар",
+          "text": "Дар ривояти Оиша, Бухорӣ 3667–3668, Абӯбакр бармегардад, ба вафоти Паёмбар итминон пайдо мекунад ва бо ёдоварӣ аз имон ба Аллоҳи Зинда ба мардум ёрӣ медиҳад, ки талафоти сангинро бипазиранд. Ривоят суханронии ӯро бо оятҳои 39:30 ва 3:144 мепайвандад. Дар ин ҷо мазмуни ривоят оварда шудааст, на суханронии айнании русии бофташуда. Ин воқеа қобилияти амал кардан дар буҳронро нишон медиҳад, аммо имкон намедиҳад, ки имони одамони ғамзадаро аз рӯйи нахустин вокунишашон арзёбӣ кунем. Умар ва дигар иштирокдорони ривоят низ андӯҳи талафотро аз сар мегузаронданд ва фарқи вокунишҳоро набояд баҳонаи таҳқир кард."
+        },
+        {
+          "id": "saqifa",
+          "title": "Сақифа ва барқарор шудани роҳбарӣ",
+          "text": "Пас аз вафоти Паёмбар як қисми ансор дар Сақифаи Банӣ Соъида ҷамъ шуданд. Абӯбакр, Умар ва Абӯубайда дар муҳокима иштирок карданд; байъат ба Абӯбакр баъдан тасдиқи васеътар гирифт. Суханронии баъдии Умар дар ривояти Ибни Аббос, Бухорӣ 6830, пешниҳодҳои рақобаткунанда, шиддат ва таъҷилии қарорро инъикос мекунад. Он овоздиҳии умумиро мувофиқи тартиби пешакӣ қабулшуда тасвир намекунад. Алӣ ва як қатор наздикони хонавода дар он ҷамъомад иштирок накарданд. Натиҷаи таърихӣ — барқарор шудани ҳокимияти Абӯбакр; савол дар бораи он ки кадом роҳбарӣ ҳақ буд, ҷавобҳои гуногуни динӣ дорад.",
+          "uncertainty": "Ҷамъомад, байъатҳои минбаъда ва мавқеи ҳамаи мусалмононро ба як лаҳзаи интихоби якдилона муттаҳид кардан мумкин нест.",
+          "views": [
+            {
+              "title": "Дидгоҳи суннӣ",
+              "text": "Арзёбии маъмулии суннӣ байъатро оғози қонунии хилофат медонад. Ҳамзамон худи ривояти Умар ихтилоф ва ҳушдор аз байъатҳои беандешаро нигоҳ медорад."
+            },
+            {
+              "title": "Дидгоҳи шиаи дувоздаҳимомӣ",
+              "text": "Дар баёни Муҳаммад Ризвӣ таъйини Алӣ пеш аз Сақифа сурат гирифтааст ва ба интихоби ҷамъомадагон вобаста нест. Аз ин рӯ барқарор шудани ҳокимияти Абӯбакр бо эътирофи ӯ ҳамчун имом баробар нест."
+            },
+            {
+              "title": "Дидгоҳи исмоилӣ",
+              "text": "Асоси имомат дар баёни Пажӯҳишгоҳи омӯзиши исмоилӣ (IIS) бо таъйини Алӣ ва сипас ҷонишинӣ дар хонаводаи Паёмбар алоқаманд аст. Он аз тартиби сиёсии ҷамъомад фарқ мекунад."
+            }
+          ]
+        },
+        {
+          "id": "fadak",
+          "title": "Фадак, Фотима ва байъати Алӣ",
+          "text": "Баҳс ба амволи марбут ба Паёмбар дахл дошт: аз ҷумлаи мулкҳо Фадак номбар шудааст. Тибқи Бухорӣ 4240–4241 Абӯбакр ба Фотима дар масъалаи мерос ҷавоби рад дод ва ба қоидае дар бораи амволи пайғамбарон, ки худ нақл мекард, истинод намуд. Ҳамон ривоят аз норозигии Фотима ва байъати Алӣ пас аз вафоти ӯ, тақрибан шаш моҳ баъд, хабар медиҳад. Аз ин рӯ ривояти маҷмӯаи суннӣ имкон намедиҳад, ки канда шудани муносибатҳо нодида гирифта шавад. Талаби мерос ва далели ҳадия шудани Фадак дар замони зинда будани падар асосҳои гуногуни ҳуқуқианд. Ҳангоми баёни далелҳои тарафҳо онҳоро пинҳонӣ иваз кардан мумкин нест.",
+          "uncertainty": "Ривоятҳои дигар дар бораи замони байъати Алӣ низ ҳастанд. Дар ин ҷо нусхаи 4240–4241 ошкоро номбар шудааст, на ин ки барои ҳама бебаҳс эълон гардад.",
+          "views": [
+            {
+              "title": "Шарҳи суннии қарор",
+              "text": "Дар ин фаҳмиш ривоят дар бораи амволи пайғамбарон радро ҳамчун татбиқи қоидаи махсус шарҳ медиҳад, на азхудкунии шахсии мерос. Норозигии Фотима дар ҳамон ривоят ҳазф намешавад."
+            },
+            {
+              "title": "Эътирози имомӣ",
+              "text": "Сайид Ахтар Ризвӣ аз ҳадия шудани Фадак ба Фотима ҳимоят мекунад ва асоси ҳуқуқии радро зери суол мегузорад. Арзёбии ӯ ҳамчун далелҳои ҳамин тараф муаррифӣ шудааст."
+            },
+            {
+              "title": "Ҳудуди муқоиса",
+              "text": "Ҷойгоҳи хоси Аҳли байт дар муқаддима нишон дода шудааст. Санҷиши ҷудогонаи ҳамаи ривоятҳои низорӣ ва таййибӣ дар бораи Фадак анҷом наёфтааст; онҳоро бо матни имомӣ иваз намекунем."
+            }
+          ]
+        },
+        {
+          "id": "ridda",
+          "title": "Ҷангҳои ридда ва масъалаи закот",
+          "text": "Буҳрон шӯришҳо, саркашӣ аз итоат ба Мадина ва ҳаракатҳои даъвогарони нави пайғамбариро дар бар мегирифт. Номи умумии «ридда» ангезаҳои ҳамаи қабилаҳоро яксон намекунад. Бухорӣ 1399–1400 эътирози аввалини Умар ба ҷанг бо як қисми одамони гӯяндаи шаҳодати имон ва далели Абӯбакр дар бораи ҷоиз набудани ҷудо кардани закот аз намозро нақл мекунад; сипас Умар розӣ шуд. Ривоят мавҷудияти муҳокимаро нигоҳ медорад, на набудани саволҳоро. Нақли таърихӣ ба хонанда ҳақ намедиҳад, ки худсарона одамони муосирро муртад эълон кунад, аз онҳо бо зӯр пардохт ситонад ё зӯроварӣ намояд."
+        },
+        {
+          "id": "government",
+          "title": "Идоракунӣ ва лашкаркашиҳои хориҷӣ",
+          "text": "Мадина маркази роҳбарӣ боқӣ монд; сарлашкарон таъйин шуданд, назорат бар Арабистон барқарор гардид ва баъдан амалиёт дар самтҳои Ироқ ва Шом оғоз шуд. Ҳукмронии кӯтоҳи Абӯбакрро аз пирӯзиҳои баъдии Умар бояд фарқ кард: тасарруфи бисёр минтақаҳои калон то соли 634 анҷом наёфта буд. Фиристодани дастаи Усома ибни Зайд дар анъана идомаи фармони қаблан қабулшударо сарфи назар аз буҳрон инъикос мекунад. Маркази сиёсӣ пас аз вафоти Паёмбар боқӣ монд, вале ҳанӯз ҳамаи ниҳодҳои империяи баъдиро надошт. Низоми мукаммали идории давраи баъдиро ба он нисбат додан аз нигоҳи таърихӣ нодуруст мебуд."
+        },
+        {
+          "id": "quran",
+          "title": "Ҷамъоварии навиштаҳои Қуръон",
+          "text": "Мувофиқи ривояти Зайд ибни Собит дар Бухорӣ 4986, пас аз талафоти сангин дар Ямома Умар пешниҳод кард, ки навиштаҳои Қуръон ҷамъоварӣ шаванд. Абӯбакр аввал дар бораи иқдоми нави ташкилӣ дудила буд, сипас корро ба Зайд супурд. Ривоят ҷамъоварии ваҳйи аллакай маълумро бо истифода аз навиштаҳо ва ҳофизаи шифоҳӣ тасвир мекунад. Тибқи он, варақҳо назди Абӯбакр, баъд назди Умар ва дертар назди Ҳафса нигоҳ дошта шуданд. Ин марҳиларо бо таҳияи нусхаҳои мувофиқашуда дар замони Усмон омехта кардан мумкин нест. Бозсозии дигари таърихии замони ҷамъоварӣ низ вуҷуд дорад; баҳс дар бораи рафти кор бо нақли таълифи матни нави динӣ як чиз нест."
+        },
+        {
+          "id": "death",
+          "title": "Рӯзҳои охир ва интихоби ҷонишин",
+          "text": "Абӯбакр пас аз беморӣ дар Мадина, соли 13-и ҳиҷрӣ, соли 634 мелодӣ, вафот кард. Ӯ Умарро ҳамчун ҷонишин тавсия дод; ин тарз аз ҷамъомади Сақифа ва аз шӯрои шашнафара ҳангоми вафоти худи Умар фарқ мекард. Мавҷудияти машваратҳо маънои вуҷуд доштани як тартиби тағйирнопазири конститутсиониро надорад. Анъанаи тарҷумаи ҳол дафни ӯро бо ҷойе дар паҳлуи Паёмбар мепайвандад. Нусхаҳои ҷудогонаи нақл дар бораи сабаби беморӣ ва суханони дақиқи рӯзҳои охир ҳамчун маълумоти аз ҷиҳати тиббӣ собитшуда ё суханронии васиятии айнан сабтшуда оварда нашудаанд."
+        },
+        {
+          "id": "legacy",
+          "title": "Мерос ва ҳудуди мувофиқа",
+          "text": "Ҳукмронии ӯ пас аз вафоти Паёмбар маркази идорашавандаро нигоҳ дошт ва марҳилаи нави таърихи сиёсиро оғоз кард. Дар хотираи суннӣ ӯ аввалин халифаи рошид аст; таълимоти шиа дар бораи имомат меъёри дигари ҷонишинии ҳаққониро истифода мебаранд. Аҳамияти таърихии қарорҳои солҳои 632–634 аз ин байн намеравад. Баррасии дастовардҳо рад кардани воқеаи Фадак ё ихтилофҳо дар бораи байъатро талаб намекунад, эътирофи ихтилофҳо бошад, таҳқири ҷомеаҳои муосирро сафед намекунад. Тарҷумаи ҳоли баъдӣ нишон медиҳад, ки дар замони Умар андозаи давлат, низоми даромадҳо ва ниёз ба ниҳодҳои нав чӣ гуна тағйир ёфтанд."
+        }
+      ]
+    }
+  }
+});
+function caliphProfileSnapshot(p) { return {id:p.id,titleRu:p.titleRu,arabicName:p.arabicName,reignRu:p.reignRu,summaryRu:p.summaryRu,hasanStatusNoteRu:p.hasanStatusNoteRu,hasanStatusSourceIds:p.hasanStatusSourceIds||[],relatedEventIds:p.relatedEventIds,sections:p.sections.map(s=>({id:s.id,titleRu:s.titleRu,textRu:s.textRu,uncertaintyRu:s.uncertaintyRu,sourceIds:s.sourceIds,views:(s.views||[]).map(v=>({tradition:v.tradition,titleRu:v.titleRu,textRu:v.textRu,sourceIds:v.sourceIds}))}))}; }
+function tajikCaliphProfile(p) {
+  const rec=p&&Object.hasOwn(tajikCaliphProfiles,p.id)?tajikCaliphProfiles[p.id]:null;
+  return rec&&Array.isArray(p.sections)&&JSON.stringify(caliphProfileSnapshot(p))===JSON.stringify(rec.original)?rec.translation:null;
+}
+const localizedCaliph = p => isTajik()?tajikCaliphProfile(p):null;
+const title = (x, kind) => kind === 'name' ? x.transliterationRu : kind === 'dua' ? (localizedDua(x)?.title || x.titleRu) : kind==='caliph' ? (localizedCaliph(x)?.title || x.titleRu) : x.titleRu;
 function tajikMeaningStatus() {
   return '<p class="attribution" lang="tg" data-tg-meaning-status="draft">Тарҷумаи таҳририи маъно ба тоҷикӣ; санҷиши мустақили забонӣ ва динӣ ҳанӯз анҷом наёфтааст. Матни аслӣ тағйир наёфтааст.</p>';
 }
@@ -1659,14 +1964,15 @@ function toggleReview() {
 function textSearch(x) {
   const t = tajikMeaning(x);
   const n = tajikName(x);
-  const words = [n?.meaning,n?.explanation,t?.title,t?.meaning,x.titleRu,x.transliterationRu,x.translationRu,x.meaningRu,x.summaryRu,x.arabicText,x.arabicName,...(x.tagsRu || []),...(x.aliasesRu || []),...(x.searchTerms || []),...(x.sections || []).map(s => s.textRu)];
+  const h=tajikCaliphProfile(x);
+  const words = [h?.title,h?.summary,...(h?.sections||[]).flatMap(s=>[s.title,s.text,s.uncertainty,...(s.views||[]).flatMap(v=>[v.title,v.text])]),n?.meaning,n?.explanation,t?.title,t?.meaning,x.titleRu,x.transliterationRu,x.translationRu,x.meaningRu,x.summaryRu,x.arabicText,x.arabicName,...(x.tagsRu || []),...(x.aliasesRu || []),...(x.searchTerms || []),...(x.sections || []).map(s => s.textRu)];
   return words.join(' ').toLocaleLowerCase('ru').includes(query.toLocaleLowerCase('ru'));
 }
 function item(x, kind, about = false) {
   const subtitle = about
     ? `${statusName(x.reviewStatus || x.status)} · Экспертная проверка: ${x.expertReview ? 'см. сведения' : 'не отмечена'}`
-    : kind === 'name' ? (localizedName(x)?.meaning || x.meaningRu) : kind === 'dua' ? (localizedDua(x)?.meaning || x.translationRu) : x.summaryRu;
-  return `<button class="item" ${about ? 'data-about' : 'data-open'}="${kind}:${clean(x.id)}">${kind === 'name' ? `<span class="number">${x.number}</span>` : ''}<span class="itembody"><strong>${clean(title(x, kind))}</strong><small>${clean((subtitle || '').slice(0, 140))}${(subtitle || '').length > 140 ? '…' : ''}</small>${isTajik() && !about && ['lib','history','caliph'].includes(kind) ? '<small lang="tg" data-tg-card-pending>Ба русӣ · тарҷума ҳанӯз омода нест</small>' : ''}</span>${kind === 'name' ? `<span class="arabicMini" lang="ar" dir="rtl">${clean(x.arabic)}</span>` : '<span class="arrow" aria-hidden="true">›</span>'}</button>`;
+    : kind === 'name' ? (localizedName(x)?.meaning || x.meaningRu) : kind === 'dua' ? (localizedDua(x)?.meaning || x.translationRu) : kind==='caliph' ? (localizedCaliph(x)?.summary || x.summaryRu) : x.summaryRu;
+  return `<button class="item" ${about ? 'data-about' : 'data-open'}="${kind}:${clean(x.id)}">${kind === 'name' ? `<span class="number">${x.number}</span>` : ''}<span class="itembody"><strong>${clean(title(x, kind))}</strong><small>${clean((subtitle || '').slice(0, 140))}${(subtitle || '').length > 140 ? '…' : ''}</small>${isTajik() && !about && ['lib','history','caliph'].includes(kind) && !(kind==='caliph'&&localizedCaliph(x)) ? '<small lang="tg" data-tg-card-pending>Ба русӣ · тарҷума ҳанӯз омода нест</small>' : ''}</span>${kind === 'name' ? `<span class="arabicMini" lang="ar" dir="rtl">${clean(x.arabic)}</span>` : '<span class="arrow" aria-hidden="true">›</span>'}</button>`;
 }
 function search() { return `<label class="search"><span aria-hidden="true">⌕</span><input id="search" type="search" aria-label="Найти материал" placeholder="Найти материал…" value="${clean(query)}" autocomplete="off"></label>`; }
 function section(t, more) { return `<div class="sectionhead"><h2>${clean(t)}</h2>${more ? `<button data-tab="${clean(more)}">Смотреть всё →</button>` : ''}</div>`; }
@@ -1797,7 +2103,7 @@ function caliphPage() {
   const tg = caliphIntroTajik(i);
   const intro = tg ? '<div lang="tg" data-tg-caliph-intro="1">'+section(tg.title)+para('',tg.text)+tajikMeaningStatus()+'</div><details lang="ru"><summary>Введение на русском</summary>'+para('',i.textRu)+'</details>' : section(i.titleRu || 'История халифов')+para('',i.textRu)+(isTajik()?untranslatedKnowledgeNote():'');
   const terms=(i.terms || []).map((t,index) => `<section class="review-card"><h3${tg?' lang="tg"':''}>${clean(tg?.terms[index].term || t.termRu)}</h3>${tg?'<div lang="tg">'+para('',tg.terms[index].text)+'</div><details lang="ru"><summary>Пояснение на русском</summary>'+para('',t.textRu)+'</details>':para('',t.textRu)}${inlineSources(t.sourceIds)}</section>`).join('');
-  return intro+introSource+terms+(isTajik()?'<p class="lead" lang="tg" data-tg-caliph-progress>Тарҷумаи шарҳи ҳол: 0 аз '+caliphs.profiles.length+'. Шарҳи ҳолҳо ва маълумоти библиографӣ ҳоло ба русӣ нишон дода мешаванд.</p>':'')+search()+(caliphs.profiles.filter(textSearch).map(x => item(x,'caliph')).join('') || empty())+footer();
+  return intro+introSource+terms+(isTajik()?'<p class="lead" lang="tg" data-tg-caliph-progress>Тарҷумаи шарҳи ҳол: '+caliphs.profiles.filter(tajikCaliphProfile).length+' аз '+caliphs.profiles.length+'. Шарҳи ҳолҳои тарҷуманашуда ва маълумоти библиографӣ ба русӣ нишон дода мешаванд.</p>':'')+search()+(caliphs.profiles.filter(textSearch).map(x => item(x,'caliph')).join('') || empty())+footer();
 }
 function favorites() {
   const a = favs.map(findRecord).filter(Boolean);
@@ -2246,7 +2552,7 @@ function details(r) {
       if(isTajik()) html += '<p class="attribution" lang="tg">Тарҷумаи тоҷикӣ ҳанӯз омода нест; матни русӣ нишон дода шудааст.</p>';
     }
   }
-  if (isTajik() && ['lib','history','caliph'].includes(kind)) html += untranslatedKnowledgeNote();
+  if (isTajik() && ['lib','history','caliph'].includes(kind) && !(kind==='caliph'&&localizedCaliph(x))) html += untranslatedKnowledgeNote();
   if (kind === 'lib') {
     html += para('Кратко',x.summaryRu);
     for(const s of x.sections || []) html += para(s.titleRu,s.textRu) + arabic(s.arabicText) + para(s.transliterationRu ? 'Транскрипция' : '',s.transliterationRu) + warning(s.disputeRu || s.uncertaintyRu);
@@ -2258,8 +2564,16 @@ function details(r) {
     html += related(x.relatedEventIds,'history');
   }
   if (kind === 'caliph') {
-    html += arabic(x.arabicName) + para('Период правления',x.reignRu) + para('Кратко',x.summaryRu) + warning(x.hasanStatusNoteRu) + inlineSources(x.hasanStatusSourceIds);
-    for(const s of x.sections || []) html += `<section id="paragraph-${clean(s.id)}">${para(s.titleRu,s.textRu)}${warning(s.uncertaintyRu)}${(s.views || []).map(v => `<section class="review-card"><h3>${clean(v.titleRu || v.tradition)}</h3><p class="badge">${clean(v.tradition)}</p>${para('',v.textRu)}${inlineSources(v.sourceIds)}</section>`).join('')}${inlineSources(s.sourceIds)}</section>`;
+    const h=localizedCaliph(x);
+    html += arabic(x.arabicName)+(h?'<div lang="tg" data-tg-caliph-profile="1">'+para('Давраи ҳукмронӣ',h.reign)+para('Мухтасар',h.summary)+warning(h.hasanStatusNote)+tajikMeaningStatus()+'</div><details lang="ru"><summary>Краткое описание на русском</summary>'+para('Период правления',x.reignRu)+para('Кратко',x.summaryRu)+warning(x.hasanStatusNoteRu)+'</details>':para('Период правления',x.reignRu)+para('Кратко',x.summaryRu)+warning(x.hasanStatusNoteRu))+inlineSources(x.hasanStatusSourceIds);
+    for(const [index,s] of (x.sections||[]).entries()){
+      const st=h?.sections[index];
+      const translatedBody=st?'<div lang="tg">'+para(st.title,st.text)+warning(st.uncertainty)+'</div><details lang="ru"><summary>Текст раздела на русском</summary>'+para(s.titleRu,s.textRu)+warning(s.uncertaintyRu)+'</details>':para(s.titleRu,s.textRu)+warning(s.uncertaintyRu);
+      html += '<section id="paragraph-'+clean(s.id)+'">'+translatedBody+(s.views||[]).map((v,j)=>{
+        const vt=st?.views?.[j];
+        return '<section class="review-card"><h3'+(vt?' lang="tg"':'')+'>'+clean(vt?.title||v.titleRu||v.tradition)+'</h3><p class="badge">'+clean(v.tradition)+'</p>'+(vt?'<div lang="tg">'+para('',vt.text)+'</div><details lang="ru"><summary>Позиция на русском</summary>'+para(v.titleRu,v.textRu)+'</details>':para('',v.textRu))+inlineSources(v.sourceIds)+'</section>';
+      }).join('')+inlineSources(s.sourceIds)+'</section>';
+    }
     html += related(x.relatedEventIds,'history');
   }
   html += sourceInfo(x) + `<div class="actions"><button class="action highlight" data-fav="${clean(key)}">${favs.includes(key) ? '♥ Убрать из избранного' : '♡ В избранное'}</button><button class="action" data-copy="1">Скопировать текст</button></div>`;
@@ -2300,7 +2614,7 @@ document.addEventListener('click',async e => {
   if(b.dataset.open || b.dataset.about) { show(b.dataset.open || b.dataset.about,!!b.dataset.about); return; }
   if(b.dataset.fav) { const k = b.dataset.fav, next = favs.includes(k) ? favs.filter(v=>v!==k) : [...favs,k]; if(save('favs',next)) { favs=next; refreshDetail(); if(tab==='favorites') render(); } return; }
   if(b.dataset.count && active) { const k=active.key; const next={...counts,[k]:b.dataset.count==='reset'?0:Math.max(0,(counts[k]||0)+(b.dataset.count==='plus'?1:-1))}; if(save('counts',next)) {counts=next;$('#countValue').textContent=counts[k];} return; }
-  if(b.dataset.copy && active) { const x=active.data;const text=[title(x,active.kind),x.arabicText||x.arabic,x.transliterationRu,(active.kind==='dua'&&localizedDua(x)?.meaning)||(active.kind==='name'&&localizedName(x)?.meaning)||x.translationRu||x.meaningRu,x.summaryRu,...(x.sections||[]).map(s=>[s.titleRu,s.textRu].filter(Boolean).join('\n'))].filter(Boolean).join('\n\n');try{await navigator.clipboard.writeText(text);b.textContent='✓ Скопировано';}catch{b.textContent='Копирование недоступно';} }
+  if(b.dataset.copy && active) { const x=active.data;const h=active.kind==='caliph'?localizedCaliph(x):null;const text=h?[h.title,x.arabicName,h.reign,h.summary,h.hasanStatusNote,...h.sections.flatMap(s=>[s.title,s.text,s.uncertainty,...(s.views||[]).flatMap(v=>[v.title,v.text])]),'Тарҷумаи таҳрирӣ; бозбинии мустақил анҷом наёфтааст.'].filter(Boolean).join('\n\n'):[title(x,active.kind),x.arabicText||x.arabic,x.transliterationRu,(active.kind==='dua'&&localizedDua(x)?.meaning)||(active.kind==='name'&&localizedName(x)?.meaning)||x.translationRu||x.meaningRu,x.summaryRu,...(x.sections||[]).map(s=>[s.titleRu,s.textRu].filter(Boolean).join('\n'))].filter(Boolean).join('\n\n');try{await navigator.clipboard.writeText(text);b.textContent='✓ Скопировано';}catch{b.textContent='Копирование недоступно';} }
 });
 document.addEventListener('input',e => { if(e.target.id==='search') { const start=e.target.selectionStart, end=e.target.selectionEnd; query=e.target.value; render(); const el=$('#search'); el.focus({preventScroll:true}); if(start!==null && end!==null) el.setSelectionRange(start,end); } });
 document.addEventListener('keydown',e => {
