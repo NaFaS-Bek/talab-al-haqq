@@ -16,7 +16,7 @@ const supplement='family-difficult-passages.html';
 const htmls=new Map([['family-rights.html',overview],
   ...files.map(p=>[p,fs.readFileSync(p,'utf8')]),
   [supplement,fs.readFileSync(supplement,'utf8')],
-  ...['family-rights-tg.html','family-nikah-tg.html','family-mahr-tg.html','family-children-tg.html'].map(p=>[p,fs.readFileSync(p,'utf8')])]);
+  ...['family-rights-tg.html','family-nikah-tg.html','family-mahr-tg.html','family-children-tg.html','family-child-rights-tg.html'].map(p=>[p,fs.readFileSync(p,'utf8')])]);
 
 // One common curriculum: exactly ten distinct lessons, linked from both entrances.
 const section=overview.match(/<section class="card" id="family-curriculum"[\s\S]*?<\/section>/);
