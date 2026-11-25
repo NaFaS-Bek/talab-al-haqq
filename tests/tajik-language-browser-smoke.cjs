@@ -280,6 +280,17 @@ const assert=require('node:assert/strict');
       await page.locator('#talab-lang-switch [data-language="tg"]').click();
       await page.waitForURL('**/family-child-safety-tg.html#safety-5');
       assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2),true,'No child safety overflow');
+      await page.locator('#related a[href="family-teen-dialogue-tg.html"]').click();
+      await page.waitForURL('**/family-teen-dialogue-tg.html');
+      assert.equal(await page.locator('html').getAttribute('lang'),'tg');
+      assert.equal(await page.locator('#teen-9 details').count(),5);
+      await page.locator('a[href="#teen-8"]').click();
+      await page.waitForURL('**/family-teen-dialogue-tg.html#teen-8');
+      await page.locator('#talab-lang-switch [data-language="ru"]').click();
+      await page.waitForURL('**/family-teen-dialogue.html#teen-8');
+      await page.locator('#talab-lang-switch [data-language="tg"]').click();
+      await page.waitForURL('**/family-teen-dialogue-tg.html#teen-8');
+      assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2),true,'No teen dialogue overflow');
       assert.deepEqual(errors,[],'Browser errors during locale switch');
       await page.close();
     }
