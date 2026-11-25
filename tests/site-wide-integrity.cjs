@@ -145,3 +145,41 @@ if(!fs.existsSync('tool/prepare_website.py')&&fs.readFileSync('README.txt','utf8
 console.log(JSON.stringify({...stats,missingOrInvalid:issues.length,issues},null,2));
 assert.deepEqual(issues,[],'Site-wide local page, asset, link and landmark integrity failed');
 console.log('PASS site-wide static integrity; NOT CERTIFIED: external URLs, runtime behavior, PWA offline readiness or accessibility compliance');
+
+
+// Bilingual reading-note contract: test the actual renderer without a browser.
+{
+ const vm=require('node:vm');
+ const db=JSON.parse(fs.readFileSync('data/content.json','utf8'));
+ const ids=[...new Set(db.library.items.filter(x=>x.kind.includes('prophet')).flatMap(x=>x.duaEntryIds||[]))].sort();
+ const entries=[...db.catalog.entries,...db.catalog_additions.entries];
+ const match=app.match(/const tajikReadingNotes = Object\.freeze\((\{[\s\S]*?\n\})\);/);
+ assert(match,'Reading-note dictionary must exist');
+ const notes=JSON.parse(match[1]);
+ assert.equal(ids.length,16);
+ assert.deepEqual(Object.keys(notes).sort(),ids);
+ const renderer=app.slice(app.indexOf('function readingSchemeInfo(x) {'),app.indexOf('function sourceInfo(x) {'));
+ assert(renderer.startsWith('function readingSchemeInfo(x) {'),'Reading-note renderer missing');
+ const context={language:'tg',brandMetadata:s=>s,clean:s=>s,para:(label,value)=>'<p>'+label+' '+value+'</p>'};
+ context.isTajik=()=>context.language==='tg';
+ vm.createContext(context);
+ vm.runInContext('const tajikReadingNotes = Object.freeze('+JSON.stringify(notes)+');\n'+renderer,context);
+ for(const id of ids){
+  const e=entries.find(x=>x.id===id),n=notes[id];
+  assert(e&&n.tg.trim(),id);
+  assert.equal(n.ru,e.transliterationScheme,id+': stale localized note');
+  context.language='tg';
+  const translated=context.readingSchemeInfo(e);
+  assert(translated.includes('lang="tg" data-tg-reading-note')&&translated.includes(n.tg),id);
+  assert(translated.includes('<details lang="ru">')&&translated.includes(n.ru),id+': Russian original missing');
+  const stale=context.readingSchemeInfo({...e,transliterationScheme:e.transliterationScheme+' [updated]'});
+  assert(stale.includes('lang="ru" data-reading-note-fallback')&&!stale.includes('data-tg-reading-note'),id+': stale note must fall back to Russian');
+  context.language='ru';
+  const original=context.readingSchemeInfo(e);
+  assert(original.includes(n.ru)&&!original.includes('data-tg-reading-note'),id+': Russian view');
+ }
+ context.language='tg';
+ assert(context.readingSchemeInfo({id:'__unknown__',transliterationScheme:'untranslated'}).includes('data-reading-note-fallback'));
+ assert.equal(context.readingSchemeInfo({id:'__unknown__'}),'');
+ console.log('PASS: 16 exact bilingual reading notes, Russian original, language switch and stale/missing translation fallback');
+}
