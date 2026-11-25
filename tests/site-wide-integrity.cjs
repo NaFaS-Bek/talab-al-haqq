@@ -186,3 +186,31 @@ console.log('PASS site-wide static integrity; NOT CERTIFIED: external URLs, runt
  assert.equal(context.readingSchemeInfo({id:'__unknown__'}),'');
  console.log('PASS: 43 exact bilingual reading notes, Russian original, language switch and stale/missing translation fallback');
 }
+
+ // Tajik learning-card snapshot contract: foundations and existing prophets.
+{
+ const vm=require('node:vm');
+ const db=JSON.parse(fs.readFileSync('data/content.json','utf8'));
+ const dict=app.match(/const tajikLibraryProfiles = Object\.freeze\((\{[\s\S]*?\n\})\);/);
+ assert(dict,'Tajik library dictionary missing');
+ const profiles=JSON.parse(dict[1]);
+ const cards=db.library.items.filter(x=>['basics','prophet'].includes(x.kind));
+ assert.equal(cards.filter(x=>x.kind==='basics').length,5);
+ assert.equal(cards.filter(x=>x.kind==='prophet').length,25);
+ const functions=app.slice(app.indexOf('function libraryProfileSnapshot(p)'),app.indexOf('const localizedLibrary='));
+ assert(functions.startsWith('function libraryProfileSnapshot(p)'));
+ const ctx=vm.createContext({});
+ vm.runInContext('const tajikLibraryProfiles = Object.freeze('+JSON.stringify(profiles)+');\n'+functions,ctx);
+ for(const card of cards){
+  const t=ctx.tajikLibraryProfile(card);
+  assert(t&&t.title.trim()&&t.summary.trim(),card.id+': missing translation');
+  assert.deepEqual(Array.from(t.sections,s=>s.id),card.sections.map(s=>s.id),card.id+': sections');
+  assert(t.sections.every(s=>s.title.trim()&&s.text.trim()),card.id+': empty section');
+  assert.equal(ctx.tajikLibraryProfile({...card,summaryRu:card.summaryRu+' [changed]'}),null,card.id+': stale original');
+  const sections=JSON.parse(JSON.stringify(card.sections));
+  sections[0].sourceRefs[0].url+='?changed=1';
+  assert.equal(ctx.tajikLibraryProfile({...card,sections}),null,card.id+': stale source');
+ }
+ assert.equal(ctx.tajikLibraryProfile({id:'__unknown__',sections:[]}),null);
+ console.log('PASS: 30 Tajik learning cards, all sections and stale source fallback; not an expert translation certification');
+}
