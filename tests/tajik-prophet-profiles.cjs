@@ -583,3 +583,12 @@ console.log('PASS: additional bilingual verse refinements');
   assert.equal(e.segments.map(s=>s[field]).join(' '),e[field],id);
  }
 }
+
+// Explicit connected-reading cues in the linked prophetic duas.
+{
+ const entries=[...db.catalog.entries,...db.catalog_additions.entries];
+ for(const [id,before,after] of [["q_20_25_28","‘укдатам-мин лисани","‘укдатам-мил-лисани"],["q_27_19","дахикан мин каулиха","дахикам-мин каулиха"],["q_21_87","ал-лян накдира","ал-лян-накдира"]]){
+  const e=entries.find(x=>x.id===id);assert(e,id);assert(e.transliterationRu.includes(after),id);assert(!e.transliterationRu.includes(before),id);
+  assert.equal(e.segments.map(s=>s.transliterationRu).join(' '),e.transliterationRu,id);
+ }
+}
