@@ -452,3 +452,76 @@ for (const item of [
 }
 assert(prophets.find(p=>p.id==='prophet_yunus').sections.find(s=>s.id==='events').sourceRefs.some(r=>r.reference==='Коран 37:140–144'));
 console.log('PASS: further bilingual editorial corrections and Yunus reference range');
+
+// Additional refinements verified against individual Quran verses.
+for (const item of [
+  {
+    "id": "prophet_nuh",
+    "sec": "gifts",
+    "ru": "В 29:15 о спасении Нуха и находившихся в ковчеге говорится вместе со знамением для миров.",
+    "tg": "Дар 29:15 аз наҷоти Нӯҳ ва касоне, ки дар киштӣ буданд, ҳамроҳ бо нишонае барои ҷаҳониён хабар дода мешавад.",
+    "verse": "29:15"
+  },
+  {
+    "id": "prophet_shuayb",
+    "sec": "mission",
+    "ru": "запрет ущемлять людей в том, что им принадлежит",
+    "tg": "манъи кам кардани ҳаққи мардум",
+    "verse": "7:85"
+  },
+  {
+    "id": "prophet_shuayb",
+    "sec": "duas",
+    "ru": "обращение Шуайба от лица верующих к Аллаху",
+    "tg": "муроҷиати Шуъайб аз номи мӯъминон ба Аллоҳи",
+    "verse": "7:89"
+  },
+  {
+    "id": "prophet_dhul_kifl",
+    "sec": "mission",
+    "ru": "отмечено их терпение; Аллах ввёл их в Свою милость, поскольку они были из числа праведных.",
+    "tg": "аз сабри онҳо ёд мешавад; Аллоҳ онҳоро ба раҳмати Худ дохил кард, зеро онҳо аз ҷумлаи солеҳон буданд.",
+    "verse": "21:85–86"
+  },
+  {
+    "id": "prophet_yunus",
+    "sec": "summary",
+    "ru": "о его бегстве к переполненному кораблю",
+    "tg": "аз гурехтани ӯ ба сӯи киштии пурбор",
+    "verse": "37:140"
+  },
+  {
+    "id": "prophet_yunus",
+    "sec": "summary",
+    "ru": "о растении, которое Аллах взрастил над ним",
+    "tg": "аз гиёҳе, ки Аллоҳ бар болои ӯ рӯёнд",
+    "verse": "37:146"
+  },
+  {
+    "id": "prophet_yunus",
+    "sec": "events",
+    "ru": "Юнус бежал к переполненному кораблю",
+    "tg": "Юнус ба сӯи киштии пурбор гурехт",
+    "verse": "37:140"
+  },
+  {
+    "id": "prophet_yunus",
+    "sec": "mission",
+    "ru": "и от кого Аллах отвёл унизительное наказание земной жизни, даровав им благополучие до определённого срока.",
+    "tg": "ва Аллоҳ азоби хоркунандаи зиндагии дунёро аз онҳо дур кард ва то муддате онҳоро баҳраманд гардонд.",
+    "verse": "10:98"
+  },
+  {
+    "id": "prophet_zakariya",
+    "sec": "gifts",
+    "ru": "и исправлении положения жены. В контексте 19:8 это означает, что Аллах даровал ей способность иметь детей.",
+    "tg": "ва ислоҳи аҳволи ҳамсар сухан меравад. Бо назардошти 19:8 маънои ин он аст, ки Аллоҳ ҳамсарашро қобили фарзанддорӣ гардонд.",
+    "verse": "21:90; 19:8"
+  }
+]) {
+ const p=prophets.find(p=>p.id===item.id),tr=ctx.resolve(p);assert(tr,item.id);
+ const ru=item.sec==='summary'?p.summaryRu:p.sections.find(s=>s.id===item.sec).textRu;
+ const tg=item.sec==='summary'?tr.summary:tr.sections.find(s=>s.id===item.sec).text;
+ assert(ru.includes(item.ru),item.id+':'+item.verse+':ru');assert(tg.includes(item.tg),item.id+':'+item.verse+':tg');
+}
+console.log('PASS: additional bilingual verse refinements');
