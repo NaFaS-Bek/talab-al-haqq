@@ -19,6 +19,7 @@
     'История халифов': 'Таърихи халифаҳо', 'Биографии и источники': 'Зиндагиномаҳо ва сарчашмаҳо',
     'Поучительные истории': 'Қиссаҳои ибратомӯз',
     'Восемнадцать рассказов о семье, милосердии и мудрости': '18 аз 18 қисса ба тоҷикӣ: оила, меҳрубонӣ ва хирад',
+    'Восемнадцать историй: Коран, хадисы и выводы': 'Ҳаждаҳ қисса: Қуръон, ҳадисҳо ва хулосаҳо',
     'О проекте': 'Дар бораи лоиҳа',
     'Для кого сайт, источники и границы образовательных материалов':
       'Мақсади сомона, сарчашмаҳо ва ҳудуди маводи омӯзишӣ',
@@ -113,7 +114,7 @@
     try { const v = JSON.parse(localStorage.getItem(KEY)); return LOCALES.includes(v) ? v : 'ru'; }
     catch (_) { return 'ru'; }
   }
-  const pairedLessons = ['five-pillars','pillar-shahada','pillar-salah','pillar-zakat','pillar-sawm','pillar-hajj','wudu-steps','salah-steps','arabic-reading-signs','family-rights','family-nikah','family-mahr','family-children'];
+  const pairedLessons = ['five-pillars','pillar-shahada','pillar-salah','pillar-zakat','pillar-sawm','pillar-hajj','wudu-steps','salah-steps','arabic-reading-signs','family-rights','family-nikah','family-mahr','family-children','family-child-rights','family-parent-duties','family-custody','family-child-safety','family-teen-dialogue','family-filial-duties','family-prophetic-example','family-difficult-passages'];
   function pageKind() {
     const name = location.pathname.split('/').pop();
     if (name === 'about.html' || name === 'about-tg.html') return 'about';
