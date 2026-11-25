@@ -6,12 +6,12 @@ assert(start>=0&&end>start);
 const ctx=vm.createContext({isTajik:()=>true});
 vm.runInContext(app.slice(start,end)+'\nthis.resolve=tajikLibraryProfile;this.localize=localizedLibrary;',ctx);
 const prophets=db.library.items.filter(p=>p.kind==='prophet');
-assert.equal(prophets.length,25);assert.equal(prophets.filter(ctx.resolve).length,21);
-for(const id of ["prophet_adam","prophet_idris","prophet_nuh","prophet_hud","prophet_salih","prophet_ibrahim","prophet_lut","prophet_ismail","prophet_ishaq","prophet_yaqub","prophet_yusuf","prophet_ayyub","prophet_shuayb","prophet_musa","prophet_harun","prophet_dhul_kifl","prophet_dawud","prophet_sulayman","prophet_ilyas","prophet_al_yasa","prophet_yunus"]){const p=prophets.find(x=>x.id===id),t=ctx.resolve(p);assert(t);assert.equal(t.sections.length,p.sections.length);for(const [i,s] of p.sections.entries()){assert.equal(t.sections[i].id,s.id);assert(t.sections[i].title&&t.sections[i].text);}for(const mutate of [p=>p.summaryRu+='x',p=>p.sections[0].sourceRefs[0].url+='x',p=>p.sections.reverse(),p=>p.duaEntryIds.push('changed')]){const clone=JSON.parse(JSON.stringify(p));mutate(clone);assert.equal(ctx.resolve(clone),null);}}
+assert.equal(prophets.length,25);assert.equal(prophets.filter(ctx.resolve).length,25);
+for(const id of ["prophet_adam","prophet_idris","prophet_nuh","prophet_hud","prophet_salih","prophet_ibrahim","prophet_lut","prophet_ismail","prophet_ishaq","prophet_yaqub","prophet_yusuf","prophet_ayyub","prophet_shuayb","prophet_musa","prophet_harun","prophet_dhul_kifl","prophet_dawud","prophet_sulayman","prophet_ilyas","prophet_al_yasa","prophet_yunus","prophet_zakariya","prophet_yahya","prophet_isa","prophet_muhammad"]){const p=prophets.find(x=>x.id===id),t=ctx.resolve(p);assert(t);assert.equal(t.sections.length,p.sections.length);for(const [i,s] of p.sections.entries()){assert.equal(t.sections[i].id,s.id);assert(t.sections[i].title&&t.sections[i].text);}for(const mutate of [p=>p.summaryRu+='x',p=>p.sections[0].sourceRefs[0].url+='x',p=>p.sections.reverse(),p=>p.duaEntryIds.push('changed')]){const clone=JSON.parse(JSON.stringify(p));mutate(clone);assert.equal(ctx.resolve(clone),null);}}
 assert(ctx.resolve(prophets.find(x=>x.id==='prophet_nuh')).sections[3].text.includes('ба давомнокии умумии муайяншудаи умр'));
 ctx.isTajik=()=>false;assert.equal(ctx.localize(prophets[0]),null);
 assert(app.includes('data-tg-prophet-progress'));assert(app.includes('data-tg-library-profile'));
-console.log('PASS: twenty-one guarded prophet biographies; original source references and order retained');
+console.log('PASS: twenty-five guarded prophet biographies; original source references and order retained');
 
 ctx.isTajik=()=>true;
 const hud=ctx.resolve(prophets.find(p=>p.id==='prophet_hud')),salih=ctx.resolve(prophets.find(p=>p.id==='prophet_salih')),ibrahim=ctx.resolve(prophets.find(p=>p.id==='prophet_ibrahim'));
@@ -59,3 +59,15 @@ assert(alyasa.sections[2].text.includes('Дар ин оятҳо рӯйхати �
 assert(yunus.sections[1].text.includes('шумораи рӯзҳои даруни моҳӣ'));
 assert(yunus.sections[4].text.includes('Шумораи такрор дар оят муқаррар нашудааст'));
 console.log('PASS: Ilyas, Al-Yasa, Yunus and source boundaries');
+
+const zakariya=ctx.resolve(prophets.find(p=>p.id==='prophet_zakariya')),yahya=ctx.resolve(prophets.find(p=>p.id==='prophet_yahya')),isa=ctx.resolve(prophets.find(p=>p.id==='prophet_isa')),muhammad=ctx.resolve(prophets.find(p=>p.id==='prophet_muhammad'));
+assert(zakariya.sections[2].text.includes('се шаб'));
+assert(zakariya.sections[4].text.includes('кафолати таваллуди фарзанд'));
+assert(yahya.sections[4].text.includes('ҳамоно дуои Закариё'));
+assert(isa.sections[2].text.includes('Иҷозати Аллоҳ'));
+assert(isa.sections[3].text.includes('Аллоҳ ӯро ба сӯи Худ боло бурд'));
+assert(muhammad.sections[1].text.includes('ҳамчун оят пешниҳод намегардад'));
+assert(muhammad.sections[3].text.includes('Бухорӣ 3902'));
+assert(muhammad.sections[3].text.includes('Муслим 1162b'));
+assert(muhammad.sections[3].text.includes('шасту сесолагӣ'));
+console.log('PASS: Zakariya, Yahya, Isa, Muhammad and source boundaries');
