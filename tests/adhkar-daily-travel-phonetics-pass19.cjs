@@ -21,7 +21,7 @@ const cases=[
   russian:'Бисмилляхи фи аввалихи ва ахирих.'},
  {id:'h_tirmidhi_3458',source:'https://sunnah.com/tirmidhi:3458',
   arabic:'الْحَمْدُ لِلَّهِ الَّذِي أَطْعَمَنِي هَذَا وَرَزَقَنِيهِ مِنْ غَيْرِ حَوْلٍ مِنِّي وَلاَ قُوَّةٍ',
-  russian:'Аль-хамду лилляхи-ллязи ат‘амани хаза ва разаканихи мин гайри хавлин минни ва ля кувватин.'},
+  russian:'Аль-хамду лилляхи-ллязи ат‘амани хаза ва разаканихи мин гайри хавлин минни ва ля куввах.'},
  {id:'h_muslim_1342',source:'https://sunnah.com/muslim:1342',
   arabicStart:'سُبْحَانَ الَّذِي سَخَّرَ لَنَا',
   arabicEnding:'فِي الْمَالِ وَالأَهْلِ',
@@ -56,6 +56,10 @@ for(const spec of cases){
  assert.equal(norm(card.segments.map(x=>x.transliterationRu).join(' ')),norm(card.transliterationRu),
   'Parent transliteration and segments differ: '+spec.id);
 }
+// Editorial source review 2026-11-25: Tirmidhi 3458 ends in ta marbuta with kasra tanwin.
+// Retain both pausal and connected forms in the learning note; no expert certification.
+const afterFood=byId.get('h_tirmidhi_3458');
+assert(afterFood.transliterationScheme.includes('куввах')&&afterFood.transliterationScheme.includes('кувватин')&&afterFood.transliterationScheme.includes('при продолжении'),'Both pausal and connected forms must remain explained');
 const travel=byId.get('h_muslim_1342');
 assert(travel.sourceRefs.some(x=>x.url==='https://quran.com/43/13-14'),
   'Quranic opening must be cited separately');
