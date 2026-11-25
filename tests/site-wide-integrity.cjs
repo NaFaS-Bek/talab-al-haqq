@@ -240,3 +240,14 @@ console.log('PASS site-wide static integrity; NOT CERTIFIED: external URLs, runt
  }
  assert.equal(count,350);console.log('PASS: 350 additional Tajik library fields and exact Russian fallback');
 }
+
+// Source UI localization preserves Arabic and exact destination.
+{
+ const vm=require('node:vm');const ctx={language:'tg',clean:s=>String(s),brandMetadata:s=>s};ctx.isTajik=()=>ctx.language==='tg';vm.createContext(ctx);
+ vm.runInContext(app.slice(app.indexOf('function arabic(v)'),app.indexOf('function sourceById(id)'))+app.slice(app.indexOf('function sourceCard(r)'),app.indexOf('function inlineSources(ids)')),ctx);
+ const source={reference:'Exact original',locationRu:'Русский оригинал',arabicText:'بِسْمِ اللَّهِ',url:'https://example.org/source'};
+ const tg=ctx.sourceCard(source);assert(tg.includes('Нашр')&&tg.includes('Ҷой дар сарчашма')&&tg.includes('Матни аслӣ дар сомонаи сарчашма'));
+ ctx.language='ru';const ru=ctx.sourceCard(source);assert(ru.includes('Издание')&&ru.includes('Оригинал на сайте источника'));
+ for(const h of [tg,ru]){assert(h.includes(source.reference)&&h.includes(source.locationRu)&&h.includes(source.arabicText)&&h.includes(source.url));assert(h.includes('lang="ar" dir="rtl"'));}
+ console.log('PASS: localized source labels, preserved Arabic and citation URL');
+}
