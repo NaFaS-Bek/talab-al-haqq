@@ -87,6 +87,18 @@ const assert=require('node:assert/strict');
         assert.equal(await page.locator('#detail [data-tg-meaning-status]').count(),1,id);
         assert.equal(await page.locator('#detail [data-tg-meaning]').count(),count,id);
         if(id==='h_muslim_2202') assert.match(await page.locator('#detail').innerText(),/Ба номи Аллоҳ: 3 бор[\s\S]*Дуои паноҳҷӯӣ: 7 бор/);
+        // Cover the remaining linked prophetic duas outside the Prophets category.
+        if(['h_bukhari_6369','h_muslim_2725a','q_2_250'].includes(id)){
+          const source=page.locator('#detail #materialSource');
+          await source.locator(':scope > summary').click();
+          const note=source.locator('[data-tg-reading-note]');
+          assert.equal(await note.count(),1,id);
+          assert.equal(await note.getAttribute('lang'),'tg',id);
+          assert.match(await note.locator(':scope > .bodycopy').innerText(),/Транскрипсияи ёрирасон/,id);
+          await note.locator('details > summary').click();
+          assert.match(await note.locator('details .bodycopy').innerText(),/транскрипция/i,id);
+          await source.locator(':scope > summary').click();
+        }
         await page.keyboard.press('Escape');
         await page.locator('[data-back="dua"]').click();
       }
