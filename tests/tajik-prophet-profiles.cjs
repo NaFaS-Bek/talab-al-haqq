@@ -371,3 +371,84 @@ for (const item of [
  assert(ru.includes(item.ru),item.id+':'+item.verse+':ru');assert(tg.includes(item.tg),item.id+':'+item.verse+':tg');
 }
 console.log('PASS: bilingual source-checked editorial corrections');
+
+// Further editorial refinements checked against the cited verses.
+for (const item of [
+  {
+    "id": "prophet_idris",
+    "sec": "gifts",
+    "ru": null,
+    "tg": "ба ҷойгоҳи баланд бардошт",
+    "verse": "19:57"
+  },
+  {
+    "id": "prophet_salih",
+    "sec": "mission",
+    "ru": "о дворцах, которые они строили на равнинах",
+    "tg": "аз қасрҳое, ки онҳо дар ҳамвориҳо месохтанд",
+    "verse": "7:74"
+  },
+  {
+    "id": "prophet_ismail",
+    "sec": "summary",
+    "ru": "велел своей семье совершать молитву и выплачивать закят",
+    "tg": "аҳли оилаи худро ба намоз ва закот амр мекард",
+    "verse": "19:55"
+  },
+  {
+    "id": "prophet_ismail",
+    "sec": "mission",
+    "ru": "велел своей семье совершать молитву и выплачивать закят",
+    "tg": null,
+    "verse": "19:55"
+  },
+  {
+    "id": "prophet_harun",
+    "sec": "events",
+    "ru": "что Муса обвинит его в разделении сынов Исраиля и несоблюдении его слов",
+    "tg": "ки Мусо ӯро дар пароканда кардани Банӣ Исроил ва риоя накардани суханаш айбдор кунад",
+    "verse": "20:94"
+  },
+  {
+    "id": "prophet_sulayman",
+    "sec": "events",
+    "ru": "признанием того, что она поступила несправедливо по отношению к самой себе",
+    "tg": "эътирофи ситаме, ки бар худ карда буд",
+    "verse": "27:44"
+  },
+  {
+    "id": "prophet_sulayman",
+    "sec": "gifts",
+    "ru": "труд некоторых джиннов по дозволению Господа",
+    "tg": "кори баъзе аз ҷинҳо бо иҷозати Парвардигор",
+    "verse": "34:12"
+  },
+  {
+    "id": "prophet_yunus",
+    "sec": "events",
+    "ru": "его поглотила большая рыба. В 37:143–144 сказано, что, если бы Юнус не был из числа прославляющих Аллаха, он остался бы в её чреве до Дня воскресения.",
+    "tg": "моҳии бузурге ӯро фурӯ бурд. Дар 37:143–144 гуфта мешавад, ки агар Юнус аз ҷумлаи тасбеҳгӯёни Аллоҳ намебуд, то рӯзи барангехта шудан дар шиками моҳӣ мемонд.",
+    "verse": "37:143–144"
+  },
+  {
+    "id": "prophet_ibrahim",
+    "sec": "events",
+    "ru": null,
+    "tg": "Аллоҳ писарро бо қурбонии бузурге раҳоӣ бахшид",
+    "verse": "37:107"
+  },
+  {
+    "id": "prophet_yaqub",
+    "sec": "events",
+    "ru": "а в 12:87 побуждает сыновей",
+    "tg": "дар 12:87 бошад, писаронашро ба ҷустуҷӯи",
+    "verse": "12:87"
+  }
+]) {
+ const p=prophets.find(p=>p.id===item.id),tr=ctx.resolve(p);assert(tr,item.id);
+ const ru=item.sec==='summary'?p.summaryRu:p.sections.find(s=>s.id===item.sec).textRu;
+ const tg=item.sec==='summary'?tr.summary:tr.sections.find(s=>s.id===item.sec).text;
+ if(item.ru!==null)assert(ru.includes(item.ru),item.id+':'+item.verse+':ru');if(item.tg!==null)assert(tg.includes(item.tg),item.id+':'+item.verse+':tg');
+}
+assert(prophets.find(p=>p.id==='prophet_yunus').sections.find(s=>s.id==='events').sourceRefs.some(r=>r.reference==='Коран 37:140–144'));
+console.log('PASS: further bilingual editorial corrections and Yunus reference range');
