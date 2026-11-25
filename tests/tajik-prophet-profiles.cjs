@@ -602,3 +602,13 @@ console.log('PASS: additional bilingual verse refinements');
  }
  const e=entries.find(x=>x.id==='q_2_127_128');assert(e.transliterationRu.includes('ва Исма‘илу раббана'));assert(!e.transliterationRu.includes('ва Исма‘ил. Раббана'));
 }
+
+// Follow-up: conditional endings and nasal merging, not prescribed pause locations.
+{
+ const entries=[...db.catalog.entries,...db.catalog_additions.entries];
+ for(const [id,note] of [["q_12_101"," После ٱلْأَحَادِيثِ при остановке — «аль-ахадис», при продолжении — «аль-ахадиси». Точка в русской подсказке не предписывает остановку."],["q_14_40_41"," На конце 14:40 (دُعَآءِ) при остановке — «ду‘а’», при соединении со следующим аятом — «ду‘а’и»."],["q_21_89"," В сочетании فَرْدًا وَأَنتَ при слитном чтении танвин сливается с واو с гунной (носовым звучанием); отдельный полный звук «н» не произносится. «Фардав-ва» — условная подсказка, не точная передача звука. Если требуется остановка на فَرْدًا, окончание читается с долгим «а» («фарда»), без «н». Это не указание остановиться в данном месте."]]) {
+  const e=entries.find(x=>x.id===id);assert(e,id);assert(e.transliterationScheme.includes(note),id);
+  assert.equal(e.segments.map(s=>s.transliterationRu).join(' '),e.transliterationRu,id);
+ }
+ const z=entries.find(e=>e.id==='q_21_89');assert(z.transliterationRu.includes('фардав-ва анта'));assert(!z.transliterationRu.includes('фардан, ва анта'));
+}
