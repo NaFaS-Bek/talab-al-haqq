@@ -68,6 +68,15 @@ const assert=require('node:assert/strict');
         await page.locator('[data-open="dua:'+id+'"]').click();
         assert.equal(await page.locator('#detail [data-tg-meaning-status]').count(),1,id);
         assert.equal(await page.locator('#detail [data-tg-meaning]').count(),id==='q_20_25_28'?4:['q_14_40_41','q_2_127_128'].includes(id)?2:1,id);
+        const source=page.locator('#detail #materialSource');
+        await source.locator(':scope > summary').click();
+        assert.equal(await source.locator('[data-tg-reading-note]').count(),1,id);
+        assert.equal(await source.locator('[data-tg-reading-note]').getAttribute('lang'),'tg',id);
+        assert.match(await source.locator('[data-tg-reading-note] > .bodycopy').innerText(),/Транскрипсияи ёрирасон/);
+        if(id==='q_71_28') assert.match(await source.locator('[data-tg-reading-note] > .bodycopy').innerText(),/ғунна/);
+        await source.locator('[data-tg-reading-note] details > summary').click();
+        assert.match(await source.locator('[data-tg-reading-note] details .bodycopy').innerText(),/транскрипция/);
+        await source.locator(':scope > summary').click();
         if(['q_7_23','q_21_87','q_20_25_28','q_27_19','q_5_114'].includes(id)) assert.equal(await page.locator('#detail [data-narrative-boundary]').count(),1);
         await page.keyboard.press('Escape');
       }
