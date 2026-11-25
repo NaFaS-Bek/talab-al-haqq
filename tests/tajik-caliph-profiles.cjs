@@ -11,9 +11,9 @@ for(const [i,s] of original.sections.entries()){assert.equal(t.sections[i].id,s.
 for(const mutate of [x=>x.summaryRu+='x',x=>x.sections[0].sourceIds.push('unknown'),x=>x.sections[5].views[0].tradition='unknown',x=>x.sections[6].views[0].textRu+='x',x=>x.sections.reverse()]){
  const changed=JSON.parse(JSON.stringify(original));mutate(changed);assert.equal(ctx.resolve(changed),null);
 }
-assert.equal(db.profiles.filter(ctx.resolve).length,2);ctx.isTajik=()=>false;assert.equal(ctx.localized(original),null);
+assert.equal(db.profiles.filter(ctx.resolve).length,3);ctx.isTajik=()=>false;assert.equal(ctx.localized(original),null);
 assert(app.includes('inlineSources(v.sourceIds)'));assert(app.includes('inlineSources(s.sourceIds)'));assert(app.includes('data-tg-caliph-profile'));
-console.log('PASS: two complete guarded Tajik biographies, section and attributed-view parity');
+console.log('PASS: three complete guarded Tajik biographies, section and attributed-view parity');
 
 ctx.isTajik=()=>true;
 const umar=db.profiles.find(x=>x.id==='person_umar'),ut=ctx.resolve(umar);
@@ -23,3 +23,11 @@ for(const mutate of [x=>x.reignRu+='x',x=>x.sections[5].textRu+='x',x=>x.section
 assert(ut.sections[5].text.includes('Мазмуни санади навиштанашуда маълум нест'));
 assert(ut.sections[12].uncertainty.includes('Гуноҳ ба гурӯҳҳои қавмӣ'));
 console.log('PASS: Umar biography, uncertainty and attributed-view parity');
+
+const uthman=db.profiles.find(x=>x.id==='person_uthman'),utman=ctx.resolve(uthman);
+assert(utman);assert.equal(utman.sections.length,12);assert.equal(utman.sections.flatMap(s=>s.views||[]).length,6);
+for(const [i,s] of uthman.sections.entries()){assert.equal(utman.sections[i].id,s.id);assert.equal(Boolean(utman.sections[i].uncertainty),Boolean(s.uncertaintyRu));assert.equal((utman.sections[i].views||[]).length,s.views.length);}
+for(const mutate of [x=>x.sections[7].textRu+='x',x=>x.sections[7].views[1].sourceIds.push('unknown'),x=>x.sections[9].uncertaintyRu+='x',x=>x.relatedEventIds.reverse()]){const changed=JSON.parse(JSON.stringify(uthman));mutate(changed);assert.equal(ctx.resolve(changed),null);}
+assert(utman.sections[7].text.includes('Усмон ҳамчун офарандаи ваҳйи нав муаррифӣ нашудааст'));
+assert(utman.sections[9].uncertainty.includes('муаллифи номаи баҳснок'));
+console.log('PASS: Uthman biography, uncertainty and attributed-view parity');
