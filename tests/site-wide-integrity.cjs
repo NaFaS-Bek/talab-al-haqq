@@ -219,3 +219,24 @@ console.log('PASS site-wide static integrity; NOT CERTIFIED: external URLs, runt
  assert.equal(ctx.tajikLibraryProfile({id:'__unknown__',sections:[]}),null);
  console.log('PASS: 75 Tajik learning cards, all sections and stale source fallback; not an expert translation certification');
 }
+
+// Additional library fields must match the exact source and preserve Russian fallback.
+{
+ const vm=require('node:vm');
+ const db=JSON.parse(fs.readFileSync('data/content.json','utf8'));
+ const start=app.indexOf('const tajikLibraryExtras = Object.freeze(');
+ const end=app.indexOf('const localizedLibrary=',start);
+ assert(start>=0&&end>start);
+ const ctx=vm.createContext({});
+ vm.runInContext(app.slice(start,end),ctx);
+ let count=0;
+ for(const [file,key] of [['details','detailsRu'],['rulings','rulingRu'],['traditions','traditionRu']]){
+  const draft=JSON.parse(fs.readFileSync('docs/tajik-library-'+file+'-draft.json','utf8'));
+  for(const [id,sections] of Object.entries(draft)) for(const [sid,v] of Object.entries(sections)){
+   const p=db.library.items.find(x=>x.id===id);const s=p.sections.find(x=>x.id===sid);
+   assert.equal(s[key],v.original);assert.equal(ctx.libraryExtra(p,s,key,true),v.translation);assert.equal(ctx.libraryExtra(p,s,key,false),v.original);
+   assert.equal(ctx.libraryExtra(p,{...s,[key]:v.original+' changed'},key,true),v.original+' changed');count++;
+  }
+ }
+ assert.equal(count,350);console.log('PASS: 350 additional Tajik library fields and exact Russian fallback');
+}
