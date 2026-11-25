@@ -194,13 +194,14 @@ console.log('PASS site-wide static integrity; NOT CERTIFIED: external URLs, runt
  const dict=app.match(/const tajikLibraryProfiles = Object\.freeze\((\{[\s\S]*?\n\})\);/);
  assert(dict,'Tajik library dictionary missing');
  const profiles=JSON.parse(dict[1]);
- const familyIds=["family_mercy","family_respectful_words","family_trust","family_household_agreements","family_household_budget","family_parenting","family_relatives_support","family_calm_dialogue","family_apology_and_help","family_danger_and_coercion"];
- const cards=db.library.items.filter(x=>['basics','prophet','surah'].includes(x.kind)||familyIds.includes(x.id));
- assert.equal(cards.filter(x=>x.kind==='family').length,10);
+ const cards=db.library.items;
+ assert.equal(cards.filter(x=>x.kind==='family').length,18);
+ assert.equal(cards.filter(x=>x.kind==='prayer').length,20);
+ assert.equal(Object.keys(profiles).length,75);
  assert.equal(cards.filter(x=>x.kind==='basics').length,5);
  assert.equal(cards.filter(x=>x.kind==='prophet').length,25);
  assert.equal(cards.filter(x=>x.kind==='surah').length,7);
- assert.equal(cards.length,47);
+ assert.equal(cards.length,75);
  const functions=app.slice(app.indexOf('function libraryProfileSnapshot(p)'),app.indexOf('const localizedLibrary='));
  assert(functions.startsWith('function libraryProfileSnapshot(p)'));
  const ctx=vm.createContext({});
@@ -216,5 +217,5 @@ console.log('PASS site-wide static integrity; NOT CERTIFIED: external URLs, runt
   assert.equal(ctx.tajikLibraryProfile({...card,sections}),null,card.id+': stale source');
  }
  assert.equal(ctx.tajikLibraryProfile({id:'__unknown__',sections:[]}),null);
- console.log('PASS: 47 Tajik learning cards, all sections and stale source fallback; not an expert translation certification');
+ console.log('PASS: 75 Tajik learning cards, all sections and stale source fallback; not an expert translation certification');
 }
