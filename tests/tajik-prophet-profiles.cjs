@@ -633,3 +633,52 @@ console.log('PASS: additional bilingual verse refinements');
   assert.equal(e.segments.map(s=>s.transliterationRu).join(' '),e.transliterationRu,id);
  }
 }
+
+
+// Reading-note freshness and safe language fallback for all linked prophetic duas.
+{
+ const from=app.indexOf('const tajikReadingNotes = Object.freeze(');
+ const to=app.indexOf('function sourceInfo(',from);
+ assert(from>=0&&to>from,'Reading-note resolver not found');
+ const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+ const locale={tg:true};
+ const sandbox=vm.createContext({
+  isTajik:()=>locale.tg, brandMetadata:s=>s, clean:esc,
+  para:(label,value)=>'<p>'+esc(label)+' '+esc(value)+'</p>'
+ });
+ vm.runInContext(app.slice(from,to)+'\nthis.renderReading=readingSchemeInfo;this.notes=tajikReadingNotes;',sandbox);
+ const ids=[...new Set(prophets.flatMap(p=>p.duaEntryIds||[]))].sort();
+ assert.equal(ids.length,16);
+ assert.deepEqual(Object.keys(sandbox.notes).sort(),ids);
+ const entries=[...db.catalog.entries,...db.catalog_additions.entries];
+ for(const id of ids){
+  const e=entries.find(x=>x.id===id),note=sandbox.notes[id];
+  assert(e&&note,id);
+  assert.equal(note.ru,e.transliterationScheme,id+': outdated translation snapshot');
+  assert.match(note.tg,/Транскрипсияи ёрирасон/,id);
+  locale.tg=true;
+  const tg=sandbox.renderReading(e);
+  assert(tg.includes('lang="tg" data-tg-reading-note'),id);
+  assert(tg.includes(esc(note.tg)),id);
+  assert(tg.includes(esc(note.ru)),id);
+  assert(!tg.includes('data-reading-note-fallback'),id);
+  const changed={...e,transliterationScheme:e.transliterationScheme+' [new editorial wording]'};
+  const stale=sandbox.renderReading(changed);
+  assert(stale.includes('lang="ru" data-reading-note-fallback'),id);
+  assert(stale.includes(esc(changed.transliterationScheme)),id);
+  assert(!stale.includes('data-tg-reading-note'),id);
+  assert(!stale.includes(esc(note.tg)),id);
+  locale.tg=false;
+  const ru=sandbox.renderReading(e);
+  assert(ru.includes(esc(note.ru)),id);
+  assert(!ru.includes('data-tg-reading-note'),id);
+  assert(!ru.includes('data-reading-note-fallback'),id);
+ }
+ locale.tg=true;
+ const unknown=sandbox.renderReading({id:'unknown_reading_note',transliterationScheme:'Непереведённое пояснение <test>'});
+ assert(unknown.includes('data-reading-note-fallback'));
+ assert(unknown.includes('&lt;test&gt;'));
+ assert(!unknown.includes('<test>'));
+ assert.equal(sandbox.renderReading({id:ids[0]}),'');
+ console.log('PASS: 16 reading-note snapshots, Russian/Tajik rendering and stale-translation fallback');
+}
