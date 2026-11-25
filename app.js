@@ -1666,7 +1666,7 @@ function item(x, kind, about = false) {
   const subtitle = about
     ? `${statusName(x.reviewStatus || x.status)} · Экспертная проверка: ${x.expertReview ? 'см. сведения' : 'не отмечена'}`
     : kind === 'name' ? (localizedName(x)?.meaning || x.meaningRu) : kind === 'dua' ? (localizedDua(x)?.meaning || x.translationRu) : x.summaryRu;
-  return `<button class="item" ${about ? 'data-about' : 'data-open'}="${kind}:${clean(x.id)}">${kind === 'name' ? `<span class="number">${x.number}</span>` : ''}<span class="itembody"><strong>${clean(title(x, kind))}</strong><small>${clean((subtitle || '').slice(0, 140))}${(subtitle || '').length > 140 ? '…' : ''}</small></span>${kind === 'name' ? `<span class="arabicMini" lang="ar" dir="rtl">${clean(x.arabic)}</span>` : '<span class="arrow" aria-hidden="true">›</span>'}</button>`;
+  return `<button class="item" ${about ? 'data-about' : 'data-open'}="${kind}:${clean(x.id)}">${kind === 'name' ? `<span class="number">${x.number}</span>` : ''}<span class="itembody"><strong>${clean(title(x, kind))}</strong><small>${clean((subtitle || '').slice(0, 140))}${(subtitle || '').length > 140 ? '…' : ''}</small>${isTajik() && !about && ['lib','history','caliph'].includes(kind) ? '<small lang="tg" data-tg-card-pending>Ба русӣ · тарҷума ҳанӯз омода нест</small>' : ''}</span>${kind === 'name' ? `<span class="arabicMini" lang="ar" dir="rtl">${clean(x.arabic)}</span>` : '<span class="arrow" aria-hidden="true">›</span>'}</button>`;
 }
 function search() { return `<label class="search"><span aria-hidden="true">⌕</span><input id="search" type="search" aria-label="Найти материал" placeholder="Найти материал…" value="${clean(query)}" autocomplete="off"></label>`; }
 function section(t, more) { return `<div class="sectionhead"><h2>${clean(t)}</h2>${more ? `<button data-tab="${clean(more)}">Смотреть всё →</button>` : ''}</div>`; }
@@ -1718,17 +1718,86 @@ function knowledge() {
 
     return header + `<button class="action" data-education-back="1">← К урокам</button>${section(chosen?.title || 'Учебные материалы')}${practiceLinks}${search()}<p class="lead">Материалов: ${found.length}</p>${found.map(x=>item(x,'lib')).join('') || empty()}${footer()}`;
   }
-  const prophetStories = knowledgeGroup === 'prophet' ? '<a class="item category-item" href="stories.html"><span class="itembody"><strong>Поучительные истории</strong><small>Пятнадцать историй: Коран, хадисы и выводы</small></span><span class="arrow" aria-hidden="true">›</span></a>' : '';
+  const prophetStories = knowledgeGroup === 'prophet' ? '<a class="item category-item" href="stories.html"><span class="itembody"><strong>Поучительные истории</strong><small>Восемнадцать историй: Коран, хадисы и выводы</small></span><span class="arrow" aria-hidden="true">›</span></a>' : '';
   const familyOverview = knowledgeGroup === 'family' ? '<a class="item category-item" href="family-rights.html"><span class="itembody"><strong>Муж и жена: права и обязанности</strong><small>Взаимные права и примеры</small></span><span class="arrow" aria-hidden="true">›</span></a><a class="item category-item" href="family-nikah.html"><span class="itembody"><strong>Никах: заключение брака</strong><small>Согласие и договор</small></span><span class="arrow" aria-hidden="true">›</span></a><a class="item category-item" href="family-mahr.html"><span class="itembody"><strong>Махр: брачный дар жене</strong><small>Что принадлежит жене</small></span><span class="arrow" aria-hidden="true">›</span></a><a class="item category-item" href="family-children.html"><span class="itembody"><strong>Воспитание детей</strong><small>Забота, милосердие и ответственность</small></span><span class="arrow" aria-hidden="true">›</span></a><a class="item category-item" href="family-child-rights.html"><span class="itembody"><strong>Права ребёнка в исламе</strong><small>Жизнь, забота и достоинство</small></span><span class="arrow" aria-hidden="true">›</span></a><a class="item category-item" href="family-parent-duties.html"><span class="itembody"><strong>Обязанности родителей</strong><small>Воспитание, обеспечение и различия школ</small></span><span class="arrow" aria-hidden="true">›</span></a><a class="item category-item" href="family-custody.html"><span class="itembody"><strong>Опека после развода</strong><small>Ребёнок, оба родителя и безопасность</small></span><span class="arrow" aria-hidden="true">›</span></a><a class="item category-item" href="family-child-safety.html"><span class="itembody"><strong>Защита ребёнка от насилия и унижения</strong><small>Безопасность, травля и помощь</small></span><span class="arrow" aria-hidden="true">›</span></a><a class="item category-item" href="family-teen-dialogue.html"><span class="itembody"><strong>Общение с подростками</strong><small>Доверие, самостоятельность и вопросы о вере</small></span><span class="arrow" aria-hidden="true">›</span></a><a class="item category-item" href="family-filial-duties.html"><span class="itembody"><strong>Почтение к родителям</strong><small>Забота, благодарность и границы послушания</small></span><span class="arrow" aria-hidden="true">›</span></a><a class="item category-item" href="family-prophetic-example.html"><span class="itembody"><strong>Семья по примеру Пророка ﷺ</strong><small>Помощь и доброе обращение</small></span><span class="arrow" aria-hidden="true">›</span></a>' : '';
   const g = groups.find(g=>g.id===knowledgeGroup);
   const arr = records.filter(x=>(x._kind==='history'?'events':x.kind)===knowledgeGroup && textSearch(x));
   return `${backButton('library')}${section(g?.title || 'Исламские знания')}${prophetStories}${familyOverview}${search()}<p class="lead">Материалов: ${arr.length}</p>${arr.map(x=>item(x,x._kind)).join('') || empty()}${footer()}`;
 }
+// Editorial Tajik introduction only: match exact Russian text and source IDs.
+const tajikCaliphIntroduction = Object.freeze({
+  "original": {
+    "titleRu": "История халифов",
+    "textRu": "Пять биографий показывают, как после смерти пророка Мухаммада ﷺ решались вопросы руководства, передачи знаний и единства общины. Историческое правление человека и религиозное признание его руководства — разные вопросы. В обычном суннитском перечне праведных халифов называют Абу Бакра, Умара, Усмана и Али. Некоторые суннитские учёные добавляют Хасана с учётом его краткого правления. Это не единодушная классификация всех мусульман.\n\nХронология 632–661 годов дана по распространённой исторической шкале. Ранние сообщения систематизированы позднее событий: их сопоставление не превращает каждый рассказ о частной беседе, намерении или точном дне в установленный факт. Исторический рассказ и богословское толкование рассматриваются раздельно.",
+    "sourceIds": [
+      "ch_rashidun",
+      "ch_tdv_hasan",
+      "ch_madelung_book"
+    ],
+    "terms": [
+      {
+        "termRu": "Халиф",
+        "textRu": "Преемник в руководстве общиной после Пророка; он не становится новым пророком. Историческое правление имело религиозные и политические функции. Способ выбора и законность конкретного правителя оценивались различно; фактическое обладание властью не решает всех богословских вопросов.",
+        "sourceIds": [
+          "ch_rashidun",
+          "ch_rizvi_imamate"
+        ]
+      },
+      {
+        "termRu": "Праведный халиф",
+        "textRu": "Суннитское оценочное наименование ранних правителей. Обычный перечень состоит из четырёх имён; включение Хасана встречается у части учёных. Хадис ат-Тирмизи 2226 говорит о тридцати годах, но сам не называет Хасана пятым: это последующее сопоставление и толкование.",
+        "sourceIds": [
+          "ch_rashidun",
+          "ch_tdv_hasan",
+          "ch_tirmidhi_thirty"
+        ]
+      },
+      {
+        "termRu": "Имам",
+        "textRu": "Слово может обозначать ведущего молитву или учёного. В двунадесятническом и исмаилитском учении об имамате это особое руководство, восходящее к Али и семье Пророка. Оно не зависит только от наличия государственной власти; значения слова следует различать по контексту.",
+        "sourceIds": [
+          "ch_rizvi_imamate",
+          "ch_iis_imamate",
+          "ch_dawoodi_faith"
+        ]
+      }
+    ]
+  },
+  "translation": {
+    "title": "Таърихи халифаҳо",
+    "text": "Панҷ шарҳи ҳол нишон медиҳанд, ки пас аз вафоти Паёмбар Муҳаммад ﷺ масъалаҳои роҳбарӣ, интиқоли дониш ва ваҳдати ҷомеаи мусалмонон чӣ гуна ҳал мешуданд. Ҳукмронии таърихии шахс ва эътирофи динии роҳбарии ӯ масъалаҳои гуногунанд. Дар рӯйхати маъмулии суннии халифаҳои рошидин Абӯбакр, Умар, Усмон ва Алӣ ном бурда мешаванд. Баъзе олимони суннӣ Ҳасанро низ бо назардошти давраи кӯтоҳи ҳукмрониаш илова мекунанд. Ин таснифоти мавриди иттифоқи ҳамаи мусалмонон нест.\n\nХронологияи солҳои 632–661 мувофиқи даврабандии маъмули таърихӣ оварда шудааст. Ривоятҳои аввалия баъдтар аз замони воқеаҳо ба низом дароварда шудаанд: муқоисаи онҳо ҳар нақл дар бораи суҳбати хусусӣ, ният ё рӯзи дақиқро ба далели собит табдил намедиҳад. Нақли таърихӣ ва тафсири ақидавӣ ҷудогона баррасӣ мешаванд.",
+    "terms": [
+      {
+        "term": "Халифа",
+        "text": "Ҷонишини роҳбарии ҷомеа пас аз Паёмбар; ӯ пайғамбари нав намешавад. Ҳукмронии таърихӣ вазифаҳои динӣ ва сиёсӣ дошт. Тарзи интихоб ва қонуният ё ҳаққонияти ҳокими мушаххас ба таври гуногун арзёбӣ мешуданд; дар ихтиёр доштани воқеии ҳокимият ҳамаи масъалаҳои ақидавиро ҳал намекунад."
+      },
+      {
+        "term": "Халифаи рошид",
+        "text": "Унвони арзёбикунандаи суннӣ барои ҳокимони аввалин. Рӯйхати маъмул аз чор ном иборат аст; илова кардани Ҳасан дар назди баъзе олимон дида мешавад. Ҳадиси Тирмизӣ 2226 дар бораи сӣ сол сухан мегӯяд, аммо худи ҳадис Ҳасанро панҷум ном намебарад: ин муқоиса ва тафсири баъдӣ аст."
+      },
+      {
+        "term": "Имом",
+        "text": "Ин вожа метавонад пешнамоз ё олими динро ифода кунад. Дар таълимоти шиаи дувоздаҳимомӣ ва исмоилӣ дар бораи имомат он роҳбарии хосест, ки ба Алӣ ва хонаводаи Паёмбар бармегардад. Он танҳо ба мавҷудияти ҳокимияти давлатӣ вобаста нест; маъноҳои вожаро мувофиқи замина бояд аз ҳам ҷудо кард."
+      }
+    ]
+  }
+});
+function caliphIntroTajik(i) {
+  if(!isTajik() || !i || !Array.isArray(i.terms)) return null;
+  const snapshot={titleRu:i.titleRu,textRu:i.textRu,sourceIds:i.sourceIds,terms:i.terms.map(t=>({termRu:t.termRu,textRu:t.textRu,sourceIds:t.sourceIds}))};
+  return JSON.stringify(snapshot)===JSON.stringify(tajikCaliphIntroduction.original)?tajikCaliphIntroduction.translation:null;
+}
+function untranslatedKnowledgeNote() {
+  return '<p class="attribution" lang="tg" data-tg-untranslated="1">Тарҷумаи ин мавод ҳанӯз омода нест; матни русӣ нишон дода шудааст.</p>';
+}
 function caliphPage() {
   if (!caliphs) return `${section('История халифов')}<p class="lead">Материалы ещё не загружены. Подготовьте полную версию сайта.</p>${footer()}`;
   const i = caliphs.introduction;
   const introSource = sourceInfo(i).replace('id="materialSource"','id="caliphIntroductionSource"');
-  return `${section(i.titleRu || 'История халифов')}${para('',i.textRu)}${introSource}${(i.terms || []).map(t => `<section class="review-card"><h3>${clean(t.termRu)}</h3>${para('',t.textRu)}${inlineSources(t.sourceIds)}</section>`).join('')}${search()}${caliphs.profiles.filter(textSearch).map(x => item(x,'caliph')).join('') || empty()}${footer()}`;
+  const tg = caliphIntroTajik(i);
+  const intro = tg ? '<div lang="tg" data-tg-caliph-intro="1">'+section(tg.title)+para('',tg.text)+tajikMeaningStatus()+'</div><details lang="ru"><summary>Введение на русском</summary>'+para('',i.textRu)+'</details>' : section(i.titleRu || 'История халифов')+para('',i.textRu)+(isTajik()?untranslatedKnowledgeNote():'');
+  const terms=(i.terms || []).map((t,index) => `<section class="review-card"><h3${tg?' lang="tg"':''}>${clean(tg?.terms[index].term || t.termRu)}</h3>${tg?'<div lang="tg">'+para('',tg.terms[index].text)+'</div><details lang="ru"><summary>Пояснение на русском</summary>'+para('',t.textRu)+'</details>':para('',t.textRu)}${inlineSources(t.sourceIds)}</section>`).join('');
+  return intro+introSource+terms+(isTajik()?'<p class="lead" lang="tg" data-tg-caliph-progress>Тарҷумаи шарҳи ҳол: 0 аз '+caliphs.profiles.length+'. Шарҳи ҳолҳо ва маълумоти библиографӣ ҳоло ба русӣ нишон дода мешаванд.</p>':'')+search()+(caliphs.profiles.filter(textSearch).map(x => item(x,'caliph')).join('') || empty())+footer();
 }
 function favorites() {
   const a = favs.map(findRecord).filter(Boolean);
@@ -2177,6 +2246,7 @@ function details(r) {
       if(isTajik()) html += '<p class="attribution" lang="tg">Тарҷумаи тоҷикӣ ҳанӯз омода нест; матни русӣ нишон дода шудааст.</p>';
     }
   }
+  if (isTajik() && ['lib','history','caliph'].includes(kind)) html += untranslatedKnowledgeNote();
   if (kind === 'lib') {
     html += para('Кратко',x.summaryRu);
     for(const s of x.sections || []) html += para(s.titleRu,s.textRu) + arabic(s.arabicText) + para(s.transliterationRu ? 'Транскрипция' : '',s.transliterationRu) + warning(s.disputeRu || s.uncertaintyRu);
