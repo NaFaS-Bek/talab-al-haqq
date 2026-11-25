@@ -117,7 +117,7 @@ assert.match(nameMeanings.name_099.basis,/шумораи такрор/);
  assert(g.includes('Ин дарс фатво нест'));
  assert(g.includes('Ҳангоми таҳдид ё зӯроварӣ амният'));
  assert(g.includes('data-tg-family-pending'));
- assert.equal((g.match(/href="family-[^"]+\.html" hreflang="ru"><strong>/g)||[]).length,2);
+ assert.equal((g.match(/href="family-[^"]+\.html" hreflang="ru"><strong>/g)||[]).length,1);
  assert(r.includes('href="family-rights-tg.html"'));
  assert(g.includes('href="family-rights.html"'));
  const m=JSON.parse(fs.readFileSync('sw.js','utf8').match(/^const RELEASE = (\{[^\r\n]+\});/m)[1]);
@@ -254,4 +254,17 @@ assert.match(nameMeanings.name_099.basis,/шумораи такрор/);
  for(const p of ["family-rights-tg.html","family-children-tg.html","family-child-rights-tg.html","family-parent-duties-tg.html","family-custody-tg.html","family-child-safety-tg.html"]) assert(fs.readFileSync(p,'utf8').includes('href="family-teen-dialogue-tg.html" hreflang="tg"'));
  assert(g.includes('href="family-children-tg.html" hreflang="tg"'));assert(g.includes('href="family-child-safety-tg.html" hreflang="tg"'));
  console.log('PASS: Tajik teen dialogue, source/anchor parity, evidence boundaries and emergency support');
+}
+
+{
+ const r=fs.readFileSync('family-filial-duties.html','utf8'),g=fs.readFileSync('family-filial-duties-tg.html','utf8');
+ const urls=s=>[...s.matchAll(/href="(https?:\/\/[^"]+)"/g)].map(x=>x[1]);
+ const ids=s=>[...s.matchAll(/\bid="([^"]+)"/g)].map(x=>x[1]);
+ assert.deepEqual(urls(g),urls(r));assert.equal(urls(g).length,15);
+ assert.deepEqual(ids(g),ids(r));assert.equal((g.match(/<details>/g)||[]).length,5);
+ assert.equal((g.match(/class="example"/g)||[]).length,3);assert.equal((g.match(/<li>/g)||[]).length,4);
+ for(const phrase of ['на сухани мустақими Луқмон','на иҷмои тасдиқшудаи ҳамаи мазҳабҳои суннӣ','на қоидаи ягонаи ҳамаи шиён, сунниён ё исмоилиён','талаботи таҳаммул кардани зӯроварӣ ё мондан дар хонаи хатарнок нест','Бозбинии мустақили забонӣ ва динӣ ҳанӯз анҷом наёфтааст']) assert(g.includes(phrase),phrase);
+ for(const p of ["family-rights-tg.html","family-children-tg.html","family-child-rights-tg.html","family-parent-duties-tg.html","family-custody-tg.html","family-child-safety-tg.html","family-teen-dialogue-tg.html"]) assert(fs.readFileSync(p,'utf8').includes('href="family-filial-duties-tg.html" hreflang="tg"'));
+ assert(g.includes('href="family-child-safety-tg.html" hreflang="tg"'));
+ console.log('PASS: Tajik filial duties, source/anchor parity, attribution and safety boundaries');
 }

@@ -291,6 +291,17 @@ const assert=require('node:assert/strict');
       await page.locator('#talab-lang-switch [data-language="tg"]').click();
       await page.waitForURL('**/family-teen-dialogue-tg.html#teen-8');
       assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2),true,'No teen dialogue overflow');
+      await page.locator('#related a[href="family-filial-duties-tg.html"]').click();
+      await page.waitForURL('**/family-filial-duties-tg.html');
+      assert.equal(await page.locator('html').getAttribute('lang'),'tg');
+      assert.equal(await page.locator('#filial-9 details').count(),5);
+      await page.locator('a[href="#filial-7"]').click();
+      await page.waitForURL('**/family-filial-duties-tg.html#filial-7');
+      await page.locator('#talab-lang-switch [data-language="ru"]').click();
+      await page.waitForURL('**/family-filial-duties.html#filial-7');
+      await page.locator('#talab-lang-switch [data-language="tg"]').click();
+      await page.waitForURL('**/family-filial-duties-tg.html#filial-7');
+      assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2),true,'No filial duties overflow');
       assert.deepEqual(errors,[],'Browser errors during locale switch');
       await page.close();
     }
