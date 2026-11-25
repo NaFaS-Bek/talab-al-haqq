@@ -99,3 +99,174 @@ assert.equal(sectionCount,149);assert.equal(refCount,276);assert.equal(uniqueUrl
 assert(app.includes("prophetSectionSources(s.sourceRefs,isTajik())"));
 assert(app.includes("if (x.kind==='prophet') html += arabic(x.arabicName)"));
 console.log('PASS: 25 profiles, 149 sections, 276 source occurrences, 136 distinct URLs, 18 dua links');
+
+// Targeted editorial corrections, without altering guarded Russian snapshots.
+for (const item of [
+  {
+    "id": "prophet_adam",
+    "sec": "events",
+    "field": "title",
+    "to": "Огоҳӣ, хато ва бозгашт"
+  },
+  {
+    "id": "prophet_nuh",
+    "sec": "events",
+    "field": "text",
+    "to": "Мавҷ миёни онҳо ҳоил шуд."
+  },
+  {
+    "id": "prophet_hud",
+    "sec": "events",
+    "field": "text",
+    "to": "боди шадиди харобиоваре"
+  },
+  {
+    "id": "prophet_hud",
+    "sec": "dates",
+    "field": "title",
+    "to": "Санаҳо ва фарзияҳои таърихии тасдиқнашуда"
+  },
+  {
+    "id": "prophet_salih",
+    "sec": "summary",
+    "field": "summary",
+    "to": "Онҳо ин амрро риоя накарданд."
+  },
+  {
+    "id": "prophet_ibrahim",
+    "sec": "mission",
+    "field": "text",
+    "to": "водии бе кишту зироат"
+  },
+  {
+    "id": "prophet_ibrahim",
+    "sec": "events",
+    "field": "text",
+    "to": "хобе, ки дар он писарашро қурбонӣ мекард"
+  },
+  {
+    "id": "prophet_lut",
+    "sec": "events",
+    "field": "text",
+    "to": "ҳамсараш аз азоби баъдӣ наҷот наёфт"
+  },
+  {
+    "id": "prophet_ishaq",
+    "sec": "gifts",
+    "field": "text",
+    "to": "ба як андоза муфассал"
+  },
+  {
+    "id": "prophet_ishaq",
+    "sec": "lessons",
+    "field": "text",
+    "to": "ҷузъиёти номаълуми зиндагиномаро"
+  },
+  {
+    "id": "prophet_ayyub",
+    "sec": "dates",
+    "field": "text",
+    "to": "санҷиши ҷудогонаи матни ривоят ва дараҷаи эътимоднокии онро"
+  },
+  {
+    "id": "prophet_ayyub",
+    "sec": "duas",
+    "field": "text",
+    "to": "баён кардани ранҷи ба сараш омада"
+  },
+  {
+    "id": "prophet_shuayb",
+    "sec": "dates",
+    "field": "text",
+    "to": "ақидаи маъмул дар бораи он ки ин шахс Шуъайб будааст"
+  },
+  {
+    "id": "prophet_musa",
+    "sec": "events",
+    "field": "text",
+    "to": "агар аз осеб расидан ба кӯдак битарсад"
+  },
+  {
+    "id": "prophet_musa",
+    "sec": "gifts",
+    "field": "text",
+    "to": "бо асо ба баҳр бизанад"
+  },
+  {
+    "id": "prophet_dhul_kifl",
+    "sec": "events",
+    "field": "text",
+    "to": "Набудани ҷузъиёти бештар"
+  },
+  {
+    "id": "prophet_sulayman",
+    "sec": "gifts",
+    "field": "text",
+    "to": "боде, ки Аллоҳ ба ӯ тобеъ карда буд"
+  },
+  {
+    "id": "prophet_ilyas",
+    "sec": "mission",
+    "field": "text",
+    "to": "Ӯ қавмашро ба тақво даъват карда"
+  },
+  {
+    "id": "prophet_ilyas",
+    "sec": "gifts",
+    "field": "text",
+    "to": "ситоише, ки Аллоҳ дар бораи ӯ баён кардааст"
+  },
+  {
+    "id": "prophet_al_yasa",
+    "sec": "events",
+    "field": "text",
+    "to": "ин ки ӯ ҷонишини кадом паёмбар буд"
+  },
+  {
+    "id": "prophet_al_yasa",
+    "sec": "dates",
+    "field": "text",
+    "to": "ҳамчун иқтибос аз суханони ӯ"
+  },
+  {
+    "id": "prophet_yunus",
+    "sec": "summary",
+    "field": "summary",
+    "to": "имон овардани мардум ба худи онҳо фоида расонд"
+  },
+  {
+    "id": "prophet_yunus",
+    "sec": "mission",
+    "field": "text",
+    "to": "имон овардани мардум ба худи онҳо фоида расонд"
+  },
+  {
+    "id": "prophet_yunus",
+    "sec": "events",
+    "field": "text",
+    "to": "қуръа ба зарари ӯ афтод"
+  },
+  {
+    "id": "prophet_zakariya",
+    "sec": "dates",
+    "field": "text",
+    "to": "давомнокии умр"
+  },
+  {
+    "id": "prophet_yahya",
+    "sec": "gifts",
+    "field": "text",
+    "to": "Муъҷизаҳои дигари мушаххасе"
+  },
+  {
+    "id": "prophet_yahya",
+    "sec": "dates",
+    "field": "text",
+    "to": "санаи дақиқу боэътимод"
+  }
+]) {
+  const profile=ctx.resolve(prophets.find(p=>p.id===item.id));
+  const field=item.sec==='summary'?profile:profile.sections.find(s=>s.id===item.sec);
+  assert(field[item.field].includes(item.to),item.id+':'+item.sec+':'+item.field);
+}
+console.log('PASS: targeted Tajik editorial corrections');
