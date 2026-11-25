@@ -3305,7 +3305,7 @@ const tajikLibraryProfiles = Object.freeze({
     },
     "translation": {
       "title": "Одам",
-      "summary": "Қиссаи Одам донише, ки ба инсон ато шудааст, ва масъулияти ӯро дар назди Аллоҳ ёдрас мекунад. Аллоҳ ба ӯ номҳоро омӯхт; ба фариштагон амр шуд, ки саҷда кунанд, аммо Иблис аз рӯйи такаббур саркашӣ кард. Одам ва ҳамсараш манъро риоя накарданд, хатои худро эътироф намуданд ва омурзиш хостанд. Аллоҳ тавбаи Одамро пазируфт ва ӯро ҳидоят кард. Қисса танҳо дар бораи хато нест: дар он роҳи бозгашт пас аз хато низ ҳаст. Дар барнома дуои омурзиши дар Қуръон омада нигоҳ дошта шудааст; санаҳои зиндагии ӯ бофта нашудаанд.",
+      "summary": "Қиссаи Одам донишеро, ки ба инсон ато шудааст, ва масъулияти ӯро дар назди Аллоҳ ёдрас мекунад. Аллоҳ ба ӯ номҳоро омӯхт; ба фариштагон амр шуд, ки саҷда кунанд, аммо Иблис аз рӯйи такаббур саркашӣ кард. Одам ва ҳамсараш манъро риоя накарданд, хатои худро эътироф намуданд ва омурзиш хостанд. Аллоҳ тавбаи Одамро пазируфт ва ӯро ҳидоят кард. Қисса танҳо дар бораи хато нест: дар он роҳи бозгашт пас аз хато низ ҳаст. Дар барнома дуои омурзиши дар Қуръон омада нигоҳ дошта шудааст; санаҳои зиндагии ӯ бофта нашудаанд.",
       "sections": [
         {
           "id": "mission",
@@ -3315,7 +3315,7 @@ const tajikLibraryProfiles = Object.freeze({
         {
           "id": "events",
           "title": "Манъ, хато ва бозгашт",
-          "text": "Одам ва ҳамсараш огоҳ карда шуданд. Пас аз васваса онҳо аз дарахти манъшуда хӯрданд; қисса осебпазирии онҳоро тасвир мекунад, на сафед кардани вайрон кардани манъро. Сипас онҳо эътироф карданд, ки нодуруст рафтор намудаанд ва омурзишу раҳмат хостанд. Дар 20:122 аз баргузидани Одам, пазируфтани тавбаи ӯ ва ҳидоят хабар дода мешавад. Қисса асос намедиҳад, ки ҳар фарзанди Одамро шахсан дар ин амал гунаҳкор эълон кунем."
+          "text": "Одам ва ҳамсараш огоҳ карда шуданд. Пас аз васваса онҳо аз дарахти манъшуда хӯрданд; қисса осебпазирии онҳоро тасвир мекунад, на ин ки вайрон кардани манъро сафед кунад. Сипас онҳо эътироф карданд, ки нодуруст рафтор намудаанд ва омурзишу раҳмат хостанд. Дар 20:122 аз баргузидани Одам, пазируфтани тавбаи ӯ ва ҳидоят хабар дода мешавад. Қисса асос намедиҳад, ки ҳар фарзанди Одамро шахсан дар ин амал гунаҳкор эълон кунем."
         },
         {
           "id": "gifts",
@@ -4485,7 +4485,7 @@ const tajikLibraryProfiles = Object.freeze({
         },
         {
           "id": "dates",
-          "title": "Кадом воқеаҳоро метавон сана гузошт ва кадомро не",
+          "title": "Санаи кадом воқеаҳоро метавон муайян кард ва кадомро не",
           "text": "Аз қиссаи қуръонӣ иштироки Исмоил дар сохтани Хона бо Иброҳим маълум аст. Ҳадиси 3364 аз кӯдакӣ ва ба камол расидани ӯ хабар медиҳад, вале санаи мутлақи тақвимие, ки дар ин ҷо истифода шавад, намедиҳад. Солҳои дақиқи таваллуду вафот, давомнокии умр ва ҷойи боэътимод санҷидашудаи дафн дар ин нусха муайян нашудаанд. Рақамҳои синну сол аз бозгӯиҳои баъдӣ ҳамчун маълумоти Қуръон ё ҳадиси саҳеҳ пешниҳод нашудаанд."
         },
         {
@@ -6867,7 +6867,7 @@ const tajikLibraryProfiles = Object.freeze({
         },
         {
           "id": "events",
-          "title": "Китобро ҷиддӣ гирифтан",
+          "title": "Ба Китоб ҷиддӣ муносибат кардан",
           "text": "Дар 19:12 ба Яҳё амр мешавад, ки Китобро маҳкам бигирад; ҳамон ҷо аз ҳикмате хабар дода мешавад, ки дар кӯдакӣ ба ӯ ато гардид. Баъдан дилсӯзӣ, покӣ, тақво ва некӣ ба падару модар таъкид мешаванд. Инҳо роҳнамоҳои муҳими зиндагии ӯянд; гуфтугӯҳои муфассал бо ҳокимон дар оятҳои интихобшуда оварда нашудаанд."
         },
         {
@@ -7464,6 +7464,11 @@ function inlineSources(ids) {
   const a = [...new Set(ids || [])].map(sourceById).filter(Boolean);
   return a.length ? `<details class="source-inline"><summary>Источники этого фрагмента</summary>${a.map(sourceCard).join('')}</details>` : '';
 }
+// Keep each biography's citations next to the relevant original section in both languages.
+function prophetSectionSources(refs, tg) {
+  if (!Array.isArray(refs) || !refs.length) return '';
+  return '<details class="source-inline" data-prophet-section-sources><summary'+(tg?' lang="tg"':'')+'>'+(tg?'Сарчашмаҳои ин бахш':'Источники этого раздела')+'</summary>'+refs.map(sourceCard).join('')+'</details>';
+}
 function refsFor(x) {
   const direct = [...(x.sourceRefs || []),...(x.explanationSources || []),...(x.nameSource ? [x.nameSource] : []),...(x.sections || []).flatMap(s => s.sourceRefs || [])];
   const ids = [...(x.sourceIds || []),...(x.hasanStatusSourceIds || []),...(x.sections || []).flatMap(s => [...(s.sourceIds || []),...(s.views || []).flatMap(v => v.sourceIds || [])]),...(x.paragraphs || []).flatMap(p => p.sourceIds || [])];
@@ -7875,10 +7880,11 @@ function details(r) {
   if (isTajik() && ['lib','history','caliph'].includes(kind) && !(kind==='caliph'&&localizedCaliph(x)) && !(kind==='lib'&&localizedLibrary(x))) html += untranslatedKnowledgeNote();
   if (kind === 'lib') {
     const h=localizedLibrary(x);
+    if (x.kind==='prophet') html += arabic(x.arabicName);
     html += h?'<div lang="tg" data-tg-library-profile="1">'+para('Мухтасар',h.summary)+tajikMeaningStatus()+'</div><details lang="ru"><summary>Краткое описание на русском</summary>'+para('Кратко',x.summaryRu)+'</details>':para('Кратко',x.summaryRu);
     for(const [i,s] of (x.sections||[]).entries()){
       const st=h?.sections[i];
-      html += (st?'<section lang="tg">'+para(st.title,st.text)+warning(st.dispute||st.uncertainty)+'</section><details lang="ru"><summary>Текст раздела на русском</summary>'+para(s.titleRu,s.textRu)+warning(s.disputeRu||s.uncertaintyRu)+'</details>':para(s.titleRu,s.textRu)+warning(s.disputeRu||s.uncertaintyRu))+arabic(s.arabicText)+para(s.transliterationRu?'Транскрипция':'',s.transliterationRu);
+      html += (st?'<section lang="tg">'+para(st.title,st.text)+warning(st.dispute||st.uncertainty)+'</section><details lang="ru"><summary>Текст раздела на русском</summary>'+para(s.titleRu,s.textRu)+warning(s.disputeRu||s.uncertaintyRu)+'</details>':para(s.titleRu,s.textRu)+warning(s.disputeRu||s.uncertaintyRu))+arabic(s.arabicText)+para(s.transliterationRu?'Транскрипция':'',s.transliterationRu)+(x.kind==='prophet'?prophetSectionSources(s.sourceRefs,isTajik()):'');
     }
     html += related(x.duaEntryIds,'dua');
   }

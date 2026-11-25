@@ -71,3 +71,31 @@ assert(muhammad.sections[3].text.includes('Бухорӣ 3902'));
 assert(muhammad.sections[3].text.includes('Муслим 1162b'));
 assert(muhammad.sections[3].text.includes('шасту сесолагӣ'));
 console.log('PASS: Zakariya, Yahya, Isa, Muhammad and source boundaries');
+
+// Comprehensive inventory and per-section source rendering audit.
+const allDuas=new Set([...db.catalog.entries,...db.catalog_additions.entries].map(x=>x.id));
+let sectionCount=0,refCount=0,duaCount=0;const uniqueUrls=new Set();
+const sourceCtx=vm.createContext({sourceCard:r=>'<a href="'+r.url+'">'+r.reference+'</a>'});
+const sourceStart=app.indexOf('function prophetSectionSources('),sourceEnd=app.indexOf('function refsFor(',sourceStart);
+assert(sourceStart>=0&&sourceEnd>sourceStart);
+vm.runInContext(app.slice(sourceStart,sourceEnd)+'\nthis.render=prophetSectionSources;',sourceCtx);
+assert.equal(sourceCtx.render([],true),'');
+for(const p of prophets){
+  const t=ctx.resolve(p);assert(t.title.trim()&&t.summary.trim());
+  for(const [i,s] of p.sections.entries()){
+    assert.equal(t.sections[i].id,s.id);
+    assert(s.sourceRefs.length>0);
+    for(const tg of [true,false]){
+      const html=sourceCtx.render(s.sourceRefs,tg);
+      assert(html.includes(tg?'Сарчашмаҳои ин бахш':'Источники этого раздела'));
+      assert.deepEqual([...html.matchAll(/href="([^"]+)"/g)].map(m=>m[1]),s.sourceRefs.map(r=>r.url));
+    }
+    for(const r of s.sourceRefs){assert(/^https:\/\/(quran\.com|sunnah\.com)\//.test(r.url));uniqueUrls.add(r.url);refCount++;}
+    sectionCount++;
+  }
+  for(const id of p.duaEntryIds){assert(allDuas.has(id));duaCount++;}
+}
+assert.equal(sectionCount,149);assert.equal(refCount,276);assert.equal(uniqueUrls.size,136);assert.equal(duaCount,18);
+assert(app.includes("prophetSectionSources(s.sourceRefs,isTajik())"));
+assert(app.includes("if (x.kind==='prophet') html += arabic(x.arabicName)"));
+console.log('PASS: 25 profiles, 149 sections, 276 source occurrences, 136 distinct URLs, 18 dua links');
