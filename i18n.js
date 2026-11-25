@@ -113,7 +113,7 @@
     try { const v = JSON.parse(localStorage.getItem(KEY)); return LOCALES.includes(v) ? v : 'ru'; }
     catch (_) { return 'ru'; }
   }
-  const pairedLessons = ['five-pillars','pillar-shahada','pillar-salah','pillar-zakat','pillar-sawm','pillar-hajj','wudu-steps','salah-steps','arabic-reading-signs','family-rights','family-nikah','family-mahr','family-children','family-child-rights','family-parent-duties','family-custody','family-child-safety','family-teen-dialogue','family-filial-duties'];
+  const pairedLessons = ['five-pillars','pillar-shahada','pillar-salah','pillar-zakat','pillar-sawm','pillar-hajj','wudu-steps','salah-steps','arabic-reading-signs','family-rights','family-nikah','family-mahr','family-children','family-child-rights','family-parent-duties','family-custody','family-child-safety','family-teen-dialogue','family-filial-duties','family-prophetic-example'];
   function pageKind() {
     const name = location.pathname.split('/').pop();
     if (name === 'about.html' || name === 'about-tg.html') return 'about';
