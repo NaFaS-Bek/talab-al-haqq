@@ -117,7 +117,7 @@ assert.match(nameMeanings.name_099.basis,/шумораи такрор/);
  assert(g.includes('Ин дарс фатво нест'));
  assert(g.includes('Ҳангоми таҳдид ё зӯроварӣ амният'));
  assert(g.includes('data-tg-family-pending'));
- assert.equal((g.match(/href="family-[^"]+\.html" hreflang="ru"><strong>/g)||[]).length,5);
+ assert.equal((g.match(/href="family-[^"]+\.html" hreflang="ru"><strong>/g)||[]).length,4);
  assert(r.includes('href="family-rights-tg.html"'));
  assert(g.includes('href="family-rights.html"'));
  const m=JSON.parse(fs.readFileSync('sw.js','utf8').match(/^const RELEASE = (\{[^\r\n]+\});/m)[1]);
@@ -214,4 +214,17 @@ assert.match(nameMeanings.name_099.basis,/шумораи такрор/);
  for(const p of ['family-rights-tg.html','family-children-tg.html','family-child-rights-tg.html']) assert(fs.readFileSync(p,'utf8').includes('href="family-parent-duties-tg.html" hreflang="tg"'));
  assert(r.includes('href="family-parent-duties-tg.html"'));assert(g.includes('href="family-parent-duties.html"'));
  console.log('PASS: Tajik parental duties, source/anchor parity, school-specific attribution and gift/inheritance distinction');
+}
+
+{
+ const r=fs.readFileSync('family-custody.html','utf8'),g=fs.readFileSync('family-custody-tg.html','utf8');
+ const urls=s=>[...s.matchAll(/href="(https?:\/\/[^"]+)"/g)].map(x=>x[1]);
+ const ids=s=>[...s.matchAll(/\bid="([^"]+)"/g)].map(x=>x[1]);
+ assert.deepEqual(urls(g),urls(r));assert.equal(urls(g).length,15);
+ assert.deepEqual(ids(g),ids(r));assert.equal((g.match(/<details>/g)||[]).length,5);
+ assert.equal((g.match(/class="example"/g)||[]).length,4);assert.equal((g.match(/<li>/g)||[]).length,3);
+ for(const phrase of ['«ҳасан» аз ҷониби Албонӣ','«саҳеҳ» аз ҷониби Албонӣ','қуръапартоӣ','агар ҷудоӣ ба кӯдак зарар расонад, он ҷоиз нест','мавқеи як фақеҳи мушаххаси ҷаъфарӣ','Робитаи хатарнокро ба хотири шиори умумӣ таҳмил кардан мумкин нест','Бозбинии мустақили забонӣ ва динӣ ҳанӯз анҷом наёфтааст']) assert(g.includes(phrase),phrase);
+ for(const p of ['family-rights-tg.html','family-child-rights-tg.html','family-parent-duties-tg.html']) assert(fs.readFileSync(p,'utf8').includes('href="family-custody-tg.html" hreflang="tg"'));
+ assert(r.includes('href="family-custody-tg.html"'));assert(g.includes('href="family-custody.html"'));
+ console.log('PASS: Tajik custody, exact source/anchor parity, named legal positions and safety boundaries');
 }

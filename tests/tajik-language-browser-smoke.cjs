@@ -258,6 +258,17 @@ const assert=require('node:assert/strict');
       await page.locator('#talab-lang-switch [data-language="tg"]').click();
       await page.waitForURL('**/family-parent-duties-tg.html#duty-6');
       assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2),true,'No parental duties overflow');
+      await page.locator('#related a[href="family-custody-tg.html"]').click();
+      await page.waitForURL('**/family-custody-tg.html');
+      assert.equal(await page.locator('html').getAttribute('lang'),'tg');
+      assert.equal(await page.locator('#custody-8 details').count(),5);
+      await page.locator('a[href="#custody-6"]').click();
+      await page.waitForURL('**/family-custody-tg.html#custody-6');
+      await page.locator('#talab-lang-switch [data-language="ru"]').click();
+      await page.waitForURL('**/family-custody.html#custody-6');
+      await page.locator('#talab-lang-switch [data-language="tg"]').click();
+      await page.waitForURL('**/family-custody-tg.html#custody-6');
+      assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2),true,'No custody overflow');
       assert.deepEqual(errors,[],'Browser errors during locale switch');
       await page.close();
     }
