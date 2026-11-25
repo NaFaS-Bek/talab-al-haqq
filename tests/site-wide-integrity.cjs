@@ -151,12 +151,15 @@ console.log('PASS site-wide static integrity; NOT CERTIFIED: external URLs, runt
 {
  const vm=require('node:vm');
  const db=JSON.parse(fs.readFileSync('data/content.json','utf8'));
- const ids=[...new Set(db.library.items.filter(x=>x.kind.includes('prophet')).flatMap(x=>x.duaEntryIds||[]))].sort();
+ const prophetIds=[...new Set(db.library.items.filter(x=>x.kind.includes('prophet')).flatMap(x=>x.duaEntryIds||[]))].sort();
  const entries=[...db.catalog.entries,...db.catalog_additions.entries];
+ const ids=[...new Set(entries.map(x=>x.id))].sort();
+ assert.equal(prophetIds.length,16);
+ assert(prophetIds.every(id=>ids.includes(id)),'All prophet-related cards must remain covered');
  const match=app.match(/const tajikReadingNotes = Object\.freeze\((\{[\s\S]*?\n\})\);/);
  assert(match,'Reading-note dictionary must exist');
  const notes=JSON.parse(match[1]);
- assert.equal(ids.length,16);
+ assert.equal(ids.length,43);
  assert.deepEqual(Object.keys(notes).sort(),ids);
  const renderer=app.slice(app.indexOf('function readingSchemeInfo(x) {'),app.indexOf('function sourceInfo(x) {'));
  assert(renderer.startsWith('function readingSchemeInfo(x) {'),'Reading-note renderer missing');
@@ -181,5 +184,5 @@ console.log('PASS site-wide static integrity; NOT CERTIFIED: external URLs, runt
  context.language='tg';
  assert(context.readingSchemeInfo({id:'__unknown__',transliterationScheme:'untranslated'}).includes('data-reading-note-fallback'));
  assert.equal(context.readingSchemeInfo({id:'__unknown__'}),'');
- console.log('PASS: 16 exact bilingual reading notes, Russian original, language switch and stale/missing translation fallback');
+ console.log('PASS: 43 exact bilingual reading notes, Russian original, language switch and stale/missing translation fallback');
 }
