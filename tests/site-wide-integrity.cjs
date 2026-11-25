@@ -194,9 +194,11 @@ console.log('PASS site-wide static integrity; NOT CERTIFIED: external URLs, runt
  const dict=app.match(/const tajikLibraryProfiles = Object\.freeze\((\{[\s\S]*?\n\})\);/);
  assert(dict,'Tajik library dictionary missing');
  const profiles=JSON.parse(dict[1]);
- const cards=db.library.items.filter(x=>['basics','prophet'].includes(x.kind));
+ const cards=db.library.items.filter(x=>['basics','prophet','surah'].includes(x.kind));
  assert.equal(cards.filter(x=>x.kind==='basics').length,5);
  assert.equal(cards.filter(x=>x.kind==='prophet').length,25);
+ assert.equal(cards.filter(x=>x.kind==='surah').length,7);
+ assert.equal(cards.length,37);
  const functions=app.slice(app.indexOf('function libraryProfileSnapshot(p)'),app.indexOf('const localizedLibrary='));
  assert(functions.startsWith('function libraryProfileSnapshot(p)'));
  const ctx=vm.createContext({});
@@ -212,5 +214,5 @@ console.log('PASS site-wide static integrity; NOT CERTIFIED: external URLs, runt
   assert.equal(ctx.tajikLibraryProfile({...card,sections}),null,card.id+': stale source');
  }
  assert.equal(ctx.tajikLibraryProfile({id:'__unknown__',sections:[]}),null);
- console.log('PASS: 30 Tajik learning cards, all sections and stale source fallback; not an expert translation certification');
+ console.log('PASS: 37 Tajik learning cards, all sections and stale source fallback; not an expert translation certification');
 }
