@@ -559,3 +559,18 @@ console.log('PASS: additional bilingual verse refinements');
  assert.equal(segments,24);
  console.log('PASS: linked prophetic duas, 18 links, 16 unique entries and 24 segments');
 }
+
+// Editorial corrections: preserve word unity and direct address in prophetic supplications.
+{
+ const entries=[...db.catalog.entries,...db.catalog_additions.entries];
+ const y=entries.find(e=>e.id==='q_12_101'),i=entries.find(e=>e.id==='q_14_40_41');
+ assert(y.transliterationRu.includes('атайтани'));assert(!y.transliterationRu.includes('атай-тани'));
+ assert(i.translationRu.includes('[некоторых] моих потомков'));
+ const prefix='const tajikDuaMeanings = Object.freeze(',start=app.indexOf(prefix)+prefix.length,end=app.indexOf('\n});',start);
+ const tg=JSON.parse(app.slice(start,end+2));
+ assert(tg.q_2_127_128.meaning.includes('фармонбардори Ту'));
+ assert(tg.q_14_40_41.meaning.includes('Эй Парвардигори мо! Дуои маро бипазир.'));
+ for(const id of ['q_2_127_128','q_14_40_41']){
+  const e=entries.find(x=>x.id===id);assert.equal(e.segments.map(s=>tg[id].segments[s.id].meaning).join(' '),tg[id].meaning);
+ }
+}
