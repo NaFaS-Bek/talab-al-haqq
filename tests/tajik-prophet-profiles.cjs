@@ -533,3 +533,29 @@ console.log('PASS: additional bilingual verse refinements');
   assert(p.sections.find(s=>s.id===id).textRu.includes(ru));assert(tr.sections.find(s=>s.id===id).text.includes(tg));
  }
 }
+
+// Linked dua integrity: both catalog layers, exact source/Arabic alignment and complete segment reconstruction.
+{
+ const prefix='const tajikDuaMeanings = Object.freeze(';
+ const start=app.indexOf(prefix)+prefix.length, end=app.indexOf('\n});',start);
+ assert(start>=prefix.length && end>start);
+ const meanings=JSON.parse(app.slice(start,end+2));
+ const linked=prophets.flatMap(p=>p.duaEntryIds||[]), ids=[...new Set(linked)].sort();
+ assert.equal(linked.length,18);
+ assert.deepEqual(ids,["h_bukhari_6369","h_muslim_2725a","q_12_101","q_14_40_41","q_20_25_28","q_21_83","q_21_87","q_21_89","q_26_169","q_27_19","q_2_127_128","q_2_250","q_5_114","q_71_28","q_7_23","q_7_89"]);
+ const entries=[...db.catalog.entries,...db.catalog_additions.entries];
+ let segments=0;
+ for(const id of ids){
+  const matches=entries.filter(e=>e.id===id);assert.equal(matches.length,1,id);
+  const e=matches[0],m=meanings[id];assert(m&&m.meaning&&m.context,id);
+  assert.equal(m.arabicText,e.arabicText,id);
+  assert.deepEqual(m.sourceUrls,e.sourceRefs.map(s=>s.url),id);
+  assert(e.segments.length&&e.segments.every(s=>s.arabicText&&s.transliterationRu&&s.translationRu),id);
+  assert.equal(e.segments.map(s=>s.arabicText).join(' '),e.arabicText,id);
+  assert.equal(e.segments.map(s=>s.transliterationRu).join(' '),e.transliterationRu,id);
+  if(m.segments){for(const s of e.segments){const local=m.segments[s.id];assert(local&&local.meaning,id+':'+s.id);assert.equal(local.arabicText,s.arabicText,id+':'+s.id);}}
+  segments+=e.segments.length;
+ }
+ assert.equal(segments,24);
+ console.log('PASS: linked prophetic duas, 18 links, 16 unique entries and 24 segments');
+}
