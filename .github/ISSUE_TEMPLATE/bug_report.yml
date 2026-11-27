@@ -1,0 +1,44 @@
+name: Сообщить об ошибке
+description: Сообщите о технической ошибке, проблеме в отображении или неточности в материале.
+title: "[Ошибка]: "
+body:
+  - type: dropdown
+    id: category
+    attributes:
+      label: Где обнаружена проблема?
+      options:
+        - Ошибка в отображении или интерфейсе
+        - Не работает функция или ссылка
+        - Возможная неточность в тексте или источнике
+        - Ошибка перевода
+        - Другое
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Опишите проблему
+      description: Что именно произошло? Если возможно, приведите цитату или название раздела.
+      placeholder: Подробное описание ошибки…
+    validations:
+      required: true
+  - type: input
+    id: page
+    attributes:
+      label: Ссылка на страницу или название раздела
+      description: Вставьте адрес страницы, на которой обнаружена проблема.
+    validations:
+      required: false
+  - type: textarea
+    id: steps
+    attributes:
+      label: Как повторить проблему? (необязательно)
+      placeholder: "1. Открыл раздел…\n2. Нажал…\n3. Увидел…"
+    validations:
+      required: false
+  - type: textarea
+    id: expected
+    attributes:
+      label: Как должно работать? (необязательно)
+    validations:
+      required: false

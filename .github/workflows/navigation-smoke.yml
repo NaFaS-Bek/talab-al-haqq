@@ -15,12 +15,13 @@ jobs:
         with:
           node-version: '22'
       - run: node --check tests/live-site-audit.cjs
+      - run: node --check tool/prepare_website.mjs
       - name: Print complete SHA-256 manifest for release verification
         run: python3 tool/prepare_website.py --print-manifest
       - name: Ensure committed SW hashes match every educational resource
         run: python3 tool/prepare_website.py --check-root
-      - name: Prepare reproducible verified offline bundle
-        run: python3 tool/prepare_website.py --build build/website
+      - name: Build verified offline release with the Node.js packager used by Wrangler
+        run: node tool/prepare_website.mjs --check-root && node tool/prepare_website.mjs --build build/website
       - run: node tests/site-wide-integrity.cjs
       - name: Inventory external source links (offline only; no HTTP validation)
         run: node tests/external-links-inventory.cjs
