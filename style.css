@@ -89,3 +89,6 @@ main{max-width:960px}
 .tile-link{display:block;color:var(--fg);text-decoration:none}
 .tile-link:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
 .tile-link:visited{color:var(--fg)}
+
+/* Persistent, unobtrusive site feedback shortcut. Keep it above the bottom navigation. */
+.report-error{position:fixed;z-index:7;right:max(14px,calc((100vw - 900px)/2 + 18px));bottom:calc(var(--nav-height,68px) + 17px + env(safe-area-inset-bottom));display:flex;align-items:center;gap:8px;max-width:calc(100vw - 28px);padding:11px 15px;border:1px solid var(--gold);border-radius:999px;background:var(--panel);color:var(--gold);box-shadow:0 5px 22px #0004;text-decoration:none;font-size:12px;font-weight:700;line-height:1.2}.report-error span:first-child{font-size:17px}.report-error:hover{background:var(--panel2)}.report-error:focus-visible{outline:2px solid var(--gold);outline-offset:3px}@media(max-width:420px){.report-error{padding:10px 12px;font-size:11px;gap:6px}}
