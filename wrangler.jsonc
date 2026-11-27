@@ -2,6 +2,9 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "talab-al-haqq",
   "compatibility_date": "2026-11-25",
+  "build": {
+    "command": "node tool/prepare_website.mjs --check-root && node tool/prepare_website.mjs --build build/website"
+  },
   "assets": {
     "directory": "./build/website"
   },
